@@ -7,6 +7,12 @@
 
 <form class="profile-form" method="post" action="{{ url_for('profile') }}">
   <section class="pf-block">
+    <h2>自社名</h2>
+    <p class="pf-hint">あなたの会社名。競合企業の一覧から自社を除外するのに使います。</p>
+    <input type="text" name="company" value="{{ prof.company }}" placeholder="例: 河野電気工事株式会社">
+  </section>
+
+  <section class="pf-block">
     <h2>対応エリア（都道府県）</h2>
     <p class="pf-hint">入札参加できる／したい都道府県をすべて選択。</p>
     {% for region, prefs in regions.items() %}

@@ -66,6 +66,7 @@ CREATE INDEX IF NOT EXISTS idx_cases_deadline ON cases(deadline);
 
 CREATE TABLE IF NOT EXISTS profile (
     id           INTEGER PRIMARY KEY CHECK (id = 1),  -- 単一行
+    company      TEXT DEFAULT '',   -- 自社名（競合一覧から自社を除外する）
     prefectures  TEXT DEFAULT '',   -- 対応エリア（都道府県, カンマ区切り）
     categories   TEXT DEFAULT '電気工事',  -- 対応業種（カンマ区切り）
     budget_max   TEXT DEFAULT '',   -- 予算上限（予定価格がこれ以下）。空=制限なし
@@ -102,9 +103,14 @@ def _connect() -> sqlite3.Connection:
 
 
 def init_db() -> None:
-    """スキーマを作成（既存なら何もしない）。"""
+    """スキーマを作成（既存なら何もしない）＋軽量マイグレーション。"""
     with _connect() as conn:
         conn.executescript(SCHEMA)
+        # 既存DBに後から追加した列をマイグレーション（無ければ追加）
+        cols = [r[1] for r in conn.execute("PRAGMA table_info(profile)")]
+        if "company" not in cols:
+            conn.execute("ALTER TABLE profile ADD COLUMN company TEXT DEFAULT ''")
+        conn.commit()
 
 
 def upsert_cases(rows: list[dict[str, Any]]) -> int:
@@ -280,10 +286,21 @@ def normalize_company(name: str) -> str:
     return n
 
 
-def list_competitors(q: str = "", prefecture: str = "") -> list[dict[str, Any]]:
-    """落札者を企業ごとに集計（落札件数の多い順）。競合企業の発見用。"""
+def list_competitors(q: str = "", prefecture: str = "",
+                     prefectures: list[str] | None = None,
+                     exclude_company: str = "") -> list[dict[str, Any]]:
+    """落札者を企業ごとに集計（落札件数の多い順）。
+
+    自社の競合を見るため:
+      - prefectures: 自社の対応エリア（複数）に絞る
+      - exclude_company: 自社名を一覧から除外（表記ゆれ吸収）
+    prefecture（単数）は手動の追加絞り込み用。
+    """
     where = ["winner != ''"]
     params: list[Any] = []
+    if prefectures:
+        where.append("prefecture IN (%s)" % ",".join("?" * len(prefectures)))
+        params.extend(prefectures)
     if prefecture:
         where.append("prefecture = ?")
         params.append(prefecture)
@@ -300,6 +317,9 @@ def list_competitors(q: str = "", prefecture: str = "") -> list[dict[str, Any]]:
     """
     with _connect() as conn:
         rows = [dict(r) for r in conn.execute(sql, params).fetchall()]
+    if exclude_company:
+        ex = normalize_company(exclude_company)
+        rows = [r for r in rows if normalize_company(r["winner"]) != ex]
     if q:
         nq = normalize_company(q)
         rows = [r for r in rows if nq in normalize_company(r["winner"])]
@@ -331,22 +351,22 @@ def get_profile() -> dict[str, Any]:
         row = conn.execute("SELECT * FROM profile WHERE id = 1").fetchone()
     if row:
         return dict(row)
-    return {"id": 1, "prefectures": "", "categories": "電気工事",
+    return {"id": 1, "company": "", "prefectures": "", "categories": "電気工事",
             "budget_max": "", "grade": "", "quals": ""}
 
 
 def save_profile(prefectures: str, categories: str, budget_max: str,
-                 grade: str = "", quals: str = "") -> None:
+                 grade: str = "", quals: str = "", company: str = "") -> None:
     """マイ条件を保存（単一行 upsert）。"""
     with _connect() as conn:
         conn.execute(
-            """INSERT INTO profile (id, prefectures, categories, budget_max, grade, quals, updated_at)
-               VALUES (1, ?, ?, ?, ?, ?, datetime('now'))
+            """INSERT INTO profile (id, company, prefectures, categories, budget_max, grade, quals, updated_at)
+               VALUES (1, ?, ?, ?, ?, ?, ?, datetime('now'))
                ON CONFLICT(id) DO UPDATE SET
-                 prefectures=excluded.prefectures, categories=excluded.categories,
-                 budget_max=excluded.budget_max, grade=excluded.grade,
-                 quals=excluded.quals, updated_at=datetime('now')""",
-            (prefectures, categories, budget_max, grade, quals),
+                 company=excluded.company, prefectures=excluded.prefectures,
+                 categories=excluded.categories, budget_max=excluded.budget_max,
+                 grade=excluded.grade, quals=excluded.quals, updated_at=datetime('now')""",
+            (company, prefectures, categories, budget_max, grade, quals),
         )
         conn.commit()
 

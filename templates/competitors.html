@@ -2,8 +2,21 @@
 {% block title %}競合企業 — 電気入札サーチ{% endblock %}
 
 {% block content %}
-<div class="topbar"><h1>競合企業（落札者）の分析</h1></div>
-<p class="lead">過去の落札実績から、同じ電気工事市場で競合する企業を落札件数順に並べています。</p>
+<div class="topbar"><h1>自社の競合企業</h1></div>
+{% if scoped %}
+  <p class="lead">
+    <strong>自社の対応エリア（{{ my_area | join('・') }}）</strong>で過去に落札している＝
+    あなたの競合になりうる企業を、落札件数順に表示しています{% if my_company %}（自社「{{ my_company }}」は除外）{% endif %}。
+    <a href="{{ url_for('competitors', all=1) }}">全国で見る →</a>
+  </p>
+{% else %}
+  <p class="lead">
+    全国の落札者を表示中。
+    <a href="{{ url_for('matches') if not my_area else url_for('competitors') }}">
+      {% if my_area %}自社エリアだけに戻す{% else %}マイ条件で対応エリアを登録{% endif %} →</a>
+    {% if not my_area %}すると「自社の競合」だけに絞り込めます。{% endif %}
+  </p>
+{% endif %}
 
 <form class="filterbar" method="get" action="{{ url_for('competitors') }}">
   <label class="field grow">

@@ -164,9 +164,10 @@ def profile():
             quals += [q.strip() for q in qual_other.split(",") if q.strip()]
         budget_max = request.form.get("budget_max", "").strip()
         grade = request.form.get("grade", "").strip()
+        company = request.form.get("company", "").strip()
         db.save_profile(prefectures, ",".join(categories) or "電気工事",
-                        budget_max, grade, ",".join(quals))
-        flash("マイ条件を保存しました。マッチ案件に反映されます。", "ok")
+                        budget_max, grade, ",".join(quals), company=company)
+        flash("マイ条件を保存しました。マッチ案件・競合企業に反映されます。", "ok")
         return redirect(url_for("matches"))
 
     prof = db.get_profile()
@@ -200,15 +201,35 @@ def matches():
 
 @app.route("/competitors")
 def competitors():
-    """競合企業（落札者）の一覧。落札件数の多い順にランキング表示。"""
+    """自社の競合企業（落札者）の一覧。
+
+    既定では「マイ条件の対応エリア」に絞り、「自社名」を除外して、
+    “このシステムを使う会社（自社）の競合になりうる企業”だけを表示する。
+    全国を見たい場合は ?all=1。
+    """
+    prof = db.get_profile()
     q = request.args.get("q", "").strip()
     prefecture = request.args.get("prefecture", "").strip()
-    rows = db.list_competitors(q=q, prefecture=prefecture)
+    show_all = request.args.get("all") == "1"
+
+    my_prefs = [p for p in (prof.get("prefectures") or "").split(",") if p]
+    # 自社の対応エリアで絞る（all=1 か 手動で都道府県指定した時は除く）
+    area = None if (show_all or prefecture) else (my_prefs or None)
+
+    rows = db.list_competitors(
+        q=q, prefecture=prefecture,
+        prefectures=area,
+        exclude_company=prof.get("company", ""),
+    )
     return render_template(
         "competitors.html",
         rows=rows,
         prefectures=db.distinct_values("prefecture"),
         selected={"q": q, "prefecture": prefecture},
+        my_company=prof.get("company", ""),
+        my_area=my_prefs,
+        scoped=bool(area),
+        show_all=show_all,
     )
 
 
