@@ -1,0 +1,46 @@
+name: データ自動更新（毎日）
+
+# 毎日 JST 6:00（UTC 21:00）に実行 ＋ 手動実行も可。
+# クラウド上で update.py を回し、最新の入札データを denki_bid.db に取り込み、
+# 変更があれば commit/push → Render が自動再デプロイ。すべて GitHub Actions の無料枠内。
+on:
+  schedule:
+    - cron: "0 21 * * *"
+  workflow_dispatch: {}
+
+permissions:
+  contents: write   # denki_bid.db を push するため
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: チェックアウト
+        uses: actions/checkout@v4
+
+      - name: Python セットアップ
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+
+      - name: 依存インストール（Playwright含む）
+        run: |
+          pip install -r requirements-local.txt
+          python -m playwright install --with-deps chromium
+
+      - name: データ更新（全国・実データ）
+        run: python update.py --reset
+
+      - name: 変更があれば commit & push
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          if [ -n "$(git status --porcelain denki_bid.db)" ]; then
+            git add denki_bid.db
+            git commit -m "chore: データ自動更新 $(date -u +%Y-%m-%d)"
+            git push
+            echo "更新をpushしました（Renderが自動再デプロイ）"
+          else
+            echo "データに変更なし"
+          fi
