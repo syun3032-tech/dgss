@@ -15,6 +15,7 @@
       <a href="{{ url_for('cases', new=1) }}">新着</a>
       <a href="{{ url_for('matches') }}" class="{{ 'active' if request.endpoint == 'matches' }}">マッチ案件</a>
       <a href="{{ url_for('competitors') }}" class="{{ 'active' if request.endpoint in ['competitors','competitor_detail'] }}">競合企業</a>
+      <a href="{{ url_for('agencies') }}" class="{{ 'active' if request.endpoint == 'agencies' }}">監視機関</a>
       <a href="{{ url_for('applications') }}" class="{{ 'active' if request.endpoint == 'applications' }}">申請管理</a>
     </nav>
     <div class="spacer"></div>

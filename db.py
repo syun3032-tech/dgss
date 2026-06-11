@@ -82,6 +82,17 @@ CREATE TABLE IF NOT EXISTS applications (
     note         TEXT DEFAULT '',                 -- メモ
     updated_at   TEXT DEFAULT (datetime('now'))
 );
+
+CREATE TABLE IF NOT EXISTS agencies (
+    name        TEXT PRIMARY KEY,    -- 発注機関名
+    njss_count  INTEGER DEFAULT 0,   -- NJSS案件数（規模の目安）
+    top_url     TEXT DEFAULT '',     -- 公式トップURL
+    domain      TEXT DEFAULT '',     -- ドメイン（使用プラットフォームの判別に）
+    platform_n  INTEGER DEFAULT 0,   -- 共通基盤_機関数
+    bid_url     TEXT DEFAULT '',     -- 公式入札情報ページ
+    sample_url  TEXT DEFAULT '',     -- NJSS案件URL例
+    fetched_at  TEXT DEFAULT ''      -- 取得日時
+);
 """
 
 # 入札参加申請のステータス（電気工事入札の進行段階）
@@ -204,6 +215,36 @@ def distinct_values(column: str) -> list[str]:
 def count_cases() -> int:
     with _connect() as conn:
         return conn.execute("SELECT COUNT(*) FROM cases").fetchone()[0]
+
+
+def upsert_agencies(rows: list[dict[str, Any]]) -> int:
+    """監視対象の発注機関を一括投入（name で重複排除）。"""
+    cols = ["name", "njss_count", "top_url", "domain", "platform_n",
+            "bid_url", "sample_url", "fetched_at"]
+    ph = ", ".join(["?"] * len(cols))
+    upd = ", ".join(f"{c}=excluded.{c}" for c in cols if c != "name")
+    sql = (f"INSERT INTO agencies ({', '.join(cols)}) VALUES ({ph}) "
+           f"ON CONFLICT(name) DO UPDATE SET {upd}")
+    with _connect() as conn:
+        conn.executemany(sql, [tuple(r.get(c, "") for c in cols) for r in rows])
+        conn.commit()
+    return len(rows)
+
+
+def list_agencies(q: str = "") -> list[dict[str, Any]]:
+    """監視対象の発注機関一覧（案件数の多い順）。"""
+    where, params = "", []
+    if q:
+        where = "WHERE name LIKE ? OR domain LIKE ?"
+        params = [f"%{q}%", f"%{q}%"]
+    with _connect() as conn:
+        return [dict(r) for r in conn.execute(
+            f"SELECT * FROM agencies {where} ORDER BY njss_count DESC", params).fetchall()]
+
+
+def count_agencies() -> int:
+    with _connect() as conn:
+        return conn.execute("SELECT COUNT(*) FROM agencies").fetchone()[0]
 
 
 def clear_cases(source: str | None = None) -> int:

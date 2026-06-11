@@ -242,6 +242,17 @@ def competitor_detail(name: str):
     return render_template("competitor_detail.html", name=name, cases=cases)
 
 
+@app.route("/agencies")
+def agencies():
+    """監視対象の発注機関（全国）一覧。公式入札ページへの導線つき。"""
+    import agency_import
+    q = request.args.get("q", "").strip()
+    rows = db.list_agencies(q=q)
+    for r in rows:
+        r["platform"] = agency_import.platform_of(r.get("domain", ""))
+    return render_template("agencies.html", rows=rows, q=q, total=db.count_agencies())
+
+
 @app.route("/api/prefectures")
 def api_prefectures():
     """地方→都道府県の連動ドロップダウン用。"""

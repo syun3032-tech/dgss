@@ -44,20 +44,24 @@ def run(reset: bool = False, koukai_instances: list[str] | None = None,
         n_sample = seed_data.seed()
         print(f"[sample] 関西サンプル {n_sample} 件")
 
-    # 2) PPI（i-ppi.jp）近畿の実データ — 国の機関の電気設備工事
-    #    入札公告（現在募集中）と入札の経過（落札者=競合つき）の両方を取り込む。
-    for keika, label in [(False, "公告"), (True, "経過(落札者)")]:
+    # 2) PPI（i-ppi.jp）— 全国9地方の国の機関 電気設備工事 入札の経過（実データ）
+    #    全地方をループして全国をカバー。落札者(競合)も少数ずつ取得する。
+    DISTRICTS = ["北海道", "東北", "関東", "北陸", "中部", "近畿", "中国", "四国", "九州・沖縄"]
+    ppi_total = 0
+    for dist in DISTRICTS:
         try:
             rows = ppi_scraper.fetch_live(
-                keika=keika, kikan="国の機関", district="近畿",
+                keika=True, kikan="国の機関", district=dist,
                 koji_kbn="電気設備工事", count="100",
-                with_winner=keika, max_detail=15,
+                with_winner=True, max_detail=4,  # 各地方 落札者を少数取得
             )
             norm = [ppi_scraper._normalize(r) for r in rows]
             n = db.upsert_cases(norm) if norm else 0
-            print(f"[PPI近畿 {label}] {n} 件")
+            ppi_total += n
+            print(f"[PPI {dist}] {n} 件")
         except Exception as e:  # noqa: BLE001
-            print(f"[PPI近畿 {label}] 取得失敗（スキップ）: {str(e)[:80]}")
+            print(f"[PPI {dist}] 取得失敗（スキップ）: {str(e)[:80]}")
+    print(f"[PPI全国 合計] {ppi_total} 件")
 
     # 3) 自治体の入札情報公開システム（任意・登録があるインスタンスのみ）
     for inst in (koukai_instances or []):
@@ -68,7 +72,15 @@ def run(reset: bool = False, koukai_instances: list[str] | None = None,
         except Exception as e:  # noqa: BLE001
             print(f"[自治体 {inst}] 取得失敗（スキップ）: {str(e)[:80]}")
 
-    print(f"=== 更新完了: 案件総数 {db.count_cases()} 件 ===")
+    # 4) 監視対象の発注機関リスト（Googleスプレッドシート）を取り込み
+    try:
+        import agency_import
+        na = agency_import.load()
+        print(f"[監視機関リスト] {na} 機関")
+    except Exception as e:  # noqa: BLE001
+        print(f"[監視機関リスト] 取得失敗（スキップ）: {str(e)[:80]}")
+
+    print(f"=== 更新完了: 案件 {db.count_cases()} 件 / 監視機関 {db.count_agencies()} 機関 ===")
 
 
 if __name__ == "__main__":

@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block title %}監視機関 — Kawanoさん NJSSモドキ{% endblock %}
+
+{% block content %}
+<div class="topbar"><h1>監視対象の発注機関（全国）</h1></div>
+<p class="lead">全国 {{ total }} の発注機関を監視対象として登録。各機関の公式入札ページへ直接ジャンプできます。NJSS案件数＝発注規模の目安です。</p>
+
+<form class="filterbar" method="get" action="{{ url_for('agencies') }}">
+  <label class="field grow">
+    <span>機関名・ドメイン</span>
+    <input type="text" name="q" value="{{ q }}" placeholder="例: 県庁 / 防衛省 / e-aichi">
+  </label>
+  <div class="actions">
+    <button type="submit" class="btn primary">絞り込む</button>
+    <a class="btn" href="{{ url_for('agencies') }}">クリア</a>
+  </div>
+</form>
+
+<div class="result-head"><span class="count">{{ rows|length }} 機関</span></div>
+
+{% if rows %}
+<table class="list">
+  <thead>
+    <tr><th>発注機関</th><th class="num">NJSS案件数</th><th>使用システム</th><th>公式入札ページ</th></tr>
+  </thead>
+  <tbody>
+    {% for r in rows %}
+    <tr>
+      <td class="title-cell">{{ r.name }}</td>
+      <td class="num">{{ r.njss_count }}</td>
+      <td><span class="tag">{{ r.platform }}</span>{% if r.platform_n > 1 %} <span class="dim">+{{ r.platform_n }}機関</span>{% endif %}</td>
+      <td>
+        {% if r.bid_url %}<a href="{{ r.bid_url }}" target="_blank" rel="noopener">入札ページを開く ↗</a>{% else %}—{% endif %}
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% else %}
+<p class="empty">監視機関が未登録です。<code>python agency_import.py</code> で取り込めます。</p>
+{% endif %}
+{% endblock %}
