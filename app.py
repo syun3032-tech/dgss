@@ -242,6 +242,18 @@ def competitor_detail(name: str):
     return render_template("competitor_detail.html", name=name, cases=cases)
 
 
+@app.route("/export.csv")
+def export_csv():
+    """強化済みDB（全案件）をCSVでダウンロード。"""
+    from flask import Response
+    csv_text = db.export_cases_csv()
+    return Response(
+        "﻿" + csv_text,  # BOM付きでExcel文字化け防止
+        mimetype="text/csv",
+        headers={"Content-Disposition": "attachment; filename=kawano_njss_cases.csv"},
+    )
+
+
 @app.route("/agencies")
 def agencies():
     """監視対象の発注機関（全国）一覧。公式入札ページへの導線つき。"""

@@ -31,13 +31,14 @@ def run(reset: bool = False, koukai_instances: list[str] | None = None,
         removed = db.clear_cases()
         print(f"[reset] 既存案件 {removed} 件をクリア")
 
-    # 1) 京都府 入札情報公開システム — 自治体の「現在募集中」電気工事（実データ）
-    try:
-        import kyoto_scraper
-        n = kyoto_scraper.load()
-        print(f"[京都府 自治体・実データ] {n} 件")
-    except Exception as e:  # noqa: BLE001
-        print(f"[京都府] 取得失敗（スキップ）: {str(e)[:80]}")
+    # 1) 自治体の「現在募集中」電気工事（実データ）— 京都府・愛知県
+    for mod_name, label in [("kyoto_scraper", "京都府"), ("aichi_scraper", "愛知県(e-Aichi)")]:
+        try:
+            mod = __import__(mod_name)
+            n = mod.load()
+            print(f"[{label} 自治体・実データ] {n} 件")
+        except Exception as e:  # noqa: BLE001
+            print(f"[{label}] 取得失敗（スキップ）: {str(e)[:80]}")
 
     # 1b) サンプル（既定OFF。--with-samples で関西の見本データを足す）
     if with_samples:

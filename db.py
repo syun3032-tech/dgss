@@ -247,6 +247,28 @@ def count_agencies() -> int:
         return conn.execute("SELECT COUNT(*) FROM agencies").fetchone()[0]
 
 
+CSV_COLUMNS = ["id", "source", "prefecture", "region", "agency", "agency_type",
+               "title", "category", "bid_method", "announced_date", "deadline",
+               "budget", "spec_status", "spec_reason", "winner", "win_price",
+               "detail_url", "external_id"]
+
+
+def export_cases_csv() -> str:
+    """全案件を CSV 文字列にして返す（強化済みDBの書き出し用）。"""
+    import csv
+    import io
+    out = io.StringIO()
+    w = csv.writer(out)
+    w.writerow(CSV_COLUMNS)
+    with _connect() as conn:
+        for r in conn.execute(
+            f"SELECT {', '.join(CSV_COLUMNS)} FROM cases "
+            f"ORDER BY prefecture, announced_date DESC"
+        ).fetchall():
+            w.writerow([r[c] for c in CSV_COLUMNS])
+    return out.getvalue()
+
+
 def clear_cases(source: str | None = None) -> int:
     """案件を削除（source指定でその取得元のみ）。削除件数を返す。
 

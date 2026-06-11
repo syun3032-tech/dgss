@@ -70,6 +70,7 @@
 <div class="result-head">
   <span class="count">{{ rows|length }} 件</span>
   <span class="muted">/ 全 {{ total }} 件</span>
+  <a class="btn" style="margin-left:auto" href="{{ url_for('export_csv') }}">CSVダウンロード ↓</a>
 </div>
 
 {% if rows %}
