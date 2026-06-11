@@ -39,14 +39,17 @@ def run(reset: bool = False, koukai_instances: list[str] | None = None,
             print(f"[{label} 自治体・実データ] {n} 件")
         except Exception as e:  # noqa: BLE001
             print(f"[{label}] 取得失敗（スキップ）: {str(e)[:80]}")
-    # 関西を厚く：PPUBC系の自治体（堺市など。INSTANCESにbase追加で拡張可）
+    # 関西を厚く：PPUBC系の自治体（堺市・明石市など。INSTANCESにbase追加で拡張可）
     try:
         import ppubc_scraper
         for inst in ppubc_scraper.INSTANCES:
-            n = ppubc_scraper.load(inst)
-            print(f"[{inst}(PPUBC) 自治体・実データ] {n} 件")
+            try:
+                n = ppubc_scraper.load(inst)
+                print(f"[{inst}(PPUBC) 自治体・実データ] {n} 件")
+            except Exception as e:  # noqa: BLE001
+                print(f"[{inst}(PPUBC)] 取得失敗（スキップ）: {str(e)[:60]}")
     except Exception as e:  # noqa: BLE001
-        print(f"[PPUBC] 取得失敗（スキップ）: {str(e)[:80]}")
+        print(f"[PPUBC] モジュール読込失敗: {str(e)[:60]}")
 
     # 1b) サンプル（既定OFF。--with-samples で関西の見本データを足す）
     if with_samples:

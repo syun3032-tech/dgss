@@ -19,10 +19,18 @@ import re
 import db
 
 # 既知の PPUBC 自治体インスタンス（base_url, 都道府県, 機関名, 地方）
+# efftis は <市>.efftis.jp/PPI/Public/ パターンで多数の自治体をホスト。base追加で拡張可。
 INSTANCES: dict[str, dict] = {
-    "堺市": {"base": "https://sakai.efftis.jp/ebid01/PPI/Public",
-             "prefecture": "大阪府", "agency": "堺市", "region": "近畿"},
-    # 例: 同型の他自治体は base を足すだけ
+    "堺市":   {"base": "https://sakai.efftis.jp/ebid01/PPI/Public",
+               "prefecture": "大阪府", "agency": "堺市", "region": "近畿"},
+    "東大阪市": {"base": "https://higashiosaka.efftis.jp/PPI/Public",
+               "prefecture": "大阪府", "agency": "東大阪市", "region": "近畿"},
+    "明石市":  {"base": "https://akashi.efftis.jp/PPI/Public",
+               "prefecture": "兵庫県", "agency": "明石市", "region": "近畿"},
+    "加古川市": {"base": "https://kakogawa.efftis.jp/PPI/Public",
+               "prefecture": "兵庫県", "agency": "加古川市", "region": "近畿"},
+    "奈良市":  {"base": "https://nara.efftis.jp/PPI/Public",
+               "prefecture": "奈良県", "agency": "奈良市", "region": "近畿"},
 }
 
 _COLS = ("no", "title", "place", "category_grade", "bid_method", "status", "detail")
@@ -53,12 +61,12 @@ def fetch(base: str, prefecture: str, agency: str, region: str,
         btn.click()
         page.wait_for_timeout(4500)
 
-        rows = _parse(page, prefecture, agency, region)
+        rows = _parse(page, prefecture, agency, region, base)
         browser.close()
     return rows
 
 
-def _parse(page, prefecture: str, agency: str, region: str) -> list[dict]:
+def _parse(page, prefecture: str, agency: str, region: str, base: str) -> list[dict]:
     for fr in page.frames:
         try:
             items = fr.eval_on_selector_all(
@@ -91,7 +99,7 @@ def _parse(page, prefecture: str, agency: str, region: str) -> list[dict]:
                 "bid_method": rec["bid_method"],
                 "announced_date": "",
                 "deadline": "",
-                "detail_url": f"https://sakai.efftis.jp/ebid01/PPI/Public/PPUBC00100",
+                "detail_url": f"{base}/PPUBC00100",
                 "spec_status": db.SPEC_AVAILABLE,  # PPUBCは設計図書を公開（詳細）
                 "spec_reason": "",
                 "spec_url": "",
