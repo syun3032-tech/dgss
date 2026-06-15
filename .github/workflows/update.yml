@@ -1,6 +1,6 @@
 name: データ自動更新（毎日）
 
-# 毎日 JST 6:00（UTC 21:00）に Render を再デプロイ。
+# 毎日 JST 6:00（UTC 21:00）にタイムスタンプを push → Render が自動再デプロイ。
 # Render のビルドコマンドが update.py --fast を実行し、最新の入札データを生成。
 # DB はビルド時生成のため git には含めない（83MB 問題の解消）。
 on:
@@ -8,23 +8,22 @@ on:
     - cron: "0 21 * * *"
   workflow_dispatch: {}
 
+permissions:
+  contents: write
+
 jobs:
   trigger-deploy:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
-      - name: Render再デプロイ（DBはビルド時生成）
-        env:
-          RENDER_DEPLOY_HOOK_URL: ${{ secrets.RENDER_DEPLOY_HOOK_URL }}
+      - uses: actions/checkout@v4
+
+      - name: タイムスタンプ更新 → push → Render再デプロイ
         run: |
-          if [ -n "$RENDER_DEPLOY_HOOK_URL" ]; then
-            curl -sf "$RENDER_DEPLOY_HOOK_URL"
-            echo "Renderデプロイを起動しました（ビルド中にDBが再生成されます）"
-          else
-            echo "::error::RENDER_DEPLOY_HOOK_URL が未設定です。"
-            echo "設定手順:"
-            echo "  1. Render ダッシュボード → サービス → Settings → Deploy Hook → URLをコピー"
-            echo "  2. GitHub リポジトリ → Settings → Secrets and variables → Actions → New repository secret"
-            echo "     Name: RENDER_DEPLOY_HOOK_URL  Value: コピーしたURL"
-            exit 1
-          fi
+          date -u +"%Y-%m-%dT%H:%M:%SZ" > .last-deploy
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add .last-deploy
+          git commit -m "chore: daily deploy trigger $(date -u +%Y-%m-%d)"
+          git push
+          echo "push完了 → Renderが自動再デプロイ（ビルド中にDBが再生成されます）"
