@@ -63,9 +63,15 @@ def run(reset: bool = False, koukai_instances: list[str] | None = None,
         # 高速モード：監視機関だけ足して終了（Playwrightは使わない）
         try:
             import agency_import
-            print(f"[監視機関リスト] {agency_import.load()} 機関")
+            n_ag = agency_import.load()
+            print(f"[監視機関リスト] {n_ag} 機関")
+            if n_ag == 0:
+                # 致命ではない（案件は出る）が、応募ガイドのポータル判定や監視機関ページが
+                # 空になるためビルドログで気付けるよう目立たせる。スプシ非公開化が典型原因。
+                print("[警告] 監視機関が0件です。Googleスプレッドシートが非公開/移動の"
+                      "可能性があります（応募ガイドのポータル判定が弱くなります）。")
         except Exception as e:  # noqa: BLE001
-            print(f"[監視機関リスト] 失敗: {str(e)[:70]}")
+            print(f"[警告] 監視機関リスト取得失敗: {str(e)[:70]}")
         n_cases = db.count_cases()
         print(f"=== 高速更新完了: 案件 {n_cases} 件 / 監視機関 {db.count_agencies()} 機関 ===")
         # 【安全弁】案件が極端に少ない＝官公需APIが落ちていた等で生成失敗。

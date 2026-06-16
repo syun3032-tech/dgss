@@ -319,7 +319,9 @@ def competitors():
     )
 
 
-@app.route("/competitor/<name>")
+# 社名に "/" が含まれても拾えるよう path コンバータを使う（通常の <name> だと
+# スラッシュでルートが切れて 404 になるため）。
+@app.route("/competitor/<path:name>")
 def competitor_detail(name: str):
     """1社の落札実績一覧。"""
     cases = db.competitor_cases(name)
