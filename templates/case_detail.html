@@ -46,11 +46,11 @@
   </dl>
 
   <div class="src-links">
-    {% if c.detail_url and not detail_generic %}
-      <a class="btn ghost" href="{{ c.detail_url }}" target="_blank" rel="noopener">元の案件ページを開く</a>
+    {% if guide.notice_url %}
+      <a class="btn primary" href="{{ guide.notice_url }}" target="_blank" rel="noopener">この案件の公告を開く</a>
     {% endif %}
-    <a class="btn ghost" href="{{ search_url }}" target="_blank" rel="noopener">🔍 この案件をウェブで探す</a>
-    {% if detail_generic %}
+    <a class="btn ghost" href="{{ guide.notice_search_url }}" target="_blank" rel="noopener">🔍 この案件をウェブで探す</a>
+    {% if not guide.notice_url %}
       <p class="src-note">※ この案件は元データに個別ページのリンクがなく、入札ポータルの検索画面にしか飛べません。上の「ウェブで探す」から発注機関の公告ページ（PDF等）を直接探せます。</p>
     {% endif %}
   </div>
@@ -59,18 +59,30 @@
     <h2>応募ガイド — この案件に入札するには</h2>
 
     <div class="guide-step">
-      <h3>1. 入札システムに登録する</h3>
-      {% if agency_link %}
-        <p>この発注機関（{{ agency_info.name }}）の入札情報ページ:</p>
-        <a class="btn primary small" href="{{ agency_link }}" target="_blank" rel="noopener">入札情報ページを開く</a>
+      <h3>1. まず公告を読む（応募条件・締切・提出先がここに載っています）</h3>
+      {% if guide.notice_url %}
+        <p>この案件の公告に、参加資格・提出書類・締切・問い合わせ先・入札方法が記載されています。</p>
+        <a class="btn primary small" href="{{ guide.notice_url }}" target="_blank" rel="noopener">この案件の公告を開く</a>
       {% else %}
-        <p class="muted">この発注機関の入札ページのリンクが登録されていません。下の「🔍 この案件をウェブで探す」から発注機関の入札情報ページを探し、電子入札システムへの登録方法をご確認ください。</p>
+        <p>この案件は元データに直接リンクがありません。下のボタンから公告ページを探してください。</p>
+        <a class="btn primary small" href="{{ guide.notice_search_url }}" target="_blank" rel="noopener">🔍 公告をウェブで探す</a>
       {% endif %}
-      <p class="tip">電子入札に参加するには、事前に発注機関の<strong>入札参加資格審査</strong>（指名願い）の申請が必要です。未登録の場合は、まず資格審査の受付期間と申請方法を確認してください。</p>
     </div>
 
     <div class="guide-step">
-      <h3>2. 必要書類を準備する</h3>
+      <h3>2. 電子入札システムに登録する（入札参加資格）</h3>
+      {% if guide.portal %}
+        <p>この発注機関は <strong>{{ guide.portal[0] }}</strong> を使っています。{{ guide.portal[2] }}</p>
+        <a class="btn primary small" href="{{ guide.portal[1] }}" target="_blank" rel="noopener">{{ guide.portal[0] }}を開く</a>
+        <a class="btn ghost small" href="{{ guide.register_search }}" target="_blank" rel="noopener">🔍 登録方法を調べる</a>
+      {% else %}
+        <p>入札に参加するには、事前に発注機関の<strong>入札参加資格審査</strong>（指名願い）の登録が必要です。受付期間と申請方法を確認してください。</p>
+        <a class="btn primary small" href="{{ guide.register_search }}" target="_blank" rel="noopener">🔍 この機関の入札参加資格 登録方法を調べる</a>
+      {% endif %}
+    </div>
+
+    <div class="guide-step">
+      <h3>3. 必要書類を準備する</h3>
       <p>電気工事の入札で一般的に必要となる書類:</p>
       <ul class="checklist">
         <li><label><input type="checkbox"> 入札参加資格審査申請書（指名願い）</label></li>
@@ -82,22 +94,22 @@
         <li><label><input type="checkbox"> 工事実績調書</label></li>
         <li><label><input type="checkbox"> 入札書（電子入札の場合は電子証明書＝ICカード）</label></li>
       </ul>
-      <p class="tip">必要書類は発注機関により異なります。公告文書・入札説明書を必ず確認してください。</p>
+      <p class="tip">必要書類は発注機関により異なります。1の公告・入札説明書を必ず確認してください。</p>
     </div>
 
     <div class="guide-step">
-      <h3>3. 設計図書（仕様書）を入手する</h3>
-      {% if c.spec_status == 'available' and c.spec_url and c.spec_url.startswith('http') and 'example.com' not in c.spec_url %}
-        <p>この案件の仕様書は上部のボタンからダウンロードできます。</p>
-      {% elif c.detail_url and not detail_generic %}
-        <p>上の「元の案件ページを開く」から設計図書の入手方法を確認してください。窓口配布・郵送・ダウンロードのいずれかです。</p>
+      <h3>4. 設計図書（仕様書）を入手する</h3>
+      {% if guide.spec_url %}
+        <p>この案件の仕様書は上部の「仕様書をダウンロード」から取得できます。</p>
+      {% elif guide.notice_url %}
+        <p>上の「この案件の公告を開く」から設計図書の入手方法を確認してください。窓口配布・郵送・ダウンロードのいずれかです。</p>
       {% else %}
-        <p>上の「🔍 この案件をウェブで探す」から発注機関の公告ページを開き、設計図書の配布方法をご確認ください。</p>
+        <p>「🔍 この案件をウェブで探す」から公告ページを開き、設計図書の配布方法をご確認ください。</p>
       {% endif %}
     </div>
 
     <div class="guide-step">
-      <h3>4. 入札する</h3>
+      <h3>5. 入札する</h3>
       <p>{% if c.bid_method %}この案件は「<strong>{{ c.bid_method }}</strong>」です。{% endif %}{% if c.deadline %}申込締切は <strong>{{ c.deadline }}</strong> です。{% endif %}</p>
       <ul class="guide-flow">
         <li>公告を確認し、参加資格を満たしているか確認</li>

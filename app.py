@@ -20,6 +20,7 @@ from datetime import date, timedelta
 from flask import Flask, abort, flash, jsonify, redirect, render_template, request, url_for
 
 import db
+import procurement
 from regions import ALL_PREFECTURES, REGIONS, prefectures_in
 
 # 公告日がこの日付以降なら「新着」とみなす（直近7日）
@@ -55,34 +56,6 @@ QUAL_OPTIONS = [
     "監理技術者", "経営事項審査（経審）", "入札参加資格登録",
     "ISO9001", "ISO14001", "Pマーク／ISMS",
 ]
-
-# 案件個別ページに飛ばず「検索トップ」に着地してしまう汎用URL（官公需APIの ExternalDocumentURI
-# が空のときに返る調達ポータルや各入札システムのランディングページ）。これらは利用者が詰まるため、
-# 「元の案件ページ」リンクとして使わず、案件名でのウェブ検索に誘導する。
-GENERIC_DETAIL_URLS = (
-    "p-portal.go.jp/pps-web-biz/UAA01/OAA0101",   # 調達ポータル 検索トップ
-    "i-ppi.jp/IPPI/SearchServices/Web/Index.htm",  # PPI 検索トップ
-    "PiCtBaFi02start.vm",                          # efftis 入口
-    "pubGroupTop.do",                              # efftis 入口
-    "PPUBC00100",                                  # efftis/PPUBC 入口
-    "EjPPIj",                                      # e-Aichi/supercals 入口
-)
-
-
-def is_generic_detail_url(url: str) -> bool:
-    """個別案件ではなく検索トップ等に着地する汎用URLか判定する。"""
-    return bool(url) and any(g in url for g in GENERIC_DETAIL_URLS)
-
-
-def case_search_url(case: dict) -> str:
-    """案件名＋発注機関でのウェブ検索URL。元ページへ深リンクできない案件の確実な導線。"""
-    import urllib.parse
-    # タイトル末尾の "（PDF 221.2 KB）" 等のノイズを落として検索精度を上げる
-    import re
-    title = re.sub(r"[（(]\s*PDF[^）)]*[）)]\s*$", "", case.get("title", "")).strip()
-    terms = " ".join(t for t in (title, case.get("agency", "")) if t)
-    return "https://www.google.com/search?q=" + urllib.parse.quote(terms)
-
 
 app = Flask(__name__)
 app.secret_key = os.environ.get("SECRET_KEY", "kawano-njss-modoki-local")  # flash用
@@ -189,13 +162,9 @@ def case_detail(case_id: int):
     if not case:
         abort(404)
     agency_info = db.find_agency_for_case(case.get("agency", ""))
-    # 発注機関の入札ページ。汎用ランディング（p-portal検索トップ等）は除外し、使える方を選ぶ。
-    agency_link = ""
-    if agency_info:
-        for cand in (agency_info.get("bid_url", ""), agency_info.get("top_url", "")):
-            if cand and cand.startswith("http") and not is_generic_detail_url(cand):
-                agency_link = cand
-                break
+    # 応募導線（どこで申し込むか）は procurement.py が「確実なものだけ」を組み立てる。
+    # スプレッドシートの当てにならない bid_url は使わない（誤誘導の原因だったため）。
+    guide = procurement.application_guide(case, agency_info)
     return render_template(
         "case_detail.html",
         c=case,
@@ -204,9 +173,7 @@ def case_detail(case_id: int):
         app_statuses=db.APP_STATUSES,
         status_class=STATUS_CLASS,
         agency_info=agency_info,
-        agency_link=agency_link,
-        detail_generic=is_generic_detail_url(case.get("detail_url", "")),
-        search_url=case_search_url(case),
+        guide=guide,
     )
 
 

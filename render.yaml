@@ -6,7 +6,9 @@ services:
     name: kawano-njss-modoki
     runtime: python
     plan: free
-    buildCommand: pip install -r requirements.txt && python update.py --fast
+    # ① 依存導入 → ② 応募導線ロジックの回帰テスト(AI不使用・ネット不要、壊れてたらデプロイ中止)
+    # → ③ 最新の入札データを生成。すべて自動・無料。
+    buildCommand: pip install -r requirements.txt && python test_procurement.py && python test_kkj.py && python update.py --fast
     startCommand: gunicorn wsgi:app --bind 0.0.0.0:$PORT
     envVars:
       - key: SECRET_KEY
