@@ -43,7 +43,6 @@
       <dd><a class="link" href="{{ url_for('competitor_detail', name=c.winner) }}">{{ c.winner }}</a>
         {% if c.win_price %}<span class="muted">／{{ c.win_price }}</span>{% endif %}</dd>
     {% endif %}
-    <dt>取得元</dt><dd>{{ c.source }}</dd>
   </dl>
 
   {% if c.detail_url %}
