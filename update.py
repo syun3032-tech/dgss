@@ -29,38 +29,42 @@ FAST_MIN_CASES = 500
 
 
 def run(reset: bool = False, koukai_instances: list[str] | None = None,
-        with_samples: bool = False, fast: bool = False) -> None:
+        with_samples: bool = False, fast: bool = False, full: bool = False) -> None:
     # fast=True: 官公需API＋監視機関のみ（HTTPのみ・Playwright不要）＝毎日の自動更新向けで高速・堅牢。
+    # full=True: 官公需APIを全47都道府県分割で網羅取得（推定5〜10万件）。GitHub Actions向け。
     db.init_db()
-    if reset and not fast:
+    if reset and not fast and not full:
         removed = db.clear_cases()
         print(f"[reset] 既存案件 {removed} 件をクリア")
 
     # 0) 官公需情報ポータルAPI（中小企業庁）— 国・地方・独法を全国横断集約した公式・無料API。
-    #    これが主力ソース（HTTPのみ・全国・仕様書添付つき）。関西を厚く取ってから全国。
+    #    これが主力ソース（HTTPのみ・全国・仕様書添付つき）。
     # 【フェイルセーフ】先に取得してから、成功(>0件)した時だけ差し替える。
-    #   APIが落ちている時に既存データを消さない。fast時はAPI分だけ入替（PPI/自治体は保持）。
+    #   APIが落ちている時に既存データを消さない。fast/full時はAPI分だけ入替。
     import kkj_scraper
     try:
-        # 関西は電気の工事＋役務を横断で厚く取る（役務=保安管理/保守点検の取りこぼし防止）
-        rows = kkj_scraper.fetch_kansai_electrical()
-        # 全国は電気系クエリを横断（受変電/照明/太陽光/保安管理 等）で取りこぼし防止。
-        # 旧実装は単一クエリ"電気工事"・Count1000で頭打ち→近畿以外を大量に落としていた。
-        rows += kkj_scraper.fetch_nationwide_electrical()
-        # external_id で重複排除（関西電気と全国の重なりを除く）
+        if full:
+            # 網羅モード：全都道府県分割で上限(1000/クエリ)を突破して取りこぼしを無くす
+            rows = kkj_scraper.fetch_comprehensive()
+        else:
+            # 関西は電気の工事＋役務を横断で厚く取る（役務=保安管理/保守点検の取りこぼし防止）
+            rows = kkj_scraper.fetch_kansai_electrical()
+            # 全国は電気系クエリを横断（受変電/照明/太陽光/保安管理 等）で取りこぼし防止。
+            rows += kkj_scraper.fetch_nationwide_electrical()
+        # external_id で重複排除
         rows = list({r["external_id"]: r for r in rows if r.get("title")}.values())
         if rows:
-            if fast:
+            if fast or full:
                 db.clear_cases("官公需API")  # 成功時のみ古いAPI行を入替
             n = db.upsert_cases(rows)
-            print(f"[官公需API] {n} 件（関西＋全国・重複除外）")
+            print(f"[官公需API] {n} 件（{'全国網羅・都道府県分割' if full else '関西＋全国'}・重複除外）")
         else:
             print("[官公需API] 取得0件のため既存データを維持（差し替えなし）")
     except Exception as e:  # noqa: BLE001
         print(f"[官公需API] 失敗・既存データ維持: {str(e)[:70]}")
 
-    if fast:
-        # 高速モード：監視機関だけ足して終了（Playwrightは使わない）
+    if fast or full:
+        # HTTPのみモード：監視機関だけ足して終了（Playwrightは使わない）
         try:
             import agency_import
             n_ag = agency_import.load()
@@ -73,7 +77,8 @@ def run(reset: bool = False, koukai_instances: list[str] | None = None,
         except Exception as e:  # noqa: BLE001
             print(f"[警告] 監視機関リスト取得失敗: {str(e)[:70]}")
         n_cases = db.count_cases()
-        print(f"=== 高速更新完了: 案件 {n_cases} 件 / 監視機関 {db.count_agencies()} 機関 ===")
+        mode = "網羅更新" if full else "高速更新"
+        print(f"=== {mode}完了: 案件 {n_cases} 件 / 監視機関 {db.count_agencies()} 機関 ===")
         # 【安全弁】案件が極端に少ない＝官公需APIが落ちていた等で生成失敗。
         # この状態でデプロイすると「空っぽのサイト」が公開されてしまうため、
         # 非0終了でビルドを止める→Renderは直前の正常デプロイを維持する。
@@ -155,4 +160,4 @@ if __name__ == "__main__":
         i = sys.argv.index("--koukai")
         insts = [a for a in sys.argv[i + 1:] if not a.startswith("--")]
     run(reset=reset, koukai_instances=insts, with_samples=with_samples,
-        fast="--fast" in sys.argv)
+        fast="--fast" in sys.argv, full="--full" in sys.argv)

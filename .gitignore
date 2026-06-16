@@ -9,5 +9,6 @@ audit_report.md
 run_daily.sh
 launchd.err.log
 launchd.out.log
-# DBはRenderビルド時に update.py --fast で毎回生成。gitには入れない（83MB→0MB）。
+# DBはGitHub Actions(--full)で生成しReleaseに置く。gitには入れない（数十MB）。
 denki_bid.db
+denki_bid.db.gz

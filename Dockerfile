@@ -7,8 +7,8 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 COPY . .
 
-# 応募導線ロジックの回帰テスト（AI不使用・ネット不要）→ 通れば最新データ生成
-RUN python test_procurement.py && python test_kkj.py && python update.py --fast
+# 回帰テスト（AI不使用・ネット不要）→ 網羅DBをダウンロード（失敗時のみ軽量取得にフォールバック）
+RUN python test_procurement.py && python test_kkj.py && (python fetch_db.py || python update.py --fast)
 
 ENV FLASK_DEBUG=0
 EXPOSE 8000

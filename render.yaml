@@ -6,9 +6,10 @@ services:
     name: kawano-njss-modoki
     runtime: python
     plan: free
-    # ① 依存導入 → ② 応募導線ロジックの回帰テスト(AI不使用・ネット不要、壊れてたらデプロイ中止)
-    # → ③ 最新の入札データを生成。すべて自動・無料。
-    buildCommand: pip install -r requirements.txt && python test_procurement.py && python test_kkj.py && python update.py --fast
+    # ① 依存導入 → ② 回帰テスト(AI不使用・ネット不要、壊れてたらデプロイ中止)
+    # → ③ GitHub Actionsが生成した網羅DB(全国・推定5〜10万件)をダウンロード。
+    #    失敗時のみ軽量取得(--fast)にフォールバック＝必ずDBが用意される。すべて自動・無料。
+    buildCommand: pip install -r requirements.txt && python test_procurement.py && python test_kkj.py && (python fetch_db.py || python update.py --fast)
     # 無料プランは1インスタンス。--workers 1 で省メモリ、--timeout 60 でコールドスタート時の
     # ワーカー強制終了（既定30秒）を防ぐ。
     startCommand: gunicorn wsgi:app --bind 0.0.0.0:$PORT --workers 1 --timeout 60

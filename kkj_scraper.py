@@ -453,6 +453,29 @@ def fetch_kansai_targets(lg_codes: list[str] | None = None) -> list[dict]:
     return _fetch_many(specs)
 
 
+def fetch_comprehensive() -> list[dict]:
+    """【網羅モード】全国を都道府県ごとに分割して取得し、1000件/クエリの上限を突破する。
+
+    官公需APIは1クエリ最大1000件・ページング無し。全国一括だと電気工事/照明/受変電など
+    13クエリが1000で頭打ちになり大量に取りこぼしていた（電気工事だけで全国一括1000→
+    都道府県分割9,436件）。そこで全47都道府県 × 電気クエリで分割取得する。
+      - 工事(Cat2): ELEC_QUERIES を全都道府県で
+      - 役務(Cat3): 全国は電気役務(ELEC_SERVICE_QUERIES)を全都道府県で
+      - 関西(KANSAI_CODES)のみ 役務を広範(SERVICE_QUERIES=塗装/防水等)でも取る（本業要望）
+    呼び出し回数が多い（約1000回）ため Render のビルドではなく GitHub Actions 側で実行する。
+    external_id で一意化。
+    """
+    all_codes = list(PREF_CODE.values())
+    specs: list[tuple[str, str, list[str] | None]] = []
+    for code in all_codes:
+        specs += [(q, "2", [code]) for q in ELEC_QUERIES]
+        specs += [(q, "3", [code]) for q in ELEC_SERVICE_QUERIES]
+    # 関西は広範役務も（塗装・防水・清掃等の役務も拾いたいという本業要望に対応）
+    for code in KANSAI_CODES:
+        specs += [(q, "3", [code]) for q in SERVICE_QUERIES]
+    return _fetch_many(specs, max_workers=10)
+
+
 # 後方互換エイリアス（update.py 等の既存呼び出し用）
 fetch_kansai_electrical = fetch_kansai_targets
 
