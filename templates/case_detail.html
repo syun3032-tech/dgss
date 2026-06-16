@@ -19,7 +19,7 @@
       {% if c.spec_url and c.spec_url.startswith('http') and 'example.com' not in c.spec_url %}
         <a class="btn primary" href="{{ c.spec_url }}" target="_blank" rel="noopener">仕様書をダウンロード</a>
       {% else %}
-        <p class="reason">設計図書（仕様書）は下の「元の案件ページを開く」から発注機関のサイトで取得できます。{% if c.source == 'SAMPLE' %}<br><span class="dim">※この案件はサンプルデータです。</span>{% endif %}</p>
+        <p class="reason">設計図書（仕様書）は下の「元の案件ページを開く」から発注機関のサイトで取得できます。</p>
       {% endif %}
     {% elif c.spec_status == 'unavailable' %}
       <p class="spec-verdict ng">⛔ 取得できません</p>
@@ -48,6 +48,65 @@
   {% if c.detail_url %}
     <a class="btn ghost" href="{{ c.detail_url }}" target="_blank" rel="noopener">元の案件ページを開く</a>
   {% endif %}
+
+  <section class="guide-box">
+    <h2>応募ガイド — この案件に入札するには</h2>
+
+    <div class="guide-step">
+      <h3>1. 入札システムに登録する</h3>
+      {% if agency_info and agency_info.bid_url %}
+        <p>この発注機関（{{ agency_info.name }}）の入札情報ページ:</p>
+        <a class="btn primary small" href="{{ agency_info.bid_url }}" target="_blank" rel="noopener">入札情報ページを開く</a>
+        {% if agency_info.top_url and agency_info.top_url != agency_info.bid_url %}
+          <a class="btn ghost small" href="{{ agency_info.top_url }}" target="_blank" rel="noopener">機関トップページ</a>
+        {% endif %}
+      {% elif agency_info and agency_info.top_url %}
+        <p>この発注機関（{{ agency_info.name }}）のサイト:</p>
+        <a class="btn ghost small" href="{{ agency_info.top_url }}" target="_blank" rel="noopener">機関トップページを開く</a>
+      {% else %}
+        <p class="muted">入札システムの情報が見つかりませんでした。発注機関「{{ c.agency }}」のサイトで電子入札システムへの登録方法をご確認ください。</p>
+      {% endif %}
+      <p class="tip">電子入札に参加するには、事前に発注機関の<strong>入札参加資格審査</strong>（指名願い）の申請が必要です。未登録の場合は、まず資格審査の受付期間と申請方法を確認してください。</p>
+    </div>
+
+    <div class="guide-step">
+      <h3>2. 必要書類を準備する</h3>
+      <p>電気工事の入札で一般的に必要となる書類:</p>
+      <ul class="checklist">
+        <li><label><input type="checkbox"> 入札参加資格審査申請書（指名願い）</label></li>
+        <li><label><input type="checkbox"> 建設業許可証明書（電気工事業）</label></li>
+        <li><label><input type="checkbox"> 経営事項審査結果通知書（経審）</label></li>
+        <li><label><input type="checkbox"> 納税証明書（国税・地方税）</label></li>
+        <li><label><input type="checkbox"> 電気工事士免状の写し</label></li>
+        <li><label><input type="checkbox"> 技術者の資格証明書</label></li>
+        <li><label><input type="checkbox"> 工事実績調書</label></li>
+        <li><label><input type="checkbox"> 入札書（電子入札の場合は電子証明書＝ICカード）</label></li>
+      </ul>
+      <p class="tip">必要書類は発注機関により異なります。公告文書・入札説明書を必ず確認してください。</p>
+    </div>
+
+    <div class="guide-step">
+      <h3>3. 設計図書（仕様書）を入手する</h3>
+      {% if c.spec_status == 'available' and c.spec_url and c.spec_url.startswith('http') and 'example.com' not in c.spec_url %}
+        <p>この案件の仕様書は上部のボタンからダウンロードできます。</p>
+      {% elif c.detail_url %}
+        <p>元の案件ページから設計図書の入手方法を確認してください。窓口配布・郵送・ダウンロードのいずれかです。</p>
+      {% else %}
+        <p>発注機関のサイトで設計図書の配布方法をご確認ください。</p>
+      {% endif %}
+    </div>
+
+    <div class="guide-step">
+      <h3>4. 入札する</h3>
+      <p>{% if c.bid_method %}この案件は「<strong>{{ c.bid_method }}</strong>」です。{% endif %}{% if c.deadline %}申込締切は <strong>{{ c.deadline }}</strong> です。{% endif %}</p>
+      <ul class="guide-flow">
+        <li>公告を確認し、参加資格を満たしているか確認</li>
+        <li>必要に応じて質問書を提出（質問期限に注意）</li>
+        <li>設計図書をもとに積算・見積を作成</li>
+        <li>電子入札システムで入札書を提出</li>
+      </ul>
+    </div>
+  </section>
 
   <section class="apply-box">
     <h2>入札参加申請の管理</h2>

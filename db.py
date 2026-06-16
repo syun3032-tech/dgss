@@ -309,6 +309,56 @@ def count_agencies() -> int:
         return conn.execute("SELECT COUNT(*) FROM agencies").fetchone()[0]
 
 
+def find_agency_for_case(agency_name: str) -> dict[str, Any] | None:
+    """案件の発注機関名から agencies テーブルの機関情報を探す。
+
+    官公需APIの形式 "大阪府吹田市" → agencies "吹田市役所" のようなマッチを行う。
+    """
+    import re
+    if not agency_name:
+        return None
+
+    with _connect() as conn:
+        # 1) 完全一致
+        row = conn.execute(
+            "SELECT * FROM agencies WHERE name = ?", (agency_name,)
+        ).fetchone()
+        if row:
+            return dict(row)
+
+        # 2) 部分一致: 案件の機関名が agencies.name に含まれる or 逆
+        row = conn.execute(
+            "SELECT * FROM agencies WHERE name LIKE ? OR ? LIKE '%' || name || '%' "
+            "ORDER BY njss_count DESC LIMIT 1",
+            (f"%{agency_name}%", agency_name),
+        ).fetchone()
+        if row:
+            return dict(row)
+
+        # 3) 官公需API形式 "都道府県名+市町村名" → 市町村名で検索
+        m = re.search(r'[都道府県](.+?[市町村区])$', agency_name)
+        if m:
+            city = m.group(1)
+            row = conn.execute(
+                "SELECT * FROM agencies WHERE name LIKE ? ORDER BY njss_count DESC LIMIT 1",
+                (f"%{city}%",),
+            ).fetchone()
+            if row:
+                return dict(row)
+
+        # 4) 省庁名の先頭キーワードでマッチ
+        keyword = agency_name.split("／")[0].split(" ")[0][:6]
+        if len(keyword) >= 2:
+            row = conn.execute(
+                "SELECT * FROM agencies WHERE name LIKE ? ORDER BY njss_count DESC LIMIT 1",
+                (f"%{keyword}%",),
+            ).fetchone()
+            if row:
+                return dict(row)
+
+    return None
+
+
 CSV_COLUMNS = ["id", "source", "prefecture", "region", "agency", "agency_type",
                "title", "category", "bid_method", "announced_date", "deadline",
                "budget", "spec_status", "spec_reason", "winner", "win_price",

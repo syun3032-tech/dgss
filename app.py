@@ -160,6 +160,7 @@ def case_detail(case_id: int):
     case = db.get_case(case_id)
     if not case:
         abort(404)
+    agency_info = db.find_agency_for_case(case.get("agency", ""))
     return render_template(
         "case_detail.html",
         c=case,
@@ -167,6 +168,7 @@ def case_detail(case_id: int):
         application=db.get_application(case_id),
         app_statuses=db.APP_STATUSES,
         status_class=STATUS_CLASS,
+        agency_info=agency_info,
     )
 
 
