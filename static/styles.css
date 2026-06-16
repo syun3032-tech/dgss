@@ -196,6 +196,23 @@ table.list .rank { font-weight: 600; color: var(--text-tertiary); text-align: ce
 .filterbar .field > span em { font-style: normal; color: var(--text-tertiary); font-size: 10.5px; }
 .filterbar select[multiple] { min-width: 140px; padding: 2px; }
 
+/* チェックボックス・チップ（複数選択をクリックだけで分かるUIに） */
+.filterbar .chips { display: flex; flex-wrap: wrap; gap: 6px; align-items: flex-start; }
+.filterbar .chips.scroll { max-height: 96px; overflow-y: auto; padding: 2px;
+  border: 1px solid var(--border); border-radius: 8px; background: #fff; }
+.chip { display: inline-flex; align-items: center; gap: 5px; cursor: pointer;
+  padding: 5px 11px; border: 1px solid var(--border-strong); border-radius: 999px;
+  background: #fff; font-size: 12.5px; color: var(--text-primary); white-space: nowrap;
+  user-select: none; transition: background .12s, border-color .12s; }
+.chip:hover { border-color: var(--accent); }
+.chip input { width: 14px; height: 14px; margin: 0; accent-color: var(--accent); cursor: pointer; }
+.chip:has(input:checked) { background: var(--accent); border-color: var(--accent); color: #fff; font-weight: 600; }
+
+/* 案件詳細：元ページ／検索リンク */
+.src-links { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin: 4px 0 6px; }
+.src-note { width: 100%; margin: 4px 0 0; font-size: 12px; color: var(--text-secondary);
+  background: #fff8e6; border-left: 3px solid #e0a800; border-radius: 6px; padding: 7px 10px; }
+
 /* 募集中／すべて タブ */
 .tabs { display: flex; gap: 6px; margin: 14px 0 4px; }
 .tabs .tab {

@@ -45,26 +45,26 @@
     {% endif %}
   </dl>
 
-  {% if c.detail_url %}
-    <a class="btn ghost" href="{{ c.detail_url }}" target="_blank" rel="noopener">元の案件ページを開く</a>
-  {% endif %}
+  <div class="src-links">
+    {% if c.detail_url and not detail_generic %}
+      <a class="btn ghost" href="{{ c.detail_url }}" target="_blank" rel="noopener">元の案件ページを開く</a>
+    {% endif %}
+    <a class="btn ghost" href="{{ search_url }}" target="_blank" rel="noopener">🔍 この案件をウェブで探す</a>
+    {% if detail_generic %}
+      <p class="src-note">※ この案件は元データに個別ページのリンクがなく、入札ポータルの検索画面にしか飛べません。上の「ウェブで探す」から発注機関の公告ページ（PDF等）を直接探せます。</p>
+    {% endif %}
+  </div>
 
   <section class="guide-box">
     <h2>応募ガイド — この案件に入札するには</h2>
 
     <div class="guide-step">
       <h3>1. 入札システムに登録する</h3>
-      {% if agency_info and agency_info.bid_url %}
+      {% if agency_link %}
         <p>この発注機関（{{ agency_info.name }}）の入札情報ページ:</p>
-        <a class="btn primary small" href="{{ agency_info.bid_url }}" target="_blank" rel="noopener">入札情報ページを開く</a>
-        {% if agency_info.top_url and agency_info.top_url != agency_info.bid_url %}
-          <a class="btn ghost small" href="{{ agency_info.top_url }}" target="_blank" rel="noopener">機関トップページ</a>
-        {% endif %}
-      {% elif agency_info and agency_info.top_url %}
-        <p>この発注機関（{{ agency_info.name }}）のサイト:</p>
-        <a class="btn ghost small" href="{{ agency_info.top_url }}" target="_blank" rel="noopener">機関トップページを開く</a>
+        <a class="btn primary small" href="{{ agency_link }}" target="_blank" rel="noopener">入札情報ページを開く</a>
       {% else %}
-        <p class="muted">入札システムの情報が見つかりませんでした。発注機関「{{ c.agency }}」のサイトで電子入札システムへの登録方法をご確認ください。</p>
+        <p class="muted">この発注機関の入札ページのリンクが登録されていません。下の「🔍 この案件をウェブで探す」から発注機関の入札情報ページを探し、電子入札システムへの登録方法をご確認ください。</p>
       {% endif %}
       <p class="tip">電子入札に参加するには、事前に発注機関の<strong>入札参加資格審査</strong>（指名願い）の申請が必要です。未登録の場合は、まず資格審査の受付期間と申請方法を確認してください。</p>
     </div>
@@ -89,10 +89,10 @@
       <h3>3. 設計図書（仕様書）を入手する</h3>
       {% if c.spec_status == 'available' and c.spec_url and c.spec_url.startswith('http') and 'example.com' not in c.spec_url %}
         <p>この案件の仕様書は上部のボタンからダウンロードできます。</p>
-      {% elif c.detail_url %}
-        <p>元の案件ページから設計図書の入手方法を確認してください。窓口配布・郵送・ダウンロードのいずれかです。</p>
+      {% elif c.detail_url and not detail_generic %}
+        <p>上の「元の案件ページを開く」から設計図書の入手方法を確認してください。窓口配布・郵送・ダウンロードのいずれかです。</p>
       {% else %}
-        <p>発注機関のサイトで設計図書の配布方法をご確認ください。</p>
+        <p>上の「🔍 この案件をウェブで探す」から発注機関の公告ページを開き、設計図書の配布方法をご確認ください。</p>
       {% endif %}
     </div>
 

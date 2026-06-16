@@ -27,22 +27,22 @@
       {% endfor %}
     </select>
   </label>
-  <label class="field">
-    <span>区分 <em>(複数可)</em></span>
-    <select name="procurement_type" multiple size="3">
+  <div class="field">
+    <span>区分 <em>(複数選べます)</em></span>
+    <div class="chips">
       {% for t in procurement_types %}
-        <option value="{{ t }}" {{ 'selected' if t in selected.procurement_type }}>{{ t }}</option>
+        <label class="chip"><input type="checkbox" name="procurement_type" value="{{ t }}" {{ 'checked' if t in selected.procurement_type }}><span>{{ t }}</span></label>
       {% endfor %}
-    </select>
-  </label>
-  <label class="field">
-    <span>業種 <em>(複数可)</em></span>
-    <select name="category" multiple size="5">
+    </div>
+  </div>
+  <div class="field grow">
+    <span>業種 <em>(複数選べます)</em></span>
+    <div class="chips">
       {% for c in categories %}
-        <option value="{{ c }}" {{ 'selected' if c in selected.category }}>{{ c }}</option>
+        <label class="chip"><input type="checkbox" name="category" value="{{ c }}" {{ 'checked' if c in selected.category }}><span>{{ c }}</span></label>
       {% endfor %}
-    </select>
-  </label>
+    </div>
+  </div>
   <label class="field">
     <span>新着</span>
     <select name="fresh">
@@ -59,14 +59,14 @@
       {% endfor %}
     </select>
   </label>
-  <label class="field">
-    <span>入札方式 <em>(複数可)</em></span>
-    <select name="bid_method" multiple size="4">
+  <div class="field grow">
+    <span>入札方式 <em>(複数選べます)</em></span>
+    <div class="chips scroll">
       {% for m in bid_methods %}
-        <option value="{{ m }}" {{ 'selected' if m in selected.bid_method }}>{{ m }}</option>
+        <label class="chip"><input type="checkbox" name="bid_method" value="{{ m }}" {{ 'checked' if m in selected.bid_method }}><span>{{ m }}</span></label>
       {% endfor %}
-    </select>
-  </label>
+    </div>
+  </div>
   <label class="field">
     <span>仕様書</span>
     <select name="spec_status">
