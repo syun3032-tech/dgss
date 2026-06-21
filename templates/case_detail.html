@@ -76,25 +76,28 @@
         <a class="btn primary small" href="{{ guide.portal[1] }}" target="_blank" rel="noopener">{{ guide.portal[0] }}を開く</a>
         <a class="btn ghost small" href="{{ guide.register_search }}" target="_blank" rel="noopener">🔍 登録方法を調べる</a>
       {% else %}
-        <p>入札に参加するには、事前に発注機関の<strong>入札参加資格審査</strong>（指名願い）の登録が必要です。受付期間と申請方法を確認してください。</p>
+        <p>{{ (requirements.steps | selectattr('title', 'equalto', '入札参加資格を登録する（指名願い／資格審査）') | first).body | safe }}</p>
         <a class="btn primary small" href="{{ guide.register_search }}" target="_blank" rel="noopener">🔍 この機関の入札参加資格 登録方法を調べる</a>
       {% endif %}
     </div>
 
     <div class="guide-step">
       <h3>3. 必要書類を準備する</h3>
-      <p>電気工事の入札で一般的に必要となる書類:</p>
+      <p>この案件（{{ requirements.procurement_kind }}{% if c.category %}・{{ c.category }}{% endif %}）で一般的に必要となる書類:</p>
       <ul class="checklist">
-        <li><label><input type="checkbox"> 入札参加資格審査申請書（指名願い）</label></li>
-        <li><label><input type="checkbox"> 建設業許可証明書（電気工事業）</label></li>
-        <li><label><input type="checkbox"> 経営事項審査結果通知書（経審）</label></li>
-        <li><label><input type="checkbox"> 納税証明書（国税・地方税）</label></li>
-        <li><label><input type="checkbox"> 電気工事士免状の写し</label></li>
-        <li><label><input type="checkbox"> 技術者の資格証明書</label></li>
-        <li><label><input type="checkbox"> 工事実績調書</label></li>
-        <li><label><input type="checkbox"> 入札書（電子入札の場合は電子証明書＝ICカード）</label></li>
+        {% for d in requirements.documents %}
+          <li>
+            <label>
+              <input type="checkbox"> {{ d.label }}
+              {% if d.required %}<span class="badge req">必須</span>{% else %}<span class="badge opt">任意</span>{% endif %}
+            </label>
+            {% if d.note %}<p class="doc-note">{{ d.note }}</p>{% endif %}
+          </li>
+        {% endfor %}
       </ul>
-      <p class="tip">必要書類は発注機関により異なります。1の公告・入札説明書を必ず確認してください。</p>
+      {% for n in requirements.notes %}
+        <p class="tip">{{ n }}</p>
+      {% endfor %}
     </div>
 
     <div class="guide-step">

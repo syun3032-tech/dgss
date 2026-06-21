@@ -213,6 +213,8 @@ def case_detail(case_id: int):
     # 応募導線（どこで申し込むか）は procurement.py が「確実なものだけ」を組み立てる。
     # スプレッドシートの当てにならない bid_url は使わない（誤誘導の原因だったため）。
     guide = procurement.application_guide(case, agency_info)
+    # 必要書類・ToDo・応募内容を案件属性から確定的に導出（実行時AIなし）。
+    requirements = procurement.application_requirements(case, guide)
     return render_template(
         "case_detail.html",
         c=case,
@@ -222,6 +224,7 @@ def case_detail(case_id: int):
         status_class=STATUS_CLASS,
         agency_info=agency_info,
         guide=guide,
+        requirements=requirements,
     )
 
 

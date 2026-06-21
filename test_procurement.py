@@ -92,10 +92,166 @@ def test_application_guide() -> bool:
     return ok
 
 
+def _labels(req: dict) -> list[str]:
+    return [d["label"] for d in req["documents"]]
+
+
+def _has(req: dict, keyword: str) -> bool:
+    return any(keyword in lbl for lbl in _labels(req))
+
+
+def _has_required(req: dict, keyword: str) -> bool:
+    return any(keyword in d["label"] and d["required"] for d in req["documents"])
+
+
+def test_normalize_bid_method() -> bool:
+    ok = True
+    ok &= _check("条件付一般競争入札→一般競争", p.normalize_bid_method("条件付一般競争入札") == "一般競争")
+    ok &= _check("制限付き一般競争入札→一般競争", p.normalize_bid_method("制限付き一般競争入札") == "一般競争")
+    ok &= _check("簡易公募型指名競争入札→指名競争", p.normalize_bid_method("簡易公募型指名競争入札") == "指名競争")
+    ok &= _check("随意契約→随意", p.normalize_bid_method("随意契約") == "随意")
+    ok &= _check("委託・役務→委託・役務", p.normalize_bid_method("委託・役務") == "委託・役務")
+    ok &= _check("空→不明", p.normalize_bid_method("") == "不明")
+    ok &= _check("NEW!!→不明", p.normalize_bid_method("NEW!!") == "不明")
+    return ok
+
+
+def test_procurement_kind() -> bool:
+    ok = True
+    ok &= _check("procurement_type=工事→工事", p.procurement_kind({"procurement_type": "工事"}) == "工事")
+    ok &= _check("procurement_type=役務→役務", p.procurement_kind({"procurement_type": "役務"}) == "役務")
+    ok &= _check("空+委託タイトル→役務",
+                 p.procurement_kind({"procurement_type": "", "title": "機械警備等業務委託"}) == "役務")
+    ok &= _check("空+保安管理→役務",
+                 p.procurement_kind({"procurement_type": "", "title": "自家用電気工作物保安管理業務委託"}) == "役務")
+    ok &= _check("空+情報なし→不明", p.procurement_kind({"procurement_type": "", "title": "○○整備"}) == "不明")
+    return ok
+
+
+def test_req_works_national() -> bool:
+    """工事×国: 経審が必須、全省庁統一資格は『対象外』と案内、建設業許可が出る。"""
+    ok = True
+    case = {"procurement_type": "工事", "agency_type": "国の機関",
+            "category": "電気工事-受変電", "bid_method": "一般競争入札", "title": "受変電設備工事"}
+    req = p.application_requirements(case)
+    ok &= _check("工事×国: 区分=工事", req["procurement_kind"] == "工事")
+    ok &= _check("工事×国: 経審が必須書類に出る", _has_required(req, "経営事項審査"))
+    ok &= _check("工事×国: 電気工事業許可が出る", _has(req, "電気工事業"))
+    ok &= _check("工事×国: 電気工事士免状が出る", _has(req, "電気工事士免状"))
+    # 国の工事は全省庁統一資格の対象外（ステップ本文で明示）
+    qstep = next(s for s in req["steps"] if "資格" in s["title"])
+    ok &= _check("工事×国: 全省庁統一資格は対象外と案内", "対象外" in qstep["body"])
+    return ok
+
+
+def test_req_works_local() -> bool:
+    """工事×地方: 経審必須・指名願いの案内が出る。"""
+    ok = True
+    case = {"procurement_type": "工事", "agency_type": "地方公共団体",
+            "category": "電気工事-電気設備", "bid_method": "条件付一般競争入札", "title": "電気設備改修工事"}
+    req = p.application_requirements(case)
+    ok &= _check("工事×地方: 経審が必須", _has_required(req, "経営事項審査"))
+    qstep = next(s for s in req["steps"] if "資格" in s["title"])
+    ok &= _check("工事×地方: 指名願いの案内", "指名願い" in qstep["body"])
+    return ok
+
+
+def test_req_service_cleaning() -> bool:
+    """役務×地方(清掃): 経審は出ない、業務実績が出る、電気資格は出ない。"""
+    ok = True
+    case = {"procurement_type": "役務", "agency_type": "地方公共団体",
+            "category": "清掃・廃棄物", "bid_method": "一般競争入札", "title": "庁舎清掃業務委託"}
+    req = p.application_requirements(case)
+    ok &= _check("役務(清掃): 区分=役務", req["procurement_kind"] == "役務")
+    ok &= _check("役務(清掃): 経審は出ない", not _has(req, "経営事項審査"))
+    ok &= _check("役務(清掃): 業務実績が出る", _has(req, "同種業務の実績"))
+    ok &= _check("役務(清掃): 電気主任技術者は出ない", not _has(req, "電気主任技術者"))
+    ok &= _check("役務(清掃): 注意書きに経審対象外", any("対象外" in n for n in req["notes"]))
+    return ok
+
+
+def test_req_service_security() -> bool:
+    """役務×地方(警備): 経審は出ない。"""
+    ok = True
+    case = {"procurement_type": "役務", "agency_type": "地方公共団体",
+            "category": "警備", "bid_method": "指名競争入札", "title": "機械警備業務委託"}
+    req = p.application_requirements(case)
+    ok &= _check("役務(警備): 経審は出ない", not _has(req, "経営事項審査"))
+    ok &= _check("役務(警備): 入札方式=指名競争", req["bid_method_norm"] == "指名競争")
+    qstep = next(s for s in req["steps"] if "資格" in s["title"])
+    ok &= _check("役務(警備): 指名競争の前提案内", "名簿" in qstep["body"])
+    return ok
+
+
+def test_req_electrical_safety() -> bool:
+    """役務(電気保安管理): 経審なし、電気主任技術者が必須、保安法人書類が任意で出る。"""
+    ok = True
+    case = {"procurement_type": "役務", "agency_type": "地方公共団体",
+            "category": "電気工事-電気設備", "bid_method": "一般競争入札",
+            "title": "自家用電気工作物保安管理業務委託"}
+    req = p.application_requirements(case)
+    ok &= _check("電気保安: 経審は出ない", not _has(req, "経営事項審査"))
+    ok &= _check("電気保安: 電気主任技術者が必須", _has_required(req, "電気主任技術者"))
+    ok &= _check("電気保安: 保安法人書類が任意で出る",
+                 any("保安管理業務外部委託" in d["label"] and not d["required"] for d in req["documents"]))
+    return ok
+
+
+def test_req_service_national() -> bool:
+    """役務×国: 全省庁統一資格が出る、経審は出ない。"""
+    ok = True
+    case = {"procurement_type": "役務", "agency_type": "国の機関",
+            "category": "電気工事-受変電", "bid_method": "一般競争入札", "title": "高圧受電設備点検役務"}
+    req = p.application_requirements(case)
+    ok &= _check("役務×国: 全省庁統一資格が出る", _has(req, "全省庁統一資格"))
+    ok &= _check("役務×国: 経審は出ない", not _has(req, "経営事項審査"))
+    return ok
+
+
+def test_req_random_contract() -> bool:
+    """随意契約: 見積書が出て入札書は出ない。"""
+    ok = True
+    case = {"procurement_type": "工事", "agency_type": "地方公共団体",
+            "category": "電気工事", "bid_method": "随意契約", "title": "電気設備修繕"}
+    req = p.application_requirements(case)
+    ok &= _check("随意: 区分=随意", req["bid_method_norm"] == "随意")
+    ok &= _check("随意: 見積書が出る", _has(req, "見積書"))
+    ok &= _check("随意: 入札書は出ない", not _has(req, "入札書"))
+    return ok
+
+
+def test_req_non_electrical() -> bool:
+    """非電気(塗装)工事: 塗装工事業許可が出て、電気工事士は出ない。"""
+    ok = True
+    case = {"procurement_type": "工事", "agency_type": "地方公共団体",
+            "category": "塗装", "bid_method": "一般競争入札", "title": "外壁塗装工事"}
+    req = p.application_requirements(case)
+    ok &= _check("塗装: 塗装工事業許可が出る", _has(req, "塗装工事業"))
+    ok &= _check("塗装: 電気工事士は出ない", not _has(req, "電気工事士"))
+    return ok
+
+
+def test_req_empty_bidmethod() -> bool:
+    """入札方式が空: 不明に畳まれ、注意書きが出る。"""
+    ok = True
+    case = {"procurement_type": "工事", "agency_type": "地方公共団体",
+            "category": "電気工事-照明", "bid_method": "", "title": "照明設備更新工事"}
+    req = p.application_requirements(case)
+    ok &= _check("空方式: bid_method_norm=不明", req["bid_method_norm"] == "不明")
+    ok &= _check("空方式: 注意書きで方式確認を促す", any("方式" in n for n in req["notes"]))
+    return ok
+
+
 def main() -> int:
     tests = [
         test_generic_url_detection, test_is_real_link, test_classify_platform,
         test_portal_for, test_search_urls, test_application_guide,
+        test_normalize_bid_method, test_procurement_kind,
+        test_req_works_national, test_req_works_local,
+        test_req_service_cleaning, test_req_service_security,
+        test_req_electrical_safety, test_req_service_national,
+        test_req_random_contract, test_req_non_electrical,
+        test_req_empty_bidmethod,
     ]
     all_ok = True
     for t in tests:
