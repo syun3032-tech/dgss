@@ -60,6 +60,12 @@ _ELEC_BID_RE = re.compile(r"電子入札|電子調達システム")
 # 当方ToDoが網羅すべき頻出要件（PDFにあるのにToDoに無ければ漏れ＝警告）
 _HOSHO_RE = re.compile(r"入札保証金")
 _UCHIWAKE_RE = re.compile(r"内訳書")
+# 契約保証金（落札後の保証。実測で工事・役務とも約80%の公告に登場する頻出要件）
+_KEIYAKU_HOSHO_RE = re.compile(r"契約保証金|履行保証保険|契約の保証")
+# 現場代理人（工事で約半数。配置の届出様式が問われる）
+_GENBA_DAIRININ_RE = re.compile(r"現場代理人")
+# 全省庁統一資格（国の役務・物品の参加資格。役務×国の検証軸に使う）
+_TOITSU_SHIKAKU_RE = re.compile(r"全省庁統一資格|統一資格審査")
 # 「電気工事の許可/格付を要求」シグナル。建築一式が定型リストに混在しても、これがあれば
 # 当方の「電気工事業」断定は正しい（明石受変電工事の誤検知対策）。
 _ELEC_LICENSE_CTX_RE = re.compile(
@@ -106,6 +112,9 @@ def ground_truth(pdf_text: str) -> dict:
         "elec_bid": bool(_ELEC_BID_RE.search(t)),
         "needs_hosho": bool(_HOSHO_RE.search(t)),
         "needs_uchiwake": bool(_UCHIWAKE_RE.search(t)),
+        "needs_keiyaku_hosho": bool(_KEIYAKU_HOSHO_RE.search(t)),
+        "needs_genba_dairinin": bool(_GENBA_DAIRININ_RE.search(t)),
+        "needs_toitsu_shikaku": bool(_TOITSU_SHIKAKU_RE.search(t)),
         "elec_license_ctx": bool(_ELEC_LICENSE_CTX_RE.search(t)),
         "chars": len(t),
     }
@@ -154,6 +163,18 @@ def audit_case(case: dict, pdf_text: str) -> dict:
         issues.append(("入札保証金_漏れ", "公告に入札保証金の記載があるがToDoに無い"))
     if kind == "工事" and gt["needs_uchiwake"] and "内訳書" not in labels:
         issues.append(("内訳書_漏れ", "公告に内訳書の記載があるがToDoに無い"))
+    # 4b) 契約保証金（落札後の保証）: 公告にあるのに当方ToDoに無ければ漏れ
+    if gt["needs_keiyaku_hosho"] and "契約保証" not in labels:
+        issues.append(("契約保証金_漏れ", "公告に契約保証金の記載があるがToDoに無い"))
+    # 4c) 現場代理人（工事の届出）: 公告にあるのに当方ToDoに無ければ漏れ
+    if kind == "工事" and gt["needs_genba_dairinin"] and "現場代理人" not in labels:
+        issues.append(("現場代理人_漏れ", "公告に現場代理人の記載があるがToDoに無い"))
+    # 5) 全省庁統一資格の検証（役務×国）: 公告が統一資格を求めるのに当方が
+    #    案内していなければ漏れ。工事の公告にも「（工事は対象外）」等で語が出るため
+    #    役務に限定して評価する（工事での誤検知を避ける）。
+    if kind == "役務" and gt["needs_toitsu_shikaku"] and "全省庁統一資格" not in labels:
+        issues.append(("統一資格_漏れ",
+                       "役務公告が全省庁統一資格を求めるが当方ToDoに無い（国の機関判定漏れの可能性）"))
     return {"issues": issues, "kind": kind, "our_license": our_lic, "gt": gt}
 
 

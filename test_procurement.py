@@ -152,6 +152,9 @@ def test_req_works_national() -> bool:
     ok &= _check("工事×国: 経審が必須書類に出る", _has_required(req, "経営事項審査"))
     ok &= _check("工事×国: 電気工事業許可が出る", _has(req, "電気工事業"))
     ok &= _check("工事×国: 電気工事士免状が出る", _has(req, "電気工事士免状"))
+    # 頻出要件（実PDF照合: 工事の約80%で契約保証金、約半数で現場代理人）
+    ok &= _check("工事×国: 契約保証金が出る（任意）", _has(req, "契約保証"))
+    ok &= _check("工事×国: 現場代理人の届出が出る（任意）", _has(req, "現場代理人"))
     # 国の工事は全省庁統一資格の対象外（ステップ本文で明示）
     qstep = next(s for s in req["steps"] if "資格" in s["title"])
     ok &= _check("工事×国: 全省庁統一資格は対象外と案内", "対象外" in qstep["body"])
@@ -181,6 +184,9 @@ def test_req_service_cleaning() -> bool:
     ok &= _check("役務(清掃): 業務実績が出る", _has(req, "同種業務の実績"))
     ok &= _check("役務(清掃): 電気主任技術者は出ない", not _has(req, "電気主任技術者"))
     ok &= _check("役務(清掃): 注意書きに経審対象外", any("対象外" in n for n in req["notes"]))
+    # 契約保証金は役務にも出る（落札後の保証）。現場代理人は工事固有なので役務には出さない。
+    ok &= _check("役務(清掃): 契約保証金が出る", _has(req, "契約保証"))
+    ok &= _check("役務(清掃): 現場代理人は出ない（工事固有）", not _has(req, "現場代理人"))
     return ok
 
 
