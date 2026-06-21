@@ -66,5 +66,32 @@
   } catch (e) {}
 })();
 </script>
+<script>
+/* 入札参加申請のブラウザ保存→自動復元。サーバDB(denki_bid.db)は毎日のデプロイで
+   丸ごと差し替わり申請が消えるため、localStorage を真の保存先とし、ロード時にサーバへ
+   静かに復元する。案件は external_id（再採番に強い安定キー）で解決する。 */
+(function () {
+  var KEY = 'kawanoApplications';
+  if (sessionStorage.getItem('kawanoAppsRestored')) return; // セッション内は1回だけ
+  var raw = localStorage.getItem(KEY);
+  if (!raw) return;
+  var map;
+  try { map = JSON.parse(raw) || {}; } catch (e) { return; }
+  var items = Object.keys(map).map(function (k) { return map[k]; })
+    .filter(function (a) { return a && a.external_id && a.status; });
+  if (!items.length) { sessionStorage.setItem('kawanoAppsRestored', '1'); return; }
+  fetch('/applications/restore', {
+    method: 'POST', headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ items: items })
+  }).then(function (r) { return r.json(); }).then(function (d) {
+    sessionStorage.setItem('kawanoAppsRestored', '1');
+    var p = location.pathname;
+    // 申請が表示される画面で、実際に復元が入った時だけ1回だけ再描画する
+    if (d && d.restored > 0 && (p === '/applications' || p.indexOf('/case/') === 0)) {
+      location.reload();
+    }
+  }).catch(function () { sessionStorage.setItem('kawanoAppsRestored', '1'); });
+})();
+</script>
 </body>
 </html>

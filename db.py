@@ -305,6 +305,20 @@ def get_case(case_id: int) -> dict[str, Any] | None:
         return dict(row) if row else None
 
 
+def get_case_id_by_external(external_id: str) -> int | None:
+    """external_id（取得元の安定ID）から現在の案件id を引く。
+
+    案件の整数idは日次のDB再構築で採番し直されるが external_id は不変。
+    ブラウザ保存した申請をサーバへ復元する際の安定キーとして使う。
+    """
+    if not external_id:
+        return None
+    with _connect() as conn:
+        row = conn.execute(
+            "SELECT id FROM cases WHERE external_id = ?", (external_id,)).fetchone()
+        return row[0] if row else None
+
+
 def distinct_values(column: str) -> list[str]:
     """フィルタUIの候補値（指定カラムの非空ユニーク値）。"""
     allowed = {"category", "procurement_type", "bid_method", "prefecture",

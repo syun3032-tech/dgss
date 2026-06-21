@@ -136,7 +136,8 @@
       <p class="muted">まだ管理に登録されていません。</p>
     {% endif %}
 
-    <form class="apply-form" method="post" action="{{ url_for('apply_case', case_id=c.id) }}">
+    <form class="apply-form" method="post" action="{{ url_for('apply_case', case_id=c.id) }}"
+          data-ext="{{ c.external_id }}">
       <label>
         <span>状況</span>
         <select name="status">
@@ -157,4 +158,34 @@
     </form>
   </section>
 </article>
+{% endblock %}
+
+{% block scripts %}
+<script>
+/* 申請の保存をブラウザ(localStorage)にも控える。サーバDBは毎日のデプロイで揮発するため、
+   localStorage を真の保存先とし、case の external_id（安定キー）で管理する。
+   通常のPOSTはそのまま走らせ、画面遷移前に静かにミラー保存するだけ。 */
+(function () {
+  var form = document.querySelector('.apply-form');
+  if (!form) return;
+  var ext = form.getAttribute('data-ext');
+  if (!ext) return;
+  function val(name) {
+    var el = form.querySelector('[name="' + name + '"]');
+    return el ? el.value : '';
+  }
+  form.addEventListener('submit', function () {
+    var KEY = 'kawanoApplications';
+    var map;
+    try { map = JSON.parse(localStorage.getItem(KEY)) || {}; } catch (e) { map = {}; }
+    map[ext] = {
+      external_id: ext,
+      status: val('status'),
+      applied_date: val('applied_date'),
+      note: val('note')
+    };
+    try { localStorage.setItem(KEY, JSON.stringify(map)); } catch (e) {}
+  });
+})();
+</script>
 {% endblock %}

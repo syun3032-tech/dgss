@@ -244,6 +244,38 @@ def apply_case(case_id: int):
     return redirect(url_for("case_detail", case_id=case_id))
 
 
+@app.route("/applications/restore", methods=["POST"])
+def applications_restore():
+    """ブラウザ(localStorage)に保存された申請をサーバDBへ復元する。
+
+    サーバの denki_bid.db は毎日のデプロイで丸ごと差し替わり申請が消えるため、
+    localStorage を真の保存先とし、ロード時にこのエンドポイントで静かに復元する。
+    案件は external_id（再採番に強い安定キー）で現在の id に解決する。
+    実際に新規・変更された件数だけ restored で返す（無駄な画面リロードの抑制用）。
+    """
+    payload = request.get_json(silent=True) or {}
+    items = payload.get("items") or []
+    restored = 0
+    for it in items:
+        ext = (it.get("external_id") or "").strip()
+        status = (it.get("status") or "").strip()
+        if not ext or status not in db.APP_STATUSES:
+            continue
+        case_id = db.get_case_id_by_external(ext)
+        if case_id is None:
+            continue  # 現在のDBに該当案件が無い（公開終了等）→スキップ
+        applied_date = (it.get("applied_date") or "").strip()
+        note = (it.get("note") or "").strip()
+        cur = db.get_application(case_id)
+        if (cur and cur.get("status") == status
+                and (cur.get("applied_date") or "") == applied_date
+                and (cur.get("note") or "") == note):
+            continue  # 既に同一内容ならスキップ
+        db.set_application(case_id, status, applied_date, note)
+        restored += 1
+    return jsonify({"restored": restored})
+
+
 @app.route("/applications")
 def applications():
     """入札参加申請の管理一覧。"""
