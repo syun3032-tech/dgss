@@ -139,14 +139,23 @@
       <p class="cur-status">
         現在の状況:
         <span class="status-badge {{ status_class.get(application.status, '') }}">{{ application.status }}</span>
-        {% if application.applied_date %}<span class="muted">（申請日 {{ application.applied_date }}）</span>{% endif %}
+        {% if application.assignee %}<span class="muted">／担当 {{ application.assignee }}</span>{% endif %}
+        {% if application.needs_check %}<span class="badge req">要確認</span>{% endif %}
       </p>
+      <p class="muted small">
+        {% if application.eff_apply_deadline %}参加申請 {{ application.eff_apply_deadline }}{% if application.apply_days is not none %}（{% if application.apply_days < 0 %}期限切れ{% elif application.apply_days == 0 %}本日{% else %}あと{{ application.apply_days }}日{% endif %}）{% endif %}{% endif %}
+        {% if application.bid_deadline %}｜入札書 {{ application.bid_deadline }}{% if application.bid_days is not none %}（{% if application.bid_days < 0 %}期限切れ{% elif application.bid_days == 0 %}本日{% else %}あと{{ application.bid_days }}日{% endif %}）{% endif %}{% endif %}
+        {% if application.submit_method %}｜提出 {{ application.submit_method }}{% endif %}
+      </p>
+      {% if application.partners %}
+        <p class="muted small">協力会社：依頼{{ application.partners | length }}社 / 回答{{ application.partner_replied }}</p>
+      {% endif %}
       {% if application.note %}<p class="note">メモ: {{ application.note }}</p>{% endif %}
     {% else %}
       <p class="muted">まだ管理に登録されていません。</p>
     {% endif %}
 
-    <form class="apply-form" method="post" action="{{ url_for('apply_case', case_id=c.id) }}"
+    <form class="apply-form grid" method="post" action="{{ url_for('apply_case', case_id=c.id) }}"
           data-ext="{{ c.external_id }}">
       <label>
         <span>状況</span>
@@ -157,20 +166,104 @@
         </select>
       </label>
       <label>
+        <span>担当者</span>
+        <input type="text" name="assignee" value="{{ application.assignee if application else '' }}" placeholder="社長 / 金子さん 等">
+      </label>
+      <label>
+        <span>提出方法</span>
+        <select name="submit_method">
+          <option value="">—</option>
+          {% for m in submit_methods %}
+            <option value="{{ m }}" {{ 'selected' if application and application.submit_method == m }}>{{ m }}</option>
+          {% endfor %}
+        </select>
+      </label>
+      <label>
         <span>申請日</span>
         <input type="date" name="applied_date" value="{{ application.applied_date if application else '' }}">
       </label>
+      <label>
+        <span>参加申請 期限</span>
+        <input type="date" name="apply_deadline" value="{{ application.apply_deadline if application else '' }}">
+      </label>
+      <label>
+        <span>入札書提出 期限</span>
+        <input type="date" name="bid_deadline" value="{{ application.bid_deadline if application else '' }}">
+      </label>
       <label class="grow">
         <span>メモ</span>
-        <input type="text" name="note" value="{{ application.note if application else '' }}" placeholder="担当・必要書類など">
+        <input type="text" name="note" value="{{ application.note if application else '' }}" placeholder="必要書類・注意点など">
       </label>
-      <button type="submit" class="btn primary">保存</button>
+      <label class="check inline">
+        <input type="checkbox" name="needs_check" value="1" {{ 'checked' if application and application.needs_check }}>
+        <span>要確認フラグ</span>
+      </label>
+
+      <div class="partners full" id="partners">
+        <div class="partners-head">
+          <span>協力会社の見積</span>
+          <button type="button" class="btn ghost small" id="partnerAdd">＋ 協力会社を追加</button>
+        </div>
+        <table class="list partners-table">
+          <thead>
+            <tr><th>会社名</th><th>見積金額</th><th>依頼</th><th>回答</th><th>備考</th><th></th></tr>
+          </thead>
+          <tbody id="partnerRows"></tbody>
+        </table>
+      </div>
+
+      <input type="hidden" name="partners" id="partnersInput" value="[]">
+      <div class="full"><button type="submit" class="btn primary">保存</button></div>
     </form>
   </section>
 </article>
 {% endblock %}
 
 {% block scripts %}
+<script id="initialPartners" type="application/json">{{ (application.partners if application else []) | tojson }}</script>
+<script>
+/* 協力会社の見積を行として動的に編集する。送信時にJSON化して hidden(#partnersInput) に詰める。
+   1案件に複数社を登録し、各社 {company, amount, requested, replied, note} を持つ。 */
+(function () {
+  var tbody = document.getElementById('partnerRows');
+  var addBtn = document.getElementById('partnerAdd');
+  if (!tbody || !addBtn) return;
+  var esc = function (s) { var d = document.createElement('div'); d.textContent = (s == null ? '' : s); return d.innerHTML; };
+
+  function addRow(p) {
+    p = p || {};
+    var tr = document.createElement('tr');
+    tr.className = 'p-row';
+    tr.innerHTML =
+      '<td><input class="p-company" type="text" placeholder="株式会社○○" value="' + esc(p.company) + '"></td>' +
+      '<td><input class="p-amount" type="text" placeholder="260万 等" value="' + esc(p.amount) + '"></td>' +
+      '<td class="center"><input class="p-requested" type="checkbox" ' + (p.requested ? 'checked' : '') + '></td>' +
+      '<td class="center"><input class="p-replied" type="checkbox" ' + (p.replied ? 'checked' : '') + '></td>' +
+      '<td><input class="p-note" type="text" placeholder="備考" value="' + esc(p.note) + '"></td>' +
+      '<td class="center"><button type="button" class="btn ghost small p-del">削除</button></td>';
+    tr.querySelector('.p-del').addEventListener('click', function () { tr.remove(); });
+    tbody.appendChild(tr);
+  }
+
+  function collect() {
+    return Array.prototype.map.call(tbody.querySelectorAll('.p-row'), function (tr) {
+      return {
+        company: tr.querySelector('.p-company').value.trim(),
+        amount: tr.querySelector('.p-amount').value.trim(),
+        requested: tr.querySelector('.p-requested').checked ? 1 : 0,
+        replied: tr.querySelector('.p-replied').checked ? 1 : 0,
+        note: tr.querySelector('.p-note').value.trim()
+      };
+    }).filter(function (p) { return p.company; });
+  }
+  window.__collectPartners = collect;
+
+  var initial = [];
+  try { initial = JSON.parse(document.getElementById('initialPartners').textContent) || []; } catch (e) {}
+  initial.forEach(addRow);
+  addBtn.addEventListener('click', function () { addRow(); });
+})();
+</script>
 <script>
 /* 申請の保存をブラウザ(localStorage)にも控える。サーバDBは毎日のデプロイで揮発するため、
    localStorage を真の保存先とし、case の external_id（安定キー）で管理する。
@@ -185,6 +278,10 @@
     return el ? el.value : '';
   }
   form.addEventListener('submit', function () {
+    var partners = window.__collectPartners ? window.__collectPartners() : [];
+    var input = document.getElementById('partnersInput');
+    if (input) input.value = JSON.stringify(partners);  // サーバ送信用
+
     var KEY = 'kawanoApplications';
     var map;
     try { map = JSON.parse(localStorage.getItem(KEY)) || {}; } catch (e) { map = {}; }
@@ -192,7 +289,13 @@
       external_id: ext,
       status: val('status'),
       applied_date: val('applied_date'),
-      note: val('note')
+      note: val('note'),
+      assignee: val('assignee'),
+      apply_deadline: val('apply_deadline'),
+      bid_deadline: val('bid_deadline'),
+      submit_method: val('submit_method'),
+      needs_check: form.querySelector('[name="needs_check"]').checked ? 1 : 0,
+      partners: partners
     };
     try { localStorage.setItem(KEY, JSON.stringify(map)); } catch (e) {}
   });

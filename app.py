@@ -41,9 +41,46 @@ BUDGET_OPTIONS = [
 
 # 申請ステータスのバッジ色分け（テンプレートで使用）
 STATUS_CLASS = {
-    "検討中": "s-mull", "申請準備中": "s-prep", "申請済": "s-applied",
-    "入札参加済": "s-joined", "落札": "s-won", "不参加": "s-no", "見送り": "s-skip",
+    "検討中": "s-mull",
+    "参加申請準備中": "s-prep",
+    "参加申請済": "s-applied",
+    "協力会社探し中": "s-partner",
+    "見積取得": "s-quote",
+    "見積集まらず": "s-no",
+    "入札書提出済": "s-joined",
+    "落札": "s-won",
+    "他社落札": "s-lost",
+    "見送り": "s-skip",
+    # 旧ステータス名（既存データ表示の後方互換）
+    "申請準備中": "s-prep", "申請済": "s-applied",
+    "入札参加済": "s-joined", "不参加": "s-skip",
 }
+
+
+def _days_until(iso: str) -> int | None:
+    """ISO日付(YYYY-MM-DD)までの残日数。今日=0、過ぎていれば負。不正なら None。"""
+    s = (iso or "").strip()
+    if not s:
+        return None
+    try:
+        return (date.fromisoformat(s[:10]) - date.today()).days
+    except ValueError:
+        return None
+
+
+def _enrich_application(row: dict) -> dict:
+    """一覧・詳細表示用に締切と残日数、見積サマリーを補う。
+
+    参加申請期限は申請側の指定が無ければ案件の締切(deadline)を流用する。
+    """
+    apply_dl = row.get("apply_deadline") or row.get("deadline") or ""
+    row["eff_apply_deadline"] = apply_dl
+    row["apply_days"] = _days_until(apply_dl)
+    row["bid_days"] = _days_until(row.get("bid_deadline") or "")
+    partners = row.get("partners") or []
+    row["partner_count"] = len(partners)
+    row["partner_replied"] = sum(1 for p in partners if p.get("replied"))
+    return row
 
 # 対応業種の選択肢（電気工事業者向けに関連する建設業の業種）
 BIZ_TYPES = [
@@ -256,12 +293,17 @@ def case_detail(case_id: int):
     guide = procurement.application_guide(case, agency_info)
     # 必要書類・ToDo・応募内容を案件属性から確定的に導出（実行時AIなし）。
     requirements = procurement.application_requirements(case, guide)
+    application = db.get_application(case_id)
+    if application:
+        application.setdefault("deadline", case.get("deadline", ""))
+        application = _enrich_application(application)
     return render_template(
         "case_detail.html",
         c=case,
         spec_reasons=db.SPEC_REASONS,
-        application=db.get_application(case_id),
+        application=application,
         app_statuses=db.APP_STATUSES,
+        submit_methods=db.SUBMIT_METHODS,
         status_class=STATUS_CLASS,
         agency_info=agency_info,
         guide=guide,
@@ -314,12 +356,26 @@ def apply_case(case_id: int):
     """案件の入札参加申請ステータスを登録・更新する。"""
     if not db.get_case(case_id):
         abort(404)
+    import json
     status = request.form.get("status", "").strip()
-    applied_date = request.form.get("applied_date", "").strip()
-    note = request.form.get("note", "").strip()
     try:
-        db.set_application(case_id, status, applied_date, note)
-        flash(f"申請状況を「{status}」に更新しました。", "ok")
+        partners = json.loads(request.form.get("partners", "[]") or "[]")
+    except (ValueError, TypeError):
+        partners = []
+    try:
+        db.set_application(
+            case_id,
+            status,
+            applied_date=request.form.get("applied_date", "").strip(),
+            note=request.form.get("note", "").strip(),
+            assignee=request.form.get("assignee", "").strip(),
+            apply_deadline=request.form.get("apply_deadline", "").strip(),
+            bid_deadline=request.form.get("bid_deadline", "").strip(),
+            submit_method=request.form.get("submit_method", "").strip(),
+            needs_check=bool(request.form.get("needs_check")),
+            partners=partners,
+        )
+        flash(f"申請状況を「{db.normalize_status(status)}」に更新しました。", "ok")
     except ValueError:
         flash("ステータスが不正です。", "error")
     return redirect(url_for("case_detail", case_id=case_id))
@@ -339,34 +395,72 @@ def applications_restore():
     restored = 0
     for it in items:
         ext = (it.get("external_id") or "").strip()
-        status = (it.get("status") or "").strip()
+        status = db.normalize_status((it.get("status") or "").strip())
         if not ext or status not in db.APP_STATUSES:
             continue
         case_id = db.get_case_id_by_external(ext)
         if case_id is None:
             continue  # 現在のDBに該当案件が無い（公開終了等）→スキップ
-        applied_date = (it.get("applied_date") or "").strip()
-        note = (it.get("note") or "").strip()
+        fields = dict(
+            applied_date=(it.get("applied_date") or "").strip(),
+            note=(it.get("note") or "").strip(),
+            assignee=(it.get("assignee") or "").strip(),
+            apply_deadline=(it.get("apply_deadline") or "").strip(),
+            bid_deadline=(it.get("bid_deadline") or "").strip(),
+            submit_method=(it.get("submit_method") or "").strip(),
+            needs_check=bool(it.get("needs_check")),
+            partners=it.get("partners") or [],
+        )
+        # 既にDBが同一内容なら書き込まずスキップ（無駄な画面リロードの抑制）。
         cur = db.get_application(case_id)
-        if (cur and cur.get("status") == status
-                and (cur.get("applied_date") or "") == applied_date
-                and (cur.get("note") or "") == note):
-            continue  # 既に同一内容ならスキップ
-        db.set_application(case_id, status, applied_date, note)
+        if cur and cur.get("status") == status and all(
+            (cur.get(k) or "") == v for k, v in fields.items()
+            if k not in ("needs_check", "partners")
+        ) and bool(cur.get("needs_check")) == fields["needs_check"] \
+           and db._normalize_partners(cur.get("partners")) == db._normalize_partners(fields["partners"]):
+            continue
+        # localStorage を真の保存先として上書き復元する（揮発DB対策）。
+        db.set_application(case_id, status, **fields)
         restored += 1
     return jsonify({"restored": restored})
 
 
 @app.route("/applications")
 def applications():
-    """入札参加申請の管理一覧。"""
-    status = request.args.get("status", "").strip()
+    """入札参加申請の管理一覧（ステータス別グルーピング＋サマリー）。"""
+    status = db.normalize_status(request.args.get("status", "").strip())
+    rows = [_enrich_application(r) for r in db.list_applications(status or None)]
+
+    # サマリー（全件ベース。フィルタ中でも全体像が見えるよう別途集計）。
+    all_rows = rows if not status else [
+        _enrich_application(r) for r in db.list_applications(None)
+    ]
+    # 締切が3日以内（過ぎ含む）の「締切間近」件数。
+    soon = sum(1 for r in all_rows
+               if r["apply_days"] is not None and r["apply_days"] <= 3)
+    summary = {
+        "total": len(all_rows),
+        "partner_total": sum(r["partner_count"] for r in all_rows),
+        "needs_check": sum(1 for r in all_rows if r.get("needs_check")),
+        "deadline_soon": soon,
+    }
+
+    # ステータス別にグルーピング（APP_STATUSES の並び順を維持）。
+    groups = []
+    order = db.APP_STATUSES if not status else [status]
+    for s in order:
+        g = [r for r in rows if db.normalize_status(r["status"]) == s]
+        if g:
+            groups.append({"status": s, "rows": g})
+
     return render_template(
         "applications.html",
-        rows=db.list_applications(status or None),
+        groups=groups,
+        rows=rows,
         statuses=db.APP_STATUSES,
         status_class=STATUS_CLASS,
         selected_status=status,
+        summary=summary,
     )
 
 

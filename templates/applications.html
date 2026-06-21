@@ -1,8 +1,32 @@
 {% extends "base.html" %}
 {% block title %}申請管理 — 電気入札サーチ{% endblock %}
 
+{% macro deadline_cell(label, iso, days) %}
+  {% if iso %}
+    <span class="dl">{{ label }} {{ iso }}</span>
+    {% if days is not none %}
+      {% if days < 0 %}
+        <span class="dl-days over">期限切れ</span>
+      {% elif days == 0 %}
+        <span class="dl-days soon">本日</span>
+      {% elif days <= 3 %}
+        <span class="dl-days soon">⚠あと{{ days }}日</span>
+      {% else %}
+        <span class="dl-days">あと{{ days }}日</span>
+      {% endif %}
+    {% endif %}
+  {% endif %}
+{% endmacro %}
+
 {% block content %}
 <div class="topbar"><h1>入札参加申請の管理</h1></div>
+
+<div class="app-summary">
+  <div class="sumcard"><span class="num">{{ summary.total }}</span><span class="lbl">管理中の案件</span></div>
+  <div class="sumcard"><span class="num">{{ summary.partner_total }}</span><span class="lbl">協力会社（見積）</span></div>
+  <div class="sumcard {{ 'alert' if summary.deadline_soon }}"><span class="num">{{ summary.deadline_soon }}</span><span class="lbl">締切間近（3日以内）</span></div>
+  <div class="sumcard {{ 'alert' if summary.needs_check }}"><span class="num">{{ summary.needs_check }}</span><span class="lbl">要確認</span></div>
+</div>
 
 <form class="status-tabs" method="get" action="{{ url_for('applications') }}">
   <a class="tab {{ 'active' if not selected_status }}" href="{{ url_for('applications') }}">すべて</a>
@@ -12,28 +36,46 @@
   {% endfor %}
 </form>
 
-{% if rows %}
-<table class="list">
-  <thead>
-    <tr>
-      <th>状況</th><th>案件名</th><th>発注機関</th><th>地域</th>
-      <th>締切</th><th>申請日</th><th>メモ</th>
-    </tr>
-  </thead>
-  <tbody>
-    {% for r in rows %}
-    <tr>
-      <td><span class="status-badge {{ status_class.get(r.status, '') }}">{{ r.status }}</span></td>
-      <td><a href="{{ url_for('case_detail', case_id=r.case_id) }}">{{ r.title }}</a></td>
-      <td>{{ r.agency }}</td>
-      <td>{{ r.prefecture }}</td>
-      <td>{{ r.deadline or '—' }}</td>
-      <td>{{ r.applied_date or '—' }}</td>
-      <td class="dim">{{ r.note or '' }}</td>
-    </tr>
-    {% endfor %}
-  </tbody>
-</table>
+{% if groups %}
+  {% for g in groups %}
+  <section class="app-group">
+    <h2 class="app-group-head">
+      <span class="status-badge {{ status_class.get(g.status, '') }}">{{ g.status }}</span>
+      <span class="cnt">{{ g.rows | length }}件</span>
+    </h2>
+    <table class="list">
+      <thead>
+        <tr>
+          <th>案件名</th><th>発注機関</th><th>地域</th>
+          <th>担当</th><th>締切</th><th>協力会社</th><th>提出</th><th>メモ</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for r in g.rows %}
+        <tr class="{{ 'row-check' if r.needs_check }}">
+          <td class="title-cell">
+            <a href="{{ url_for('case_detail', case_id=r.case_id) }}">{{ r.title }}</a>
+            {% if r.needs_check %}<span class="badge req">要確認</span>{% endif %}
+          </td>
+          <td>{{ r.agency or '—' }}</td>
+          <td class="nowrap">{{ r.prefecture or r.region or '—' }}</td>
+          <td class="nowrap">{{ r.assignee or '—' }}</td>
+          <td class="nowrap">
+            {{ deadline_cell('参加申請', r.eff_apply_deadline, r.apply_days) }}
+            {% if r.bid_deadline %}<br>{{ deadline_cell('入札書', r.bid_deadline, r.bid_days) }}{% endif %}
+            {% if not r.eff_apply_deadline and not r.bid_deadline %}—{% endif %}
+          </td>
+          <td class="nowrap">
+            {% if r.partner_count %}依頼{{ r.partner_count }}社 / 回答{{ r.partner_replied }}{% else %}—{% endif %}
+          </td>
+          <td class="nowrap">{{ r.submit_method or '—' }}</td>
+          <td class="dim">{{ r.note or '' }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </section>
+  {% endfor %}
 {% else %}
 <p class="empty">
   {% if selected_status %}「{{ selected_status }}」の案件はありません。{% else %}

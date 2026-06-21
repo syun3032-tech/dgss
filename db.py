@@ -83,11 +83,17 @@ CREATE TABLE IF NOT EXISTS profile (
 );
 
 CREATE TABLE IF NOT EXISTS applications (
-    case_id      INTEGER PRIMARY KEY REFERENCES cases(id) ON DELETE CASCADE,
-    status       TEXT NOT NULL DEFAULT '検討中',  -- APP_STATUSES のいずれか
-    applied_date TEXT DEFAULT '',                 -- 申請日（任意）
-    note         TEXT DEFAULT '',                 -- メモ
-    updated_at   TEXT DEFAULT (datetime('now'))
+    case_id        INTEGER PRIMARY KEY REFERENCES cases(id) ON DELETE CASCADE,
+    status         TEXT NOT NULL DEFAULT '検討中',  -- APP_STATUSES のいずれか
+    applied_date   TEXT DEFAULT '',                 -- 申請日（任意）
+    note           TEXT DEFAULT '',                 -- メモ
+    assignee       TEXT DEFAULT '',                 -- 担当者（社長／金子さん 等）
+    apply_deadline TEXT DEFAULT '',                 -- 参加申請期限（ISO・任意。空なら案件の締切を流用）
+    bid_deadline   TEXT DEFAULT '',                 -- 入札書提出期限（ISO・任意）
+    submit_method  TEXT DEFAULT '',                 -- 提出方法（電子／郵送／持参）
+    needs_check    INTEGER DEFAULT 0,               -- 要確認フラグ（0/1）
+    partners       TEXT DEFAULT '[]',               -- 協力会社見積（JSON配列）
+    updated_at     TEXT DEFAULT (datetime('now'))
 );
 
 -- AI応募アシストの生成結果キャッシュ（external_id=再採番に強い安定キー）。
@@ -111,16 +117,37 @@ CREATE TABLE IF NOT EXISTS agencies (
 );
 """
 
-# 入札参加申請のステータス（電気工事入札の進行段階）
+# 入札参加申請のステータス（電気工事入札の進行段階）。
+# bid-next-eta（川野電気システム）の進行段階に合わせて拡張。
 APP_STATUSES: list[str] = [
-    "検討中",        # これから検討
-    "申請準備中",    # 参加資格・書類を準備
-    "申請済",        # 入札参加申請を提出済み
-    "入札参加済",    # 入札に参加した
-    "落札",          # 落札できた
-    "不参加",        # 参加しないと決定
-    "見送り",        # 今回は見送り
+    "検討中",          # これから検討（進行中の初期）
+    "参加申請準備中",  # 参加資格・書類を準備
+    "参加申請済",      # 入札参加申請を提出済み
+    "協力会社探し中",  # 見積を出してくれる協力会社を探している
+    "見積取得",        # 協力会社の見積を回収中／取得済み
+    "見積集まらず",    # 見積が集まらず対応困難（NG）
+    "入札書提出済",    # 入札書を提出した
+    "落札",            # 自社が落札
+    "他社落札",        # 他社が落札（失注）
+    "見送り",          # 今回は見送り／不参加
 ]
+
+# 旧ステータス → 現ステータスの読み替え（既存データ・localStorage退避分の救済）。
+STATUS_ALIASES: dict[str, str] = {
+    "申請準備中": "参加申請準備中",
+    "申請済": "参加申請済",
+    "入札参加済": "入札書提出済",
+    "不参加": "見送り",
+}
+
+# 書類の提出方法（bid-next-eta 由来）。
+SUBMIT_METHODS: list[str] = ["電子", "郵送", "持参"]
+
+
+def normalize_status(status: str) -> str:
+    """旧ステータス名を現行名に読み替える。未知の値はそのまま返す。"""
+    s = (status or "").strip()
+    return STATUS_ALIASES.get(s, s)
 
 
 def _connect() -> sqlite3.Connection:
@@ -148,6 +175,19 @@ def init_db() -> None:
         # 列追加後に索引を作成（新設列のため SCHEMA からは外してある）
         conn.execute("CREATE INDEX IF NOT EXISTS idx_cases_proctype ON cases(procurement_type)")
         conn.execute("CREATE INDEX IF NOT EXISTS idx_cases_budgetyen ON cases(budget_yen)")
+        # applications の後付け列をマイグレーション（無ければ追加）。
+        # bid-next-eta（川野電気システム）の管理機能を移植するために拡張した列。
+        app_cols = [r[1] for r in conn.execute("PRAGMA table_info(applications)")]
+        for col, ddl in (
+            ("assignee",       "TEXT DEFAULT ''"),
+            ("apply_deadline", "TEXT DEFAULT ''"),
+            ("bid_deadline",   "TEXT DEFAULT ''"),
+            ("submit_method",  "TEXT DEFAULT ''"),
+            ("needs_check",    "INTEGER DEFAULT 0"),
+            ("partners",       "TEXT DEFAULT '[]'"),
+        ):
+            if col not in app_cols:
+                conn.execute(f"ALTER TABLE applications ADD COLUMN {col} {ddl}")
         conn.commit()
 
 
@@ -520,20 +560,79 @@ def clear_cases(source: str | None = None) -> int:
 # 入札参加申請（applications）
 # ============================================================
 
-def set_application(case_id: int, status: str, applied_date: str = "", note: str = "") -> None:
-    """案件の入札参加申請ステータスを登録・更新する。"""
+def _normalize_partners(partners: Any) -> str:
+    """協力会社見積を検証してJSON文字列にする。
+
+    受け取り: JSON文字列 or list[dict]。各社 {company, amount, requested, replied, note}。
+    会社名が空のものは捨てる。常に妥当なJSON配列文字列を返す。
+    """
+    import json
+    if isinstance(partners, str):
+        try:
+            items = json.loads(partners or "[]")
+        except (ValueError, TypeError):
+            items = []
+    elif isinstance(partners, list):
+        items = partners
+    else:
+        items = []
+    cleaned: list[dict[str, Any]] = []
+    for it in items:
+        if not isinstance(it, dict):
+            continue
+        company = str(it.get("company", "")).strip()
+        if not company:
+            continue
+        cleaned.append({
+            "company": company,
+            "amount": str(it.get("amount", "")).strip(),
+            "requested": 1 if it.get("requested") else 0,
+            "replied": 1 if it.get("replied") else 0,
+            "note": str(it.get("note", "")).strip(),
+        })
+    return json.dumps(cleaned, ensure_ascii=False)
+
+
+def set_application(case_id: int, status: str, applied_date: str = "",
+                    note: str = "", assignee: str = "",
+                    apply_deadline: str = "", bid_deadline: str = "",
+                    submit_method: str = "", needs_check: bool = False,
+                    partners: Any = None) -> None:
+    """案件の入札参加申請ステータスと管理項目を登録・更新する。"""
+    status = normalize_status(status)
     if status not in APP_STATUSES:
         raise ValueError(f"不正なステータス: {status}")
+    partners_json = _normalize_partners(partners if partners is not None else [])
     with _connect() as conn:
         conn.execute(
-            """INSERT INTO applications (case_id, status, applied_date, note, updated_at)
-               VALUES (?, ?, ?, ?, datetime('now'))
+            """INSERT INTO applications
+                 (case_id, status, applied_date, note, assignee,
+                  apply_deadline, bid_deadline, submit_method, needs_check,
+                  partners, updated_at)
+               VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, datetime('now'))
                ON CONFLICT(case_id) DO UPDATE SET
                  status=excluded.status, applied_date=excluded.applied_date,
-                 note=excluded.note, updated_at=datetime('now')""",
-            (case_id, status, applied_date, note),
+                 note=excluded.note, assignee=excluded.assignee,
+                 apply_deadline=excluded.apply_deadline,
+                 bid_deadline=excluded.bid_deadline,
+                 submit_method=excluded.submit_method,
+                 needs_check=excluded.needs_check, partners=excluded.partners,
+                 updated_at=datetime('now')""",
+            (case_id, status, applied_date, note, assignee,
+             apply_deadline, bid_deadline, submit_method,
+             1 if needs_check else 0, partners_json),
         )
         conn.commit()
+
+
+def _hydrate_application(row: dict[str, Any]) -> dict[str, Any]:
+    """DB行の partners(JSON文字列) を list に展開して返す。"""
+    import json
+    try:
+        row["partners"] = json.loads(row.get("partners") or "[]")
+    except (ValueError, TypeError):
+        row["partners"] = []
+    return row
 
 
 def get_application(case_id: int) -> dict[str, Any] | None:
@@ -541,7 +640,7 @@ def get_application(case_id: int) -> dict[str, Any] | None:
         row = conn.execute(
             "SELECT * FROM applications WHERE case_id = ?", (case_id,)
         ).fetchone()
-        return dict(row) if row else None
+        return _hydrate_application(dict(row)) if row else None
 
 
 def list_applications(status: str | None = None) -> list[dict[str, Any]]:
@@ -558,7 +657,7 @@ def list_applications(status: str | None = None) -> list[dict[str, Any]]:
         params.append(status)
     sql += " ORDER BY a.updated_at DESC"
     with _connect() as conn:
-        return [dict(r) for r in conn.execute(sql, params).fetchall()]
+        return [_hydrate_application(dict(r)) for r in conn.execute(sql, params).fetchall()]
 
 
 # ============================================================
