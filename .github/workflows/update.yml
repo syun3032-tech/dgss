@@ -32,6 +32,13 @@ jobs:
       - name: 網羅DB生成（全国・都道府県分割）
         run: python update.py --full
 
+      - name: PDF実照合でToDo精度を監査（PDCA・非ブロッキング）
+        run: |
+          sudo apt-get update -qq && sudo apt-get install -y -qq poppler-utils
+          # 生成したToDo/必要書類が公告PDFの実態とズレていないかをサンプル照合。
+          # 失敗や低スコアでもデプロイは止めない（品質の可視化が目的）。ログで確認できる。
+          python audit.py --pdf 40 || echo "::warning::PDF実照合の整合率がしきい値未満、またはPDF監査に失敗（ログ参照）"
+
       - name: DBを圧縮
         run: gzip -9 -c denki_bid.db > denki_bid.db.gz && ls -lh denki_bid.db.gz
 
