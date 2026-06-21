@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>AIモーニングマッチ（新画面プロトタイプ）</title>
+  <style>
+    :root { --ok:#16a34a; --warn:#b45309; --ng:#dc2626; --unk:#6b7280; }
+    body { font-family: system-ui, -apple-system, "Hiragino Sans", sans-serif;
+           margin: 0; background: #f6f7fb; color: #1f2937; }
+    header { background: #4f46e5; color: #fff; padding: 16px 20px; }
+    header h1 { margin: 0; font-size: 18px; }
+    header p { margin: 4px 0 0; font-size: 13px; opacity: .9; }
+    .wrap { max-width: 860px; margin: 0 auto; padding: 16px; }
+    .case { background: #fff; border: 1px solid #e5e7eb; border-radius: 12px;
+            padding: 14px 16px; margin: 12px 0; }
+    .case h2 { font-size: 16px; margin: 0 0 6px; }
+    .meta { font-size: 13px; color: #4b5563; }
+    .meta b { color: #111827; }
+    .row { display: flex; gap: 10px; align-items: center; margin-top: 10px; flex-wrap: wrap; }
+    button { font: inherit; border: 0; border-radius: 8px; padding: 8px 14px; cursor: pointer; }
+    .btn { background: #4f46e5; color: #fff; }
+    .btn:disabled { opacity: .5; cursor: default; }
+    .verdict { display: inline-block; font-weight: 700; border-radius: 999px;
+               padding: 2px 12px; font-size: 14px; }
+    .v\.ok   { background: #dcfce7; color: var(--ok); }
+    .v\.warn { background: #fef9c3; color: var(--warn); }
+    .v\.ng   { background: #fee2e2; color: var(--ng); }
+    .v\.unk  { background: #e5e7eb; color: var(--unk); }
+    .brief { margin-top: 12px; border-top: 1px dashed #d1d5db; padding-top: 12px; display: none; }
+    .brief h3 { font-size: 14px; margin: 10px 0 4px; }
+    .brief ul, .brief ol { margin: 4px 0; padding-left: 20px; }
+    .muted { color: #6b7280; font-size: 12px; }
+    .ask { margin-top: 12px; padding: 10px 12px; background: #eef2ff; border-radius: 8px; }
+    .empty { color: #6b7280; padding: 24px; text-align: center; }
+    .badge { font-size: 11px; background: #eef2ff; color: #4f46e5; border-radius: 999px; padding: 2px 8px; }
+  </style>
+</head>
+<body>
+<header>
+  <h1>🌅 AIモーニングマッチ <span class="badge">新画面プロトタイプ</span></h1>
+  <p>毎朝の新着 × あなたのマイ条件{% if prefs %}（{{ prefs|join('・') }}）{% endif %}。タップでAIが「応募できるか」を判定します。</p>
+</header>
+<div class="wrap">
+  {% if not ai_enabled %}
+    <div class="ask">⚠️ AI判定は <b>GEMINI_API_KEY</b> 設定時に有効になります（未設定でも一覧は表示されます）。</div>
+  {% endif %}
+  {% if not cases %}
+    <p class="empty">条件に合う新着案件がありません。マイ条件のエリアや期間を見直してください。</p>
+  {% endif %}
+  {% for c in cases %}
+  <div class="case" data-id="{{ c.id }}">
+    <h2>{{ c.title }}</h2>
+    <div class="meta">
+      <b>{{ c.agency }}</b>（{{ c.agency_type }}）／{{ c.prefecture }}／{{ c.category }}<br>
+      締切 <b>{{ c.deadline }}</b>　公告 {{ c.announced_date }}
+      {% if c.budget %}／予定価格 {{ c.budget }}{% endif %}　区分 {{ c.procurement_type or '不明' }}
+    </div>
+    <div class="row">
+      <button class="btn js-brief">{% if c.ai_done %}AIの判定を見る{% else %}AIで応募できるか判定{% endif %}</button>
+      {% if c.ai_verdict %}<span class="verdict v.{{ {'〇':'ok','△':'warn','✕':'ng'}.get(c.ai_verdict,'unk') }}">{{ c.ai_verdict }}</span>{% endif %}
+      {% if c.detail_url %}<a href="{{ c.detail_url }}" target="_blank" rel="noopener" class="muted">公告を開く ↗</a>{% endif %}
+    </div>
+    <div class="brief"></div>
+  </div>
+  {% endfor %}
+</div>
+<script>
+function vcls(v){ return ({'〇':'ok','△':'warn','✕':'ng'})[v] || 'unk'; }
+function esc(s){ var d=document.createElement('div'); d.textContent=(s==null?'':s); return d.innerHTML; }
+function ul(items){ return '<ul>'+(items||[]).map(function(x){return '<li>'+esc(x)+'</li>';}).join('')+'</ul>'; }
+
+document.querySelectorAll('.case').forEach(function(card){
+  var btn = card.querySelector('.js-brief');
+  var out = card.querySelector('.brief');
+  var id = card.getAttribute('data-id');
+  btn.addEventListener('click', function(){
+    out.style.display='block';
+    out.innerHTML='<p class="muted">AIが公告とあなたのマイ条件を読み込んでいます…（10〜30秒）</p>';
+    btn.disabled=true;
+    fetch('/match/'+id+'/brief',{method:'POST'}).then(function(r){return r.json();}).then(function(d){
+      if(d.enabled===false){ out.innerHTML='<p class="muted">AI判定はGEMINI_API_KEY設定で有効になります。</p>'; return; }
+      if(d.error){ out.innerHTML='<p class="muted">AI判定に失敗しました。時間をおいて再度お試しください。</p>'; return; }
+      var e=d.eligibility||{};
+      var h='';
+      h+='<h3>これはこういう案件です</h3>'+ul(d.summary);
+      h+='<h3>あなたは応募できる？ <span class="verdict v.'+vcls(e.verdict)+'">'+esc(e.verdict||'不明')+'</span></h3>'+ul(e.reasons);
+      h+='<h3>必要書類（この案件向け）</h3>'+ul(d.documents);
+      h+='<h3>やること（応募一歩手前まで）</h3><ol>'+(d.todo||[]).map(function(t){return '<li><b>'+esc(t.title)+'</b>'+(t.detail?'<br><span class="muted">'+esc(t.detail)+'</span>':'')+'</li>';}).join('')+'</ol>';
+      if(d.cautions&&d.cautions.length){ h+='<h3>注意点</h3>'+ul(d.cautions); }
+      h+='<div class="ask"><b>この案件、やりますか？</b> → 「進める」を押すと申請管理に登録して応募準備に入ります（統合時に実装）。'
+        +' <button class="btn js-go" data-id="'+id+'">進める</button></div>';
+      h+='<p class="muted">'+(d.cached?'保存済みの判定':'AI判定')+(d.model?'（'+esc(d.model)+'）':'')+' — 最終確認は公告原本で。</p>';
+      out.innerHTML=h;
+    }).catch(function(){ out.innerHTML='<p class="muted">通信に失敗しました。</p>'; })
+      .finally(function(){ btn.disabled=false; });
+  });
+});
+</script>
+</body>
+</html>
