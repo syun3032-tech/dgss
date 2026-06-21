@@ -304,9 +304,13 @@ def classify_category(text: str, title: str = "") -> str:
     for name, keywords in _CATEGORY_RULES:
         if any(k in t for k in keywords):
             return name
-    # 2) タイトルが中立なら説明文も見る（付帯ではなく主たる記述を拾う想定）
+    # 2) タイトルが中立なら説明文も見る。ただし【電気系(本業)に限定】する。
+    #    非電気のspecialty(清掃/造園/管 等)を本文判定に含めると、改修工事の本文に
+    #    偶発的に出る「清掃」「外構」「管」等を拾って誤分類し、結果として必要書類の
+    #    建設業許可がズレる（実PDF照合で確認: 改修/増築/標識設置工事が清掃/造園/管に
+    #    誤爆 → 実際は建築一式・とび土工）。本業の電気だけは本文でも信頼できる。
     for name, keywords in _CATEGORY_RULES:
-        if any(k in text for k in keywords):
+        if name.startswith("電気工事") and any(k in text for k in keywords):
             return name
     return "その他"
 

@@ -259,7 +259,9 @@ def _construction_license_label(category: str) -> str:
     biz = _CONSTRUCTION_LICENSE_BY_CATEGORY.get(category)
     if biz:
         return f"建設業許可証明書（{biz}）"
-    return "建設業許可証明書（該当業種）"
+    # 業種が確証できない工事（改修・増築・設置等の汎用工事）は、断定すると実態と
+    # ズレるため（実PDF照合で確認: 建築一式/とび土工 等）、公告での確認を促す。
+    return "建設業許可証明書（公告で指定された業種を確認。例: 建築一式・とび土工 等）"
 
 
 def _qualification_step(case: dict, kind: str, bid_norm: str) -> dict:
@@ -351,9 +353,10 @@ def _documents(case: dict, kind: str, bid_norm: str) -> list[dict]:
                      "required": True,
                      "note": "随意契約は見積提出が中心。指定様式・内訳に注意。"})
     else:
-        docs.append({"label": "入札書（電子入札はICカード＝電子証明書）",
+        docs.append({"label": "入札書（入札方法は公告で確認）",
                      "required": True,
-                     "note": "電子入札の場合は事前にICカード・利用者登録が必要。"})
+                     "note": "電子入札か紙入札かは案件で異なる。電子入札なら事前にICカード"
+                             "（電子証明書）・利用者登録が必要。紙入札なら持参/郵送の方法に従う。"})
     return docs
 
 
@@ -425,6 +428,9 @@ def _notes(case: dict, kind: str, bid_norm: str) -> list[str]:
         notes.append("この案件は工事／役務の区分が判定できませんでした。公告で区分をご確認ください。")
     if bid_norm == "不明":
         notes.append("入札方式が公開データに無いため、公告で方式（一般競争／指名／随意）をご確認ください。")
+    if kind == "工事":
+        notes.append("入札方法（電子／紙）・現場説明会の有無・質問書の受付期限・必要な建設業許可の業種は、"
+                     "案件ごとに異なります。公告本文で必ず確認してください。")
     return notes
 
 
