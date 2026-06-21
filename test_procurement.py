@@ -235,13 +235,28 @@ def test_req_random_contract() -> bool:
 
 
 def test_req_non_electrical() -> bool:
-    """非電気(塗装)工事: 塗装工事業許可が出て、電気工事士は出ない。"""
+    """非電気(塗装)工事: 専門業種を断定せず『公告で確認』とし、電気工事士は出ない。
+
+    実PDF照合で、非電気工事は専門業種でなく建築一式/土木一式が要求されることが
+    多いと判明したため、当方は業種を断定しない（誤誘導を避ける）。
+    """
     ok = True
     case = {"procurement_type": "工事", "agency_type": "地方公共団体",
             "category": "塗装", "bid_method": "一般競争入札", "title": "外壁塗装工事"}
     req = p.application_requirements(case)
-    ok &= _check("塗装: 塗装工事業許可が出る", _has(req, "塗装工事業"))
-    ok &= _check("塗装: 電気工事士は出ない", not _has(req, "電気工事士"))
+    ok &= _check("非電気: 建設業許可は『公告で指定された業種を確認』", _has(req, "公告で指定された業種を確認"))
+    ok &= _check("非電気: 塗装工事業を断定しない", not _has(req, "塗装工事業"))
+    ok &= _check("非電気: 電気工事士は出ない", not _has(req, "電気工事士"))
+    return ok
+
+
+def test_req_electrical_license_asserted() -> bool:
+    """電気(本業)工事は電気工事業の許可を断定する（実PDFで検証済の確定情報）。"""
+    ok = True
+    case = {"procurement_type": "工事", "agency_type": "地方公共団体",
+            "category": "電気工事-電気設備", "bid_method": "一般競争入札", "title": "受変電設備改修工事"}
+    req = p.application_requirements(case)
+    ok &= _check("電気: 電気工事業の許可を断定", _has(req, "電気工事業"))
     return ok
 
 
@@ -266,6 +281,7 @@ def main() -> int:
         test_req_service_cleaning, test_req_service_security,
         test_req_electrical_safety, test_req_service_national,
         test_req_random_contract, test_req_non_electrical,
+        test_req_electrical_license_asserted,
         test_req_empty_bidmethod,
     ]
     all_ok = True

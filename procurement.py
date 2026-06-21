@@ -252,16 +252,43 @@ def _is_electrical_safety_service(case: dict) -> bool:
                ("保安管理", "電気工作物", "電気主任", "受電設備", "受変電", "高圧受電"))
 
 
-def _construction_license_label(category: str) -> str:
-    """業種から必要な建設業許可のラベルを返す（電気は電気工事業）。"""
-    if _is_electrical(category):
-        return "建設業許可証明書（電気工事業）"
-    biz = _CONSTRUCTION_LICENSE_BY_CATEGORY.get(category)
-    if biz:
-        return f"建設業許可証明書（{biz}）"
-    # 業種が確証できない工事（改修・増築・設置等の汎用工事）は、断定すると実態と
-    # ズレるため（実PDF照合で確認: 建築一式/とび土工 等）、公告での確認を促す。
-    return "建設業許可証明書（公告で指定された業種を確認。例: 建築一式・とび土工 等）"
+# 「主たる工事が電気工事」と確証できるタイトル語（建設業許可=電気工事業 を断定する条件）。
+# 体育館改造やダム工事の本文に出る「電気設備」等のサブ工事では断定しない（実PDF照合で
+# 建築一式/土木一式が要求されると判明）。タイトルが電気工事そのものを示す時だけ断定する。
+_STRONG_ELECTRIC_TITLE = (
+    "電気工事", "電気設備工事", "電気設備改修", "受変電", "変電設備", "キュービクル",
+    "高圧受電", "受電設備", "動力設備", "幹線改修", "幹線設備", "分電盤", "配電設備",
+    "照明設備工事", "ＬＥＤ化", "LED化", "太陽光発電設備", "自家用電気工作物",
+    "非常用発電設備", "電気主任技術者",
+)
+
+
+def _is_primary_electrical(title: str) -> bool:
+    """タイトルから『主たる工事が電気工事』と確証できるか（許可業種の断定条件）。"""
+    t = title or ""
+    # 複数工事を1公告にまとめた束ね案件（「工事」が3つ以上）は主たる業種を特定できない。
+    # 実PDF照合: 電線共同溝/保育所新築/舗装等の混在公告に「電気設備工事」が含まれても、
+    # 必要な許可は建築一式・土木一式等であり電気と断定すると誤る。
+    if t.count("工事") >= 3:
+        return False
+    return any(k in t for k in _STRONG_ELECTRIC_TITLE)
+
+
+def _construction_license(title: str) -> tuple[str, str]:
+    """必要な建設業許可の (label, note) を返す。
+
+    タイトルが主として電気工事だと確証できる時だけ「電気工事業」を断定する
+    （実PDF照合で検証済の確定情報）。それ以外の工事は、当方の分類だけでは必要な
+    許可業種を断定できない（改修/整備/築造/舗装/大規模改造 等は専門業種でなく
+    建築一式・土木一式が要求されることが多い）ため、断定せず公告での確認を促す。
+    """
+    if _is_primary_electrical(title):
+        return ("建設業許可証明書（電気工事業）",
+                "電気工事は電気工事業の許可。請負金額に応じ一般/特定。")
+    return ("建設業許可証明書（公告で指定された業種を確認）",
+            "必要な許可業種は案件で異なる。建物の新築・増改築や大規模改造は建築一式、"
+            "道路・河川等の土木は土木一式、管・塗装・防水・造園・とび等の"
+            "専門工事はその業種が一般的。公告の参加資格で必ず確認。")
 
 
 def _qualification_step(case: dict, kind: str, bid_norm: str) -> dict:
@@ -308,10 +335,10 @@ def _documents(case: dict, kind: str, bid_norm: str) -> list[dict]:
                      "note": "未登録なら事前申請が必要。登録済みなら資格者カード等。"})
 
     if kind == "工事":
-        # 建設工事 共通
-        docs.append({"label": _construction_license_label(category),
-                     "required": True,
-                     "note": "請負金額に応じた建設業許可（一般/特定）。"})
+        title = case.get("title", "")
+        # 建設工事 共通（許可業種は『主たる工事が電気か』をタイトルで判定して断定/保留）
+        _lic_label, _lic_note = _construction_license(title)
+        docs.append({"label": _lic_label, "required": True, "note": _lic_note})
         docs.append({"label": "経営事項審査結果通知書（経審）",
                      "required": True,
                      "note": "公共工事を直接請け負うには経審が必須（建設工事の制度）。"})
@@ -321,7 +348,7 @@ def _documents(case: dict, kind: str, bid_norm: str) -> list[dict]:
         docs.append({"label": "配置予定技術者の資格証明（主任技術者／監理技術者）",
                      "required": True,
                      "note": "監理技術者は監理技術者資格者証・講習修了が必要な場合あり。"})
-        if _is_electrical(category):
+        if _is_primary_electrical(title):
             docs.append({"label": "電気工事士免状の写し（必要に応じ電気主任技術者免状）",
                          "required": True,
                          "note": "電気工事の従事者資格。第一種/第二種は工事内容による。"})
