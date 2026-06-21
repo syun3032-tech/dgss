@@ -74,6 +74,45 @@ def inject_profile_set():
         return {"profile_set": False}
 
 
+# データ異常とみなす閾値
+_HEALTH_MIN_CASES = 1000   # これ未満は取得失敗の疑い（通常は1万件超）
+_HEALTH_STALE_DAYS = 5     # 最新公告がこれ以上前なら更新停止の疑い
+
+
+@app.context_processor
+def inject_data_health():
+    """データの鮮度・件数を全テンプレへ渡し、画面上部で警告できるようにする。
+
+    毎日の自動更新がネット障害等で失敗すると件数が激減したり更新が止まる。
+    今朝のような「無言の取得失敗」に運用者がすぐ気づけるよう、件数と最新公告日を
+    評価して `data_health.stale`（要注意か）と理由を返す。読み取りのみで軽量。
+    """
+    info = {"total": 0, "latest": "", "stale": False, "stale_reason": ""}
+    try:
+        with db._connect() as conn:
+            total = conn.execute("SELECT COUNT(*) FROM cases").fetchone()[0] or 0
+            latest = conn.execute(
+                "SELECT MAX(announced_date) FROM cases WHERE announced_date != ''"
+            ).fetchone()[0] or ""
+        info["total"], info["latest"] = total, latest
+        reasons = []
+        if total < _HEALTH_MIN_CASES:
+            reasons.append(f"案件が{total:,}件と異常に少なく、データ取得に失敗している可能性があります")
+        if latest:
+            try:
+                d = date.fromisoformat(latest)
+                if (date.today() - d).days >= _HEALTH_STALE_DAYS:
+                    reasons.append(f"最新の公告が{latest}で、データ更新が止まっている可能性があります")
+            except ValueError:
+                pass
+        if reasons:
+            info["stale"] = True
+            info["stale_reason"] = "／".join(reasons)
+    except Exception:  # noqa: BLE001 — ヘルス表示の失敗で画面を落とさない
+        pass
+    return {"data_health": info}
+
+
 @app.route("/")
 def cases():
     # 初期表示は関西中心（クエリ無しのランディング時は近畿をデフォルト）

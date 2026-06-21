@@ -29,6 +29,12 @@
   </aside>
 
   <main class="main">
+    {% if data_health and data_health.stale %}
+      <div class="flash error data-alert">
+        ⚠️ <strong>データに問題がある可能性があります</strong>：{{ data_health.stale_reason }}。
+        <span class="muted">（総件数 {{ '{:,}'.format(data_health.total) }}件／最新公告 {{ data_health.latest or '不明' }}）</span>
+      </div>
+    {% endif %}
     {% with messages = get_flashed_messages(with_categories=true) %}
       {% for category, msg in messages %}
         <div class="flash {{ category }}">{{ msg }}</div>
