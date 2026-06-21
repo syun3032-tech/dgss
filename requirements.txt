@@ -8,3 +8,5 @@ itsdangerous==2.2.0
 click==8.4.1
 MarkupSafe==3.0.3
 gunicorn==26.0.0
+# AI応募アシスト（課金プラン・オンデマンド）用。ANTHROPIC_API_KEY 未設定なら呼ばれない。
+anthropic==0.111.0

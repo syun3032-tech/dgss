@@ -14,6 +14,7 @@ NJSS無双君 とは完全に独立したアプリ。SQLite だけで動く。
 
 from __future__ import annotations
 
+import logging
 import os
 from datetime import date, timedelta
 
@@ -21,6 +22,7 @@ from flask import Flask, abort, flash, jsonify, redirect, render_template, reque
 
 import db
 import procurement
+import ai_assist
 from regions import ALL_PREFECTURES, REGIONS, prefectures_in
 
 # 公告日がこの日付以降なら「新着」とみなす（直近7日）
@@ -264,7 +266,47 @@ def case_detail(case_id: int):
         agency_info=agency_info,
         guide=guide,
         requirements=requirements,
+        ai_enabled=ai_assist.is_enabled(),
+        ai_cached=bool(db.get_ai_assist(case.get("external_id", ""))),
     )
+
+
+@app.route("/case/<int:case_id>/ai-assist", methods=["POST"])
+def case_ai_assist(case_id: int):
+    """【課金プラン・オンデマンド】AI応募アシストを生成して返す（タップ時のみ課金）。
+
+    キャッシュがあれば即返す（再課金しない）。?refresh=1 で再生成。
+    APIキー未設定なら enabled:false を返し、画面で有効化方法を案内する。
+    """
+    import json
+    case = db.get_case(case_id)
+    if not case:
+        abort(404)
+    ext = case.get("external_id", "")
+    refresh = request.args.get("refresh") == "1"
+
+    if not refresh:
+        cached = db.get_ai_assist(ext)
+        if cached:
+            data = json.loads(cached["payload"])
+            data["cached"] = True
+            return jsonify(data)
+
+    if not ai_assist.is_enabled():
+        return jsonify({"enabled": False})
+
+    try:
+        requirements = procurement.application_requirements(case)
+        result = ai_assist.assist(case, db.get_profile(), requirements)
+    except Exception as e:  # noqa: BLE001 — AI失敗で500にせず画面で案内
+        logging.getLogger(__name__).warning("ai assist failed", exc_info=True)
+        return jsonify({"enabled": True, "error": str(e)[:200]}), 200
+
+    if result.get("enabled") and ext:
+        db.set_ai_assist(ext, json.dumps(result, ensure_ascii=False),
+                         result.get("model", ""))
+    result["cached"] = False
+    return jsonify(result)
 
 
 @app.route("/case/<int:case_id>/apply", methods=["POST"])

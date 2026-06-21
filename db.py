@@ -90,6 +90,15 @@ CREATE TABLE IF NOT EXISTS applications (
     updated_at   TEXT DEFAULT (datetime('now'))
 );
 
+-- AI応募アシストの生成結果キャッシュ（external_id=再採番に強い安定キー）。
+-- 同じ案件の再タップで再課金しないために保持する（無料プランでは一切書かれない）。
+CREATE TABLE IF NOT EXISTS ai_assist (
+    external_id TEXT PRIMARY KEY,     -- 取得元の一意ID
+    payload     TEXT NOT NULL,        -- 生成結果(JSON)
+    model       TEXT DEFAULT '',      -- 使用モデル
+    created_at  TEXT DEFAULT (datetime('now'))
+);
+
 CREATE TABLE IF NOT EXISTS agencies (
     name        TEXT PRIMARY KEY,    -- 発注機関名
     njss_count  INTEGER DEFAULT 0,   -- NJSS案件数（規模の目安）
@@ -303,6 +312,30 @@ def get_case(case_id: int) -> dict[str, Any] | None:
     with _connect() as conn:
         row = conn.execute("SELECT * FROM cases WHERE id = ?", (case_id,)).fetchone()
         return dict(row) if row else None
+
+
+def get_ai_assist(external_id: str) -> dict[str, Any] | None:
+    """AI応募アシストのキャッシュ結果を返す（無ければ None）。payload はJSON文字列のまま。"""
+    if not external_id:
+        return None
+    with _connect() as conn:
+        row = conn.execute(
+            "SELECT payload, model, created_at FROM ai_assist WHERE external_id = ?",
+            (external_id,)).fetchone()
+        return dict(row) if row else None
+
+
+def set_ai_assist(external_id: str, payload: str, model: str = "") -> None:
+    """AI応募アシストの結果をキャッシュに保存（external_id で上書き）。"""
+    with _connect() as conn:
+        conn.execute(
+            """INSERT INTO ai_assist (external_id, payload, model, created_at)
+               VALUES (?, ?, ?, datetime('now'))
+               ON CONFLICT(external_id) DO UPDATE SET
+                 payload=excluded.payload, model=excluded.model,
+                 created_at=excluded.created_at""",
+            (external_id, payload, model))
+        conn.commit()
 
 
 def get_case_id_by_external(external_id: str) -> int | None:

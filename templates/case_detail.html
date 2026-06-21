@@ -55,6 +55,16 @@
     {% endif %}
   </div>
 
+  <section class="ai-box" data-case-id="{{ c.id }}" data-cached="{{ '1' if ai_cached else '0' }}">
+    <h2>🤖 AI応募アシスト <span class="ai-tag">課金プラン</span></h2>
+    <p class="ai-lead">この案件の公告・必要書類・あなたのマイ条件をAIが読み込み、
+      <strong>応募の一歩手前</strong>（参加資格の適合判定・必要書類の具体化・やることリスト）まで一気に仕上げます。</p>
+    <button type="button" class="btn primary" id="aiRun">
+      {% if ai_cached %}AIの結果を見る{% else %}AIで応募準備をする{% endif %}
+    </button>
+    <div id="aiResult" class="ai-result" hidden></div>
+  </section>
+
   <section class="guide-box">
     <h2>応募ガイド — この案件に入札するには</h2>
 
@@ -186,6 +196,71 @@
     };
     try { localStorage.setItem(KEY, JSON.stringify(map)); } catch (e) {}
   });
+})();
+</script>
+
+<script>
+/* AI応募アシスト（オンデマンド）。タップした時だけサーバ経由でClaudeを1回呼ぶ。
+   結果はサーバにキャッシュされ、再タップでは課金されない。 */
+(function () {
+  var box = document.querySelector('.ai-box');
+  if (!box) return;
+  var btn = document.getElementById('aiRun');
+  var out = document.getElementById('aiResult');
+  var caseId = box.getAttribute('data-case-id');
+  var esc = function (s) {
+    var d = document.createElement('div'); d.textContent = (s == null ? '' : s); return d.innerHTML;
+  };
+  var ul = function (items) {
+    return '<ul>' + (items || []).map(function (x) { return '<li>' + esc(x) + '</li>'; }).join('') + '</ul>';
+  };
+  function render(d) {
+    if (d.enabled === false) {
+      out.innerHTML = '<p class="ai-note">この機能は<strong>課金プラン</strong>で有効化されます'
+        + '（管理者がAPIキーを設定すると使えます）。</p>';
+      return;
+    }
+    if (d.error) {
+      out.innerHTML = '<p class="ai-note">AIの生成に失敗しました。時間をおいて再度お試しください。<br>'
+        + '<span class="muted">' + esc(d.error) + '</span></p>';
+      return;
+    }
+    var elig = d.eligibility || {};
+    var verdictClass = ({ '〇': 'ok', '△': 'warn', '✕': 'ng' })[elig.verdict] || 'unk';
+    var html = '';
+    html += '<div class="ai-block"><h3>要点</h3>' + ul(d.summary) + '</div>';
+    html += '<div class="ai-block"><h3>参加資格の適合</h3>'
+      + '<p><span class="ai-verdict ' + verdictClass + '">' + esc(elig.verdict || '不明') + '</span></p>'
+      + ul(elig.reasons) + '</div>';
+    html += '<div class="ai-block"><h3>必要書類（この案件向け）</h3>' + ul(d.documents) + '</div>';
+    html += '<div class="ai-block"><h3>やること（応募一歩手前まで）</h3><ol>'
+      + (d.todo || []).map(function (t) {
+          return '<li><strong>' + esc(t.title) + '</strong>'
+            + (t.detail ? '<br><span class="muted">' + esc(t.detail) + '</span>' : '') + '</li>';
+        }).join('') + '</ol></div>';
+    if (d.cautions && d.cautions.length) {
+      html += '<div class="ai-block"><h3>注意点</h3>' + ul(d.cautions) + '</div>';
+    }
+    html += '<p class="ai-foot muted">'
+      + (d.cached ? '保存済みの結果' : 'AI生成') + (d.model ? '（' + esc(d.model) + '）' : '')
+      + ' — 最終確認は必ず公告原本で行ってください。'
+      + ' <a href="#" id="aiRefresh">再生成</a></p>';
+    out.innerHTML = html;
+    var rf = document.getElementById('aiRefresh');
+    if (rf) rf.addEventListener('click', function (e) { e.preventDefault(); run(true); });
+  }
+  function run(refresh) {
+    out.hidden = false;
+    out.innerHTML = '<p class="ai-note">AIが公告と必要書類を読み込んでいます…（10〜30秒）</p>';
+    btn.disabled = true;
+    var url = '/case/' + caseId + '/ai-assist' + (refresh ? '?refresh=1' : '');
+    fetch(url, { method: 'POST' })
+      .then(function (r) { return r.json(); })
+      .then(function (d) { render(d); })
+      .catch(function () { out.innerHTML = '<p class="ai-note">通信に失敗しました。再度お試しください。</p>'; })
+      .finally(function () { btn.disabled = false; });
+  }
+  btn.addEventListener('click', function () { run(false); });
 })();
 </script>
 {% endblock %}
