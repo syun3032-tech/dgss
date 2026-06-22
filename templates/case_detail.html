@@ -15,17 +15,17 @@
   <section class="spec-box {{ c.spec_status }}">
     <h2>仕様書の取得可否</h2>
     {% if c.spec_status == 'available' %}
-      <p class="spec-verdict ok">✅ 取得可能</p>
+      <p class="spec-verdict ok">取得可能</p>
       {% if c.spec_url and c.spec_url.startswith('http') and 'example.com' not in c.spec_url %}
         <a class="btn primary" href="{{ c.spec_url }}" target="_blank" rel="noopener">仕様書をダウンロード</a>
       {% else %}
         <p class="reason">設計図書（仕様書）は下の「元の案件ページを開く」から発注機関のサイトで取得できます。</p>
       {% endif %}
     {% elif c.spec_status == 'unavailable' %}
-      <p class="spec-verdict ng">⛔ 取得できません</p>
+      <p class="spec-verdict ng">取得できません</p>
       <p class="reason"><strong>理由:</strong> {{ spec_reasons.get(c.spec_reason, c.spec_reason or '不明') }}</p>
     {% else %}
-      <p class="spec-verdict unk">❓ 未判定</p>
+      <p class="spec-verdict unk">未判定</p>
       <p class="reason">設計図書の有無は「元の案件ページを開く」から発注機関のサイトでご確認ください。</p>
     {% endif %}
   </section>
@@ -49,14 +49,14 @@
     {% if guide.notice_url %}
       <a class="btn primary" href="{{ guide.notice_url }}" target="_blank" rel="noopener">この案件の公告を開く</a>
     {% endif %}
-    <a class="btn ghost" href="{{ guide.notice_search_url }}" target="_blank" rel="noopener">🔍 この案件をウェブで探す</a>
+    <a class="btn ghost" href="{{ guide.notice_search_url }}" target="_blank" rel="noopener">この案件をウェブで探す</a>
     {% if not guide.notice_url %}
       <p class="src-note">※ この案件は元データに個別ページのリンクがなく、入札ポータルの検索画面にしか飛べません。上の「ウェブで探す」から発注機関の公告ページ（PDF等）を直接探せます。</p>
     {% endif %}
   </div>
 
   <section class="ai-box" data-case-id="{{ c.id }}" data-cached="{{ '1' if ai_cached else '0' }}">
-    <h2>🤖 AI応募アシスト <span class="ai-tag">課金プラン</span></h2>
+    <h2>AI応募アシスト <span class="ai-tag">課金プラン</span></h2>
     <p class="ai-lead">この案件の公告・必要書類・あなたのマイ条件をAIが読み込み、
       <strong>応募の一歩手前</strong>（参加資格の適合判定・必要書類の具体化・やることリスト）まで一気に仕上げます。</p>
     <button type="button" class="btn primary" id="aiRun">
@@ -75,7 +75,7 @@
         <a class="btn primary small" href="{{ guide.notice_url }}" target="_blank" rel="noopener">この案件の公告を開く</a>
       {% else %}
         <p>この案件は元データに直接リンクがありません。下のボタンから公告ページを探してください。</p>
-        <a class="btn primary small" href="{{ guide.notice_search_url }}" target="_blank" rel="noopener">🔍 公告をウェブで探す</a>
+        <a class="btn primary small" href="{{ guide.notice_search_url }}" target="_blank" rel="noopener">公告をウェブで探す</a>
       {% endif %}
     </div>
 
@@ -84,10 +84,10 @@
       {% if guide.portal %}
         <p>この発注機関は <strong>{{ guide.portal[0] }}</strong> を使っています。{{ guide.portal[2] }}</p>
         <a class="btn primary small" href="{{ guide.portal[1] }}" target="_blank" rel="noopener">{{ guide.portal[0] }}を開く</a>
-        <a class="btn ghost small" href="{{ guide.register_search }}" target="_blank" rel="noopener">🔍 登録方法を調べる</a>
+        <a class="btn ghost small" href="{{ guide.register_search }}" target="_blank" rel="noopener">登録方法を調べる</a>
       {% else %}
         <p>{{ (requirements.steps | selectattr('title', 'equalto', '入札参加資格を登録する（指名願い／資格審査）') | first).body | safe }}</p>
-        <a class="btn primary small" href="{{ guide.register_search }}" target="_blank" rel="noopener">🔍 この機関の入札参加資格 登録方法を調べる</a>
+        <a class="btn primary small" href="{{ guide.register_search }}" target="_blank" rel="noopener">この機関の入札参加資格 登録方法を調べる</a>
       {% endif %}
     </div>
 
@@ -117,7 +117,7 @@
       {% elif guide.notice_url %}
         <p>上の「この案件の公告を開く」から設計図書の入手方法を確認してください。窓口配布・郵送・ダウンロードのいずれかです。</p>
       {% else %}
-        <p>「🔍 この案件をウェブで探す」から公告ページを開き、設計図書の配布方法をご確認ください。</p>
+        <p>「この案件をウェブで探す」から公告ページを開き、設計図書の配布方法をご確認ください。</p>
       {% endif %}
     </div>
 
@@ -213,6 +213,7 @@
       </div>
 
       <input type="hidden" name="partners" id="partnersInput" value="[]">
+      <input type="hidden" name="managed" value="status,assignee,submit_method,applied_date,apply_deadline,bid_deadline,note,needs_check,partners">
       <div class="full"><button type="submit" class="btn primary">保存</button></div>
     </form>
   </section>

@@ -84,15 +84,23 @@ CREATE TABLE IF NOT EXISTS profile (
 
 CREATE TABLE IF NOT EXISTS applications (
     case_id        INTEGER PRIMARY KEY REFERENCES cases(id) ON DELETE CASCADE,
-    status         TEXT NOT NULL DEFAULT '検討中',  -- APP_STATUSES のいずれか
+    status         TEXT NOT NULL DEFAULT '参加申請準備前',  -- APP_STATUSES のいずれか
     applied_date   TEXT DEFAULT '',                 -- 申請日（任意）
     note           TEXT DEFAULT '',                 -- メモ
     assignee       TEXT DEFAULT '',                 -- 担当者（社長／金子さん 等）
-    apply_deadline TEXT DEFAULT '',                 -- 参加申請期限（ISO・任意。空なら案件の締切を流用）
-    bid_deadline   TEXT DEFAULT '',                 -- 入札書提出期限（ISO・任意）
-    submit_method  TEXT DEFAULT '',                 -- 提出方法（電子／郵送／持参）
+    apply_deadline TEXT DEFAULT '',                 -- 参加申請期限（ISO・空なら案件の締切を流用）
+    bid_deadline   TEXT DEFAULT '',                 -- 入札書提出期限（ISO）
+    open_date      TEXT DEFAULT '',                 -- 開札日（ISO）
+    submit_method  TEXT DEFAULT '',                 -- 入札タイプ（電子システム／郵送 等）
+    work           TEXT DEFAULT '',                 -- 工事カテゴリ（空なら案件のcategory）
+    materials      TEXT DEFAULT '',                 -- 資料受取メモ（例: 6/1以降受取）
+    flag           TEXT DEFAULT '',                 -- 要確認フラグの一言（例: 資料待ち）
     needs_check    INTEGER DEFAULT 0,               -- 要確認フラグ（0/1）
-    partners       TEXT DEFAULT '[]',               -- 協力会社見積（JSON配列）
+    bid_plan       INTEGER DEFAULT 0,               -- 入札予定額（円）
+    win_amount     INTEGER DEFAULT 0,               -- 落札額（円）
+    award_called   INTEGER DEFAULT 0,               -- 落札連絡済み（0/1）
+    partner        TEXT DEFAULT '',                 -- 発注先の協力会社（採用見積の会社名）
+    partners       TEXT DEFAULT '[]',               -- 協力会社見積（quotes・JSON配列）
     updated_at     TEXT DEFAULT (datetime('now'))
 );
 
@@ -115,33 +123,82 @@ CREATE TABLE IF NOT EXISTS agencies (
     sample_url  TEXT DEFAULT '',     -- NJSS案件URL例
     fetched_at  TEXT DEFAULT ''      -- 取得日時
 );
+
+-- 協力会社マスタ（bid-next-eta の X 配列に相当）。
+CREATE TABLE IF NOT EXISTS companies (
+    id      INTEGER PRIMARY KEY AUTOINCREMENT,
+    name    TEXT NOT NULL,            -- 会社名
+    area    TEXT DEFAULT '',          -- 対応エリア
+    tags    TEXT DEFAULT '[]',        -- 工事カテゴリ（JSON配列）
+    tel     TEXT DEFAULT '',          -- 電話番号
+    url     TEXT DEFAULT '',          -- 会社URL
+    note    TEXT DEFAULT '',          -- メモ／特徴
+    partner INTEGER DEFAULT 0,        -- ★よく頼む（0/1）
+    rating  INTEGER DEFAULT 0,        -- 評価（0〜5）
+    reviews TEXT DEFAULT '[]'         -- 口コミ（JSON配列）
+);
 """
 
-# 入札参加申請のステータス（電気工事入札の進行段階）。
-# bid-next-eta（川野電気システム）の進行段階に合わせて拡張。
+# 入札参加申請の進行ステータス（bid-next-eta＝川野電気システムのカンバン列と完全一致）。
 APP_STATUSES: list[str] = [
-    "検討中",          # これから検討（進行中の初期）
-    "参加申請準備中",  # 参加資格・書類を準備
-    "参加申請済",      # 入札参加申請を提出済み
-    "協力会社探し中",  # 見積を出してくれる協力会社を探している
-    "見積取得",        # 協力会社の見積を回収中／取得済み
-    "見積集まらず",    # 見積が集まらず対応困難（NG）
-    "入札書提出済",    # 入札書を提出した
-    "落札",            # 自社が落札
-    "他社落札",        # 他社が落札（失注）
-    "見送り",          # 今回は見送り／不参加
+    "参加申請準備前",   # これから参加申請する
+    "入札参加申請済み", # 参加申請を提出済み
+    "協力会社探し中",   # 見積を出してくれる協力会社を探している
+    "見積取得",         # 協力会社の見積を回収中／取得済み
+    "入札書提出済み",   # 入札書を提出した（開札待ち）
+    "自社落札",         # 自社が落札
+    "他社落札",         # 他社が落札（失注）
+    "NG",               # 不参加／見送り
+    "見積集まらず",     # 見積が集まらず対応困難
 ]
+
+# カンバン列のアクセント色（bid-next-eta の B マップと一致）。
+STATUS_ACCENT: dict[str, str] = {
+    "参加申請準備前": "#9aa3ad",
+    "入札参加申請済み": "#2563eb",
+    "協力会社探し中": "#0891b2",
+    "見積取得": "#7c3aed",
+    "入札書提出済み": "#db2777",
+    "自社落札": "#16a34a",
+    "他社落札": "#64748b",
+    "NG": "#dc2626",
+    "見積集まらず": "#b45309",
+}
 
 # 旧ステータス → 現ステータスの読み替え（既存データ・localStorage退避分の救済）。
 STATUS_ALIASES: dict[str, str] = {
-    "申請準備中": "参加申請準備中",
-    "申請済": "参加申請済",
-    "入札参加済": "入札書提出済",
-    "不参加": "見送り",
+    # 直前リリースの暫定名
+    "検討中": "参加申請準備前",
+    "参加申請準備中": "参加申請準備前",
+    "参加申請済": "入札参加申請済み",
+    "入札書提出済": "入札書提出済み",
+    "落札": "自社落札",
+    "見送り": "NG",
+    # さらに旧い名前
+    "申請準備中": "参加申請準備前",
+    "申請済": "入札参加申請済み",
+    "入札参加済": "入札書提出済み",
+    "不参加": "NG",
 }
 
-# 書類の提出方法（bid-next-eta 由来）。
-SUBMIT_METHODS: list[str] = ["電子", "郵送", "持参"]
+# 担当者（bid-next-eta の G/$）。色も一致。
+ASSIGNEES: list[str] = ["社長", "金子さん", "上西さん", "未割当"]
+ASSIGNEE_COLOR: dict[str, str] = {
+    "社長": "#16a34a", "金子さん": "#2563eb",
+    "上西さん": "#ea580c", "未割当": "#a8a29e",
+}
+
+# 工事カテゴリの色（bid-next-eta の V マップと一致）。
+WORK_COLOR: dict[str, str] = {
+    "電気工事": "#2563eb", "空調": "#0891b2", "照明/LED": "#d97706",
+    "防犯/カメラ": "#dc2626", "通信/弱電": "#7c3aed", "管工事": "#0d9488",
+    "太陽光": "#ca8a04", "高圧受電": "#4338ca", "リフォーム/建築": "#b45309",
+    "制御盤": "#475569", "足場": "#65a30d", "清掃": "#16a34a",
+    "IT/システム": "#0ea5e9", "商社/卸": "#9333ea", "土木": "#78716c",
+}
+
+# 入札タイプ（提出方法）。
+SUBMIT_METHODS: list[str] = ["電子システム", "電子", "郵送", "持参", "郵送/持参"]
 
 
 def normalize_status(status: str) -> str:
@@ -182,8 +239,16 @@ def init_db() -> None:
             ("assignee",       "TEXT DEFAULT ''"),
             ("apply_deadline", "TEXT DEFAULT ''"),
             ("bid_deadline",   "TEXT DEFAULT ''"),
+            ("open_date",      "TEXT DEFAULT ''"),
             ("submit_method",  "TEXT DEFAULT ''"),
+            ("work",           "TEXT DEFAULT ''"),
+            ("materials",      "TEXT DEFAULT ''"),
+            ("flag",           "TEXT DEFAULT ''"),
             ("needs_check",    "INTEGER DEFAULT 0"),
+            ("bid_plan",       "INTEGER DEFAULT 0"),
+            ("win_amount",     "INTEGER DEFAULT 0"),
+            ("award_called",   "INTEGER DEFAULT 0"),
+            ("partner",        "TEXT DEFAULT ''"),
             ("partners",       "TEXT DEFAULT '[]'"),
         ):
             if col not in app_cols:
@@ -561,9 +626,9 @@ def clear_cases(source: str | None = None) -> int:
 # ============================================================
 
 def _normalize_partners(partners: Any) -> str:
-    """協力会社見積を検証してJSON文字列にする。
+    """協力会社見積(quotes)を検証してJSON文字列にする。
 
-    受け取り: JSON文字列 or list[dict]。各社 {company, amount, requested, replied, note}。
+    各社 {company, tel, area, amount, requested, replied, feasible, selected, note}。
     会社名が空のものは捨てる。常に妥当なJSON配列文字列を返す。
     """
     import json
@@ -585,42 +650,64 @@ def _normalize_partners(partners: Any) -> str:
             continue
         cleaned.append({
             "company": company,
+            "tel": str(it.get("tel", "")).strip(),
+            "area": str(it.get("area", "")).strip(),
             "amount": str(it.get("amount", "")).strip(),
             "requested": 1 if it.get("requested") else 0,
             "replied": 1 if it.get("replied") else 0,
+            "feasible": 1 if it.get("feasible") else 0,
+            "selected": 1 if it.get("selected") else 0,
             "note": str(it.get("note", "")).strip(),
         })
     return json.dumps(cleaned, ensure_ascii=False)
 
 
-def set_application(case_id: int, status: str, applied_date: str = "",
-                    note: str = "", assignee: str = "",
-                    apply_deadline: str = "", bid_deadline: str = "",
-                    submit_method: str = "", needs_check: bool = False,
-                    partners: Any = None) -> None:
-    """案件の入札参加申請ステータスと管理項目を登録・更新する。"""
+# set_application が受け付ける列（case_id/status 以外）。型変換つき。
+_APP_TEXT_FIELDS = (
+    "applied_date", "note", "assignee", "apply_deadline", "bid_deadline",
+    "open_date", "submit_method", "work", "materials", "flag", "partner",
+)
+_APP_INT_FIELDS = ("needs_check", "bid_plan", "win_amount", "award_called")
+
+
+def set_application(case_id: int, status: str, **fields: Any) -> None:
+    """案件の入札参加申請ステータスと管理項目を登録・更新する。
+
+    fields には _APP_TEXT_FIELDS / _APP_INT_FIELDS と partners(quotes) を渡せる。
+    未指定の列はデフォルト（空文字 / 0 / '[]'）になる。
+    """
     status = normalize_status(status)
     if status not in APP_STATUSES:
         raise ValueError(f"不正なステータス: {status}")
-    partners_json = _normalize_partners(partners if partners is not None else [])
+
+    def _int(v: Any) -> int:
+        if isinstance(v, bool):
+            return 1 if v else 0
+        try:
+            return int(v)
+        except (ValueError, TypeError):
+            return 0
+
+    cols = ["status"]
+    vals: list[Any] = [status]
+    for f in _APP_TEXT_FIELDS:
+        cols.append(f)
+        vals.append(str(fields.get(f, "") or "").strip())
+    for f in _APP_INT_FIELDS:
+        cols.append(f)
+        vals.append(_int(fields.get(f, 0)))
+    cols.append("partners")
+    vals.append(_normalize_partners(fields.get("partners", [])))
+
+    set_clause = ", ".join(f"{c}=excluded.{c}" for c in cols)
+    placeholders = ", ".join(["?"] * (len(cols) + 1))  # +case_id
     with _connect() as conn:
         conn.execute(
-            """INSERT INTO applications
-                 (case_id, status, applied_date, note, assignee,
-                  apply_deadline, bid_deadline, submit_method, needs_check,
-                  partners, updated_at)
-               VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, datetime('now'))
-               ON CONFLICT(case_id) DO UPDATE SET
-                 status=excluded.status, applied_date=excluded.applied_date,
-                 note=excluded.note, assignee=excluded.assignee,
-                 apply_deadline=excluded.apply_deadline,
-                 bid_deadline=excluded.bid_deadline,
-                 submit_method=excluded.submit_method,
-                 needs_check=excluded.needs_check, partners=excluded.partners,
-                 updated_at=datetime('now')""",
-            (case_id, status, applied_date, note, assignee,
-             apply_deadline, bid_deadline, submit_method,
-             1 if needs_check else 0, partners_json),
+            f"""INSERT INTO applications (case_id, {', '.join(cols)}, updated_at)
+                VALUES ({placeholders}, datetime('now'))
+                ON CONFLICT(case_id) DO UPDATE SET
+                  {set_clause}, updated_at=datetime('now')""",
+            (case_id, *vals),
         )
         conn.commit()
 
@@ -646,8 +733,9 @@ def get_application(case_id: int) -> dict[str, Any] | None:
 def list_applications(status: str | None = None) -> list[dict[str, Any]]:
     """申請管理一覧（案件情報をJOINして返す）。新しい更新順。"""
     sql = """
-        SELECT a.*, c.title, c.agency, c.region, c.prefecture,
-               c.deadline, c.spec_status
+        SELECT a.*, c.title, c.agency, c.agency_type, c.region, c.prefecture,
+               c.category, c.deadline, c.announced_date, c.detail_url,
+               c.external_id, c.budget, c.winner, c.win_price, c.spec_status
         FROM applications a
         JOIN cases c ON c.id = a.case_id
     """
@@ -658,6 +746,73 @@ def list_applications(status: str | None = None) -> list[dict[str, Any]]:
     sql += " ORDER BY a.updated_at DESC"
     with _connect() as conn:
         return [_hydrate_application(dict(r)) for r in conn.execute(sql, params).fetchall()]
+
+
+# ============================================================
+# 協力会社マスタ（companies）
+# ============================================================
+
+def _hydrate_company(row: dict[str, Any]) -> dict[str, Any]:
+    import json
+    for k in ("tags", "reviews"):
+        try:
+            row[k] = json.loads(row.get(k) or "[]")
+        except (ValueError, TypeError):
+            row[k] = []
+    row["partner"] = bool(row.get("partner"))
+    return row
+
+
+def list_companies() -> list[dict[str, Any]]:
+    """協力会社一覧（★よく頼む→評価の高い順）。"""
+    with _connect() as conn:
+        rows = conn.execute(
+            "SELECT * FROM companies ORDER BY partner DESC, rating DESC, name ASC"
+        ).fetchall()
+    return [_hydrate_company(dict(r)) for r in rows]
+
+
+def upsert_company(data: dict[str, Any]) -> int:
+    """協力会社を登録／更新する。id があれば更新。会社IDを返す。"""
+    import json
+    cid = data.get("id")
+    vals = (
+        str(data.get("name", "")).strip(),
+        str(data.get("area", "")).strip(),
+        json.dumps([t for t in (data.get("tags") or []) if t], ensure_ascii=False),
+        str(data.get("tel", "")).strip(),
+        str(data.get("url", "")).strip(),
+        str(data.get("note", "")).strip(),
+        1 if data.get("partner") else 0,
+        int(data.get("rating") or 0),
+        json.dumps([r for r in (data.get("reviews") or []) if r], ensure_ascii=False),
+    )
+    with _connect() as conn:
+        if cid:
+            conn.execute(
+                """UPDATE companies SET name=?, area=?, tags=?, tel=?, url=?,
+                   note=?, partner=?, rating=?, reviews=? WHERE id=?""",
+                (*vals, int(cid)),
+            )
+            conn.commit()
+            return int(cid)
+        cur = conn.execute(
+            """INSERT INTO companies (name, area, tags, tel, url, note, partner, rating, reviews)
+               VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)""", vals,
+        )
+        conn.commit()
+        return int(cur.lastrowid)
+
+
+def delete_company(company_id: int) -> None:
+    with _connect() as conn:
+        conn.execute("DELETE FROM companies WHERE id=?", (company_id,))
+        conn.commit()
+
+
+def count_companies() -> int:
+    with _connect() as conn:
+        return conn.execute("SELECT COUNT(*) FROM companies").fetchone()[0]
 
 
 # ============================================================

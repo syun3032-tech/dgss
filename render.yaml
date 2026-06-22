@@ -21,3 +21,9 @@ services:
       # Python を固定（将来のデフォルト更新で挙動が変わらないように）
       - key: PYTHON_VERSION
         value: "3.13.5"
+      # AI応募アシスト(Gemini)用。値は秘密なのでコードに書かず、Renderダッシュボードの
+      # Environment で設定する（sync:false＝Blueprintから値を同期しない＝手入力）。
+      - key: GEMINI_API_KEY
+        sync: false
+      - key: GEMINI_MODEL
+        value: "gemini-2.5-flash"

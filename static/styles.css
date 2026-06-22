@@ -427,3 +427,111 @@ tr.row-check td { background: #fffaf0; }
 .partners-table input[type="text"] { width: 100%; padding: 5px 7px; border: 1px solid var(--border-strong);
   border-radius: 6px; font-size: 13px; }
 .btn.small { padding: 4px 10px; font-size: 12px; }
+
+/* ===== 入札・工程＆協力会社 管理（bid-next-eta 互換カンバン） ===== */
+.bidapp-head { display: flex; align-items: baseline; gap: 12px; margin-bottom: 10px; }
+.bidapp-head h1 { font-size: 20px; margin: 0; }
+.bidapp-head .basis { font-size: 12px; color: var(--text-tertiary); }
+
+/* タブ */
+.bidtabs { display: flex; gap: 8px; border-bottom: 1px solid var(--border); margin-bottom: 14px; }
+.bidtab { display: flex; flex-direction: column; align-items: flex-start; gap: 1px; background: none; border: none;
+  border-bottom: 2px solid transparent; padding: 8px 14px; cursor: pointer; color: var(--text-secondary); }
+.bidtab .bt-label { font-size: 14px; font-weight: 600; }
+.bidtab .bt-sub { font-size: 10.5px; color: var(--text-tertiary); }
+.bidtab.active { color: var(--accent); border-bottom-color: var(--accent); }
+
+/* 担当チップ */
+.chips { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-bottom: 12px; }
+.chips-label { font-size: 12px; color: var(--text-secondary); }
+.chip2 { display: inline-flex; align-items: center; gap: 5px; border: 1px solid var(--border-strong);
+  background: #fff; border-radius: 999px; padding: 4px 11px; font-size: 12.5px; cursor: pointer; color: var(--text-primary); }
+.chip2 .dot { width: 8px; height: 8px; border-radius: 50%; }
+.chip2 b { font-weight: 700; }
+.chip2.on { border-color: var(--c, var(--accent)); box-shadow: inset 0 0 0 1px var(--c, var(--accent)); font-weight: 600; }
+
+/* サマリーカード */
+.sumrow { display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 14px; }
+.sumc { flex: 0 0 auto; min-width: 120px; background: var(--bg-subtle); border: 1px solid var(--border);
+  border-radius: 10px; padding: 10px 16px; display: flex; flex-direction: column; }
+.sumc .n { font-size: 22px; font-weight: 700; line-height: 1.1; }
+.sumc .l { font-size: 11px; color: var(--text-secondary); }
+.sumc.warn { background: var(--warning-soft); border-color: #f0d488; } .sumc.warn .n { color: var(--warning); }
+.sumc.danger { background: var(--danger-soft); border-color: #f3b0b4; } .sumc.danger .n { color: var(--danger); }
+.addcase { min-width: 130px; border: 1px dashed var(--border-strong); background: #fff; border-radius: 10px;
+  padding: 10px 16px; cursor: pointer; font-size: 13px; color: var(--accent); display: flex; flex-direction: column; gap: 2px; }
+.addcase small { color: var(--text-tertiary); font-size: 10.5px; }
+
+/* 締切バー */
+.warnbar { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; background: #fff7ed; border: 1px solid #fed7aa;
+  border-radius: 10px; padding: 8px 12px; margin-bottom: 14px; }
+.warnbar .wb-title { font-size: 12.5px; font-weight: 700; color: #b45309; }
+.wb-item { font-size: 11.5px; border-radius: 999px; padding: 2px 9px; font-weight: 600; }
+
+/* カンバン */
+.kanban { display: flex; gap: 12px; overflow-x: auto; padding-bottom: 12px; align-items: flex-start; }
+.kcol { flex: 0 0 232px; background: var(--bg-subtle); border: 1px solid var(--border); border-radius: 10px; }
+.kcol-head { display: flex; justify-content: space-between; align-items: center; padding: 8px 12px; font-size: 12.5px; font-weight: 700; }
+.kcol-head .kcnt { background: #fff; border-radius: 999px; padding: 0 8px; font-size: 11px; color: var(--text-secondary); }
+.kcol-body { padding: 0 8px 8px; display: flex; flex-direction: column; gap: 8px; min-height: 40px; }
+.kempty { text-align: center; color: var(--text-tertiary); font-size: 12px; padding: 8px 0; }
+.kcard { background: #fff; border: 1px solid var(--border); border-radius: 8px; padding: 9px 10px; cursor: pointer; box-shadow: 0 1px 2px rgba(0,0,0,.04); }
+.kcard:hover { border-color: var(--accent); }
+.kc-top { display: flex; align-items: center; gap: 6px; margin-bottom: 5px; }
+.kc-top .wdot { width: 8px; height: 8px; border-radius: 50%; flex: none; }
+.kc-tag { font-size: 10.5px; color: var(--text-secondary); flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.kc-as { font-size: 10px; color: #fff; border-radius: 999px; padding: 1px 7px; white-space: nowrap; }
+.kc-title { font-size: 12.5px; font-weight: 600; line-height: 1.35; margin-bottom: 6px; }
+.kc-dl { font-size: 11px; border-radius: 6px; padding: 2px 7px; display: inline-block; font-weight: 600; }
+.kc-q { font-size: 10.5px; color: var(--text-secondary); margin-top: 5px; }
+.kc-flag { font-size: 10.5px; color: #b45309; margin-top: 4px; }
+
+/* 協力会社 */
+.co-head { display: flex; gap: 10px; margin-bottom: 14px; }
+.co-search { flex: 1; padding: 8px 12px; border: 1px solid var(--border-strong); border-radius: 8px; font-size: 14px; }
+.cogrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 12px; }
+.cocard { border: 1px solid var(--border); border-radius: 10px; padding: 12px 14px; background: #fff; }
+.co-row1 { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.co-fav { font-size: 10.5px; background: #fef3c7; color: #b45309; border-radius: 999px; padding: 1px 8px; font-weight: 700; }
+.co-name { font-weight: 700; font-size: 14px; }
+.co-stars { color: #f59e0b; margin-left: auto; letter-spacing: -1px; }
+.co-tags { display: flex; flex-wrap: wrap; gap: 5px; margin: 7px 0; }
+.co-tag { font-size: 10.5px; border-radius: 4px; padding: 1px 7px; font-weight: 600; }
+.co-meta { font-size: 12px; color: var(--text-secondary); }
+.co-note { font-size: 12px; color: var(--text-secondary); margin-top: 5px; }
+.co-revs { font-size: 11.5px; color: var(--text-tertiary); margin-top: 6px; border-top: 1px dashed var(--border); padding-top: 6px; }
+.co-acts { display: flex; gap: 6px; margin-top: 8px; }
+
+/* 利益・レポート */
+#tabPanel h3 { font-size: 14px; margin: 18px 0 8px; }
+.rep { border: 1px solid var(--border); border-radius: 10px; padding: 12px 14px; margin-bottom: 10px; }
+.rep-h { display: flex; justify-content: space-between; font-size: 13px; margin-bottom: 6px; }
+.rep-list { margin: 0; padding-left: 18px; font-size: 12.5px; }
+.rep-save { display: flex; gap: 8px; margin-top: 10px; }
+.rep-memo { flex: 1; padding: 6px 9px; border: 1px solid var(--border-strong); border-radius: 6px; font-size: 12.5px; }
+.rep-saved { border-left: 3px solid var(--accent); background: var(--bg-subtle); padding: 8px 12px; border-radius: 6px; margin-bottom: 8px; font-size: 12.5px; }
+
+/* モーダル */
+.modal-bg { position: fixed; inset: 0; background: rgba(0,0,0,.4); display: flex; align-items: flex-start; justify-content: center; padding: 40px 16px; z-index: 50; overflow-y: auto; }
+.modal { background: #fff; border-radius: 12px; width: 100%; max-width: 680px; box-shadow: 0 12px 40px rgba(0,0,0,.25); }
+.modal-h { display: flex; justify-content: space-between; align-items: center; padding: 14px 18px; border-bottom: 1px solid var(--border); }
+.modal-h h2 { font-size: 15px; margin: 0; }
+.modal-x { background: none; border: none; font-size: 22px; cursor: pointer; color: var(--text-tertiary); line-height: 1; }
+.modal-b { padding: 16px 18px; }
+.modal-f { display: flex; justify-content: flex-end; gap: 8px; padding: 12px 18px; border-top: 1px solid var(--border); }
+.m-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+.m-fld { display: flex; flex-direction: column; gap: 4px; font-size: 12px; color: var(--text-secondary); }
+.m-fld.full { grid-column: 1 / -1; }
+.m-fld input, .m-fld select, .m-fld textarea { padding: 7px 9px; border: 1px solid var(--border-strong); border-radius: 6px; font-size: 13.5px; }
+.m-check { display: flex; align-items: center; gap: 6px; font-size: 13px; }
+.m-check.full { grid-column: 1 / -1; }
+.m-partners { margin-top: 16px; }
+.mp-head { display: flex; justify-content: space-between; align-items: center; font-size: 13px; font-weight: 600; margin-bottom: 6px; }
+.m-partners td { padding: 5px 6px; } .m-partners td.center { text-align: center; }
+.m-partners input[type=text], .m-partners .q-company, .m-partners .q-amount { width: 100%; padding: 5px 7px; border: 1px solid var(--border-strong); border-radius: 6px; font-size: 13px; }
+.tagpicks { display: flex; flex-wrap: wrap; gap: 5px; }
+.tagpick { border: 1px solid var(--border-strong); background: #fff; border-radius: 999px; padding: 3px 10px; font-size: 11.5px; cursor: pointer; }
+.tagpick.on { background: var(--c); border-color: var(--c); color: #fff; }
+.stars { display: flex; gap: 2px; } .starpick { background: none; border: none; font-size: 20px; color: #d1d5db; cursor: pointer; padding: 0; }
+.starpick.on { color: #f59e0b; }
+.m-links { font-size: 12px; margin-bottom: 12px; }

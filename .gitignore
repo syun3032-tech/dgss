@@ -17,3 +17,6 @@ denki_bid.db.gz
 .env
 .env.*
 *.key
+
+# 認証DB（パスワードハッシュ。コミットしない）
+users.db

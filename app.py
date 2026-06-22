@@ -23,6 +23,7 @@ from flask import Flask, abort, flash, jsonify, redirect, render_template, reque
 import db
 import procurement
 import ai_assist
+import auth
 from regions import ALL_PREFECTURES, REGIONS, prefectures_in
 
 # 公告日がこの日付以降なら「新着」とみなす（直近7日）
@@ -39,26 +40,13 @@ BUDGET_OPTIONS = [
     ("1億円以上", 100_000_000),
 ]
 
-# 申請ステータスのバッジ色分け（テンプレートで使用）
-STATUS_CLASS = {
-    "検討中": "s-mull",
-    "参加申請準備中": "s-prep",
-    "参加申請済": "s-applied",
-    "協力会社探し中": "s-partner",
-    "見積取得": "s-quote",
-    "見積集まらず": "s-no",
-    "入札書提出済": "s-joined",
-    "落札": "s-won",
-    "他社落札": "s-lost",
-    "見送り": "s-skip",
-    # 旧ステータス名（既存データ表示の後方互換）
-    "申請準備中": "s-prep", "申請済": "s-applied",
-    "入札参加済": "s-joined", "不参加": "s-skip",
-}
+# 申請ステータスのバッジ色（案件詳細で使用）。db.STATUS_ACCENT を流用。
+STATUS_CLASS = db.STATUS_ACCENT
 
 
 def _days_until(iso: str) -> int | None:
-    """ISO日付(YYYY-MM-DD)までの残日数。今日=0、過ぎていれば負。不正なら None。"""
+    """ISO日付(YYYY-MM-DD)までの残日数。今日=0、過ぎていれば負。不正なら None。
+    bid-next-eta の er(date)=round((date-基準日)/86400000) に相当。"""
     s = (iso or "").strip()
     if not s:
         return None
@@ -68,15 +56,31 @@ def _days_until(iso: str) -> int | None:
         return None
 
 
-def _enrich_application(row: dict) -> dict:
-    """一覧・詳細表示用に締切と残日数、見積サマリーを補う。
-
-    参加申請期限は申請側の指定が無ければ案件の締切(deadline)を流用する。
-    """
+# 次の締切マイルストーン（bid-next-eta の ei と同一ロジック）。
+def _next_milestone(row: dict) -> dict | None:
+    st = db.normalize_status(row.get("status", ""))
     apply_dl = row.get("apply_deadline") or row.get("deadline") or ""
-    row["eff_apply_deadline"] = apply_dl
-    row["apply_days"] = _days_until(apply_dl)
+    if st == "参加申請準備前":
+        return {"label": "参加申請", "date": apply_dl} if apply_dl else None
+    if st in ("入札参加申請済み", "協力会社探し中", "見積取得"):
+        bid = row.get("bid_deadline") or ""
+        return {"label": "入札書提出", "date": bid} if bid else None
+    if st == "入札書提出済み":
+        op = row.get("open_date") or ""
+        return {"label": "開札", "date": op} if op else None
+    return None
+
+
+def _enrich_application(row: dict) -> dict:
+    """カンバン表示用に締切・残日数・見積サマリーを補う。"""
+    row["eff_apply_deadline"] = row.get("apply_deadline") or row.get("deadline") or ""
+    row["apply_days"] = _days_until(row["eff_apply_deadline"])
     row["bid_days"] = _days_until(row.get("bid_deadline") or "")
+    ms = _next_milestone(row)
+    row["ms_label"] = ms["label"] if ms else ""
+    row["ms_date"] = ms["date"] if ms else ""
+    row["ms_days"] = _days_until(ms["date"]) if ms else None
+    row["work_eff"] = row.get("work") or row.get("category") or ""
     partners = row.get("partners") or []
     row["partner_count"] = len(partners)
     row["partner_replied"] = sum(1 for p in partners if p.get("replied"))
@@ -101,6 +105,32 @@ app.secret_key = os.environ.get("SECRET_KEY", "kawano-njss-modoki-local")  # fla
 
 # gunicorn 等で import された時もテーブルを用意（本番デプロイ対応）
 db.init_db()
+
+# 認証＋アカウント別AI権限（auth.py）。ログイン/登録/管理(/login,/signup,/admin/users)。
+auth.init_auth_db()
+app.register_blueprint(auth.auth_bp)
+
+# ログイン必須ガード（auth系・healthz・staticは除外）。未ログインはログインへ誘導。
+_PUBLIC_ENDPOINTS = {"auth.login", "auth.signup", "static"}
+
+
+@app.before_request
+def _require_login():
+    # AUTH_REQUIRED=1 のときだけログイン必須（既定OFF＝現状の本番は無認証のまま）。
+    if not auth.auth_required():
+        return None
+    ep = request.endpoint or ""
+    if ep in _PUBLIC_ENDPOINTS or ep.startswith("auth."):
+        return None
+    if not auth.current_user():
+        return redirect(url_for("auth.login", next=request.path))
+    return None
+
+
+@app.context_processor
+def inject_current_user():
+    """テンプレで current_user / can_use_ai を使えるように供給。"""
+    return {"current_user": auth.current_user(), "can_use_ai": auth.can_use_ai()}
 
 
 @app.context_processor
@@ -308,7 +338,7 @@ def case_detail(case_id: int):
         agency_info=agency_info,
         guide=guide,
         requirements=requirements,
-        ai_enabled=ai_assist.is_enabled(),
+        ai_enabled=auth.can_use_ai(),
         ai_cached=bool(db.get_ai_assist(case.get("external_id", ""))),
     )
 
@@ -321,6 +351,10 @@ def case_ai_assist(case_id: int):
     APIキー未設定なら enabled:false を返し、画面で有効化方法を案内する。
     """
     import json
+    # このアカウントがAIモードを使えるか（ログイン＋ai_enabled＋鍵設定）を確認。
+    if not auth.can_use_ai():
+        return jsonify({"enabled": False,
+                        "reason": "このアカウントではAIモードが有効化されていません。"})
     case = db.get_case(case_id)
     if not case:
         abort(404)
@@ -357,28 +391,63 @@ def apply_case(case_id: int):
     if not db.get_case(case_id):
         abort(404)
     import json
-    status = request.form.get("status", "").strip()
+    f = request.form
+    status = f.get("status", "").strip()
+
+    # 既存値を起点に、フォームが「管理する」と宣言した項目だけ上書きする。
+    # これでカンバンのモーダル（全項目）と案件詳細フォーム（一部）が同じ保存先を
+    # 壊さず共有できる（未指定項目は消えない）。managed 未指定なら従来どおり全更新。
+    cur = db.get_application(case_id) or {}
+    managed_raw = f.get("managed")
+    managed = set(s for s in (managed_raw or "").split(",") if s) if managed_raw else None
+
+    def owns(key: str) -> bool:
+        return managed is None or key in managed
+
+    def text(key: str) -> str:
+        return f.get(key, "").strip() if owns(key) else (cur.get(key) or "")
+
+    def yen(key: str) -> int:
+        return (db.yen_to_int(f.get(key, "")) or 0) if owns(key) else int(cur.get(key) or 0)
+
+    def flag(key: str) -> bool:
+        return bool(f.get(key)) if owns(key) else bool(cur.get(key))
+
+    if owns("partners"):
+        try:
+            partners = json.loads(f.get("partners", "[]") or "[]")
+        except (ValueError, TypeError):
+            partners = []
+    else:
+        partners = cur.get("partners") or []
+
+    fields = {
+        "applied_date": text("applied_date"),
+        "note": text("note"),
+        "assignee": text("assignee"),
+        "apply_deadline": text("apply_deadline"),
+        "bid_deadline": text("bid_deadline"),
+        "open_date": text("open_date"),
+        "submit_method": text("submit_method"),
+        "work": text("work"),
+        "materials": text("materials"),
+        "flag": text("flag"),
+        "needs_check": flag("needs_check"),
+        "bid_plan": yen("bid_plan"),
+        "win_amount": yen("win_amount"),
+        "award_called": flag("award_called"),
+        "partner": text("partner"),
+        "partners": partners,
+    }
     try:
-        partners = json.loads(request.form.get("partners", "[]") or "[]")
-    except (ValueError, TypeError):
-        partners = []
-    try:
-        db.set_application(
-            case_id,
-            status,
-            applied_date=request.form.get("applied_date", "").strip(),
-            note=request.form.get("note", "").strip(),
-            assignee=request.form.get("assignee", "").strip(),
-            apply_deadline=request.form.get("apply_deadline", "").strip(),
-            bid_deadline=request.form.get("bid_deadline", "").strip(),
-            submit_method=request.form.get("submit_method", "").strip(),
-            needs_check=bool(request.form.get("needs_check")),
-            partners=partners,
-        )
+        db.set_application(case_id, status, **fields)
         flash(f"申請状況を「{db.normalize_status(status)}」に更新しました。", "ok")
     except ValueError:
         flash("ステータスが不正です。", "error")
-    return redirect(url_for("case_detail", case_id=case_id))
+    # AJAX(fetch)からの保存は204で返し、画面側で再描画する。
+    if f.get("ajax") or request.headers.get("X-Requested-With") == "fetch":
+        return ("", 204)
+    return redirect(request.form.get("next") or url_for("case_detail", case_id=case_id))
 
 
 @app.route("/applications/restore", methods=["POST"])
@@ -407,18 +476,18 @@ def applications_restore():
             assignee=(it.get("assignee") or "").strip(),
             apply_deadline=(it.get("apply_deadline") or "").strip(),
             bid_deadline=(it.get("bid_deadline") or "").strip(),
+            open_date=(it.get("open_date") or "").strip(),
             submit_method=(it.get("submit_method") or "").strip(),
+            work=(it.get("work") or "").strip(),
+            materials=(it.get("materials") or "").strip(),
+            flag=(it.get("flag") or "").strip(),
             needs_check=bool(it.get("needs_check")),
+            bid_plan=db.yen_to_int(str(it.get("bid_plan") or "")) or 0,
+            win_amount=db.yen_to_int(str(it.get("win_amount") or "")) or 0,
+            award_called=bool(it.get("award_called")),
+            partner=(it.get("partner") or "").strip(),
             partners=it.get("partners") or [],
         )
-        # 既にDBが同一内容なら書き込まずスキップ（無駄な画面リロードの抑制）。
-        cur = db.get_application(case_id)
-        if cur and cur.get("status") == status and all(
-            (cur.get(k) or "") == v for k, v in fields.items()
-            if k not in ("needs_check", "partners")
-        ) and bool(cur.get("needs_check")) == fields["needs_check"] \
-           and db._normalize_partners(cur.get("partners")) == db._normalize_partners(fields["partners"]):
-            continue
         # localStorage を真の保存先として上書き復元する（揮発DB対策）。
         db.set_application(case_id, status, **fields)
         restored += 1
@@ -427,41 +496,63 @@ def applications_restore():
 
 @app.route("/applications")
 def applications():
-    """入札参加申請の管理一覧（ステータス別グルーピング＋サマリー）。"""
-    status = db.normalize_status(request.args.get("status", "").strip())
-    rows = [_enrich_application(r) for r in db.list_applications(status or None)]
+    """入札・工程＆協力会社 管理（bid-next-eta 互換のカンバン型・4タブ）。
 
-    # サマリー（全件ベース。フィルタ中でも全体像が見えるよう別途集計）。
-    all_rows = rows if not status else [
-        _enrich_application(r) for r in db.list_applications(None)
-    ]
-    # 締切が3日以内（過ぎ含む）の「締切間近」件数。
-    soon = sum(1 for r in all_rows
-               if r["apply_days"] is not None and r["apply_days"] <= 3)
-    summary = {
-        "total": len(all_rows),
-        "partner_total": sum(r["partner_count"] for r in all_rows),
-        "needs_check": sum(1 for r in all_rows if r.get("needs_check")),
-        "deadline_soon": soon,
+    クライアント(JS)アプリにデータと設定をJSONで渡してレンダリングする。
+    案件は applications テーブル（=管理に登録された案件）が母集団。
+    """
+    rows = [_enrich_application(r) for r in db.list_applications(None)]
+    config = {
+        "statuses": [{"id": s, "accent": db.STATUS_ACCENT.get(s, "#94a3b8")}
+                     for s in db.APP_STATUSES],
+        "assignees": [{"id": a, "color": db.ASSIGNEE_COLOR.get(a, "#a8a29e")}
+                      for a in db.ASSIGNEES],
+        "works": db.WORK_COLOR,
+        "submit_methods": db.SUBMIT_METHODS,
+        "today": date.today().isoformat(),
+        "company_name": db.get_profile().get("company", "") or "川野電気",
     }
-
-    # ステータス別にグルーピング（APP_STATUSES の並び順を維持）。
-    groups = []
-    order = db.APP_STATUSES if not status else [status]
-    for s in order:
-        g = [r for r in rows if db.normalize_status(r["status"]) == s]
-        if g:
-            groups.append({"status": s, "rows": g})
-
     return render_template(
         "applications.html",
-        groups=groups,
-        rows=rows,
-        statuses=db.APP_STATUSES,
-        status_class=STATUS_CLASS,
-        selected_status=status,
-        summary=summary,
+        cases=rows,
+        config=config,
+        companies=db.list_companies(),
     )
+
+
+@app.route("/companies", methods=["POST"])
+def company_save():
+    """協力会社の登録／更新（協力会社タブから JSON で呼ぶ）。"""
+    data = request.get_json(silent=True) or {}
+    if not str(data.get("name", "")).strip():
+        return jsonify({"error": "会社名は必須です"}), 400
+    cid = db.upsert_company(data)
+    return jsonify({"id": cid, "companies": db.list_companies()})
+
+
+@app.route("/companies/<int:company_id>/delete", methods=["POST"])
+def company_delete(company_id: int):
+    db.delete_company(company_id)
+    return jsonify({"companies": db.list_companies()})
+
+
+@app.route("/companies/restore", methods=["POST"])
+def companies_restore():
+    """localStorage に退避した協力会社をサーバへ復元（揮発DB対策）。
+
+    サーバに1社も無いときだけ流し込む（重複登録を避ける）。
+    """
+    if db.count_companies() > 0:
+        return jsonify({"restored": 0})
+    payload = request.get_json(silent=True) or {}
+    items = payload.get("items") or []
+    n = 0
+    for it in items:
+        if str(it.get("name", "")).strip():
+            it.pop("id", None)  # サーバ側で採番し直す
+            db.upsert_company(it)
+            n += 1
+    return jsonify({"restored": n, "companies": db.list_companies()})
 
 
 @app.route("/profile", methods=["GET", "POST"])
