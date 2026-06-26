@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>{% block title %}Kawanoさん NJSSモドキ{% endblock %}</title>
-  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}?v=2">
 </head>
 <body>
 <div class="app">
@@ -56,9 +56,14 @@
   if (!s) return;
   try {
     var p = JSON.parse(s);
-    if (!(p && p.prefectures && p.prefectures.length)) return;
+    var hasPrefs = p && p.prefectures && p.prefectures.length;
+    var hasQuals = p && p.qualifications && p.qualifications.length;
+    if (!(hasPrefs || hasQuals)) return;
     var b = new URLSearchParams();
     b.append('company', p.company || '');
+    b.append('representative', p.representative || '');
+    b.append('address', p.address || '');
+    b.append('corp_number', p.corp_number || '');
     (p.prefectures || []).forEach(function (v) { b.append('prefectures', v); });
     (p.categories || []).forEach(function (v) { b.append('categories', v); });
     b.append('categories_other', '');
@@ -66,6 +71,7 @@
     b.append('quals_other', '');
     b.append('budget_max', p.budget_max || '');
     b.append('grade', p.grade || '');
+    b.append('qualifications', JSON.stringify(p.qualifications || []));
     sessionStorage.setItem('kawanoRestored', '1');
     fetch('/profile', { method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
       body: b.toString(), redirect: 'manual' }).then(function () { location.reload(); });

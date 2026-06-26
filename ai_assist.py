@@ -170,11 +170,28 @@ def _profile_lines(profile: dict | None) -> str:
     if p.get("categories"):
         parts.append(f"対応業種: {p['categories']}")
     if p.get("grade"):
-        parts.append(f"経審等級: {p['grade']}")
+        parts.append(f"経審等級(全国基準の参考): {p['grade']}")
     if p.get("quals"):
         parts.append(f"保有資格: {p['quals']}")
     if p.get("budget_max"):
         parts.append(f"予算上限の目安: {p['budget_max']}")
+    # 発注機関別の等級（資格通知書ベース）。AIはこの案件の発注機関に一致する行を優先して照合する。
+    quals = p.get("qualifications") or []
+    if quals:
+        lines = []
+        for q in quals:
+            issuer = (q.get("issuer") or "").strip()
+            if not issuer:
+                continue
+            seg = f"{issuer}：{q.get('category') or '工種?'} {q.get('grade') or '等級記載なし'}"
+            if q.get("score"):
+                seg += f"({q['score']}点)"
+            lines.append(seg)
+        if lines:
+            parts.append(
+                "発注機関別の入札参加資格・等級（同じ経審点でも機関で等級が異なる。"
+                "この案件の発注機関に一致する行を最優先で等級照合に使うこと）:\n  - "
+                + "\n  - ".join(lines))
     return "\n".join(parts) if parts else "（マイ条件は未設定）"
 
 

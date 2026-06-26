@@ -72,14 +72,18 @@ CREATE INDEX IF NOT EXISTS idx_cases_deadline ON cases(deadline);
 -- （既存DBでは列追加が先に必要なため）。
 
 CREATE TABLE IF NOT EXISTS profile (
-    id           INTEGER PRIMARY KEY CHECK (id = 1),  -- 単一行
-    company      TEXT DEFAULT '',   -- 自社名（競合一覧から自社を除外する）
-    prefectures  TEXT DEFAULT '',   -- 対応エリア（都道府県, カンマ区切り）
-    categories   TEXT DEFAULT '電気工事',  -- 対応業種（カンマ区切り）
-    budget_max   TEXT DEFAULT '',   -- 予算上限（予定価格がこれ以下）。空=制限なし
-    grade        TEXT DEFAULT '',   -- 経審等級（A〜E, 参考）
-    quals        TEXT DEFAULT '',   -- 保有資格メモ
-    updated_at   TEXT DEFAULT (datetime('now'))
+    id            INTEGER PRIMARY KEY CHECK (id = 1),  -- 単一行
+    company       TEXT DEFAULT '',   -- 自社名（競合一覧から自社を除外する）
+    prefectures   TEXT DEFAULT '',   -- 対応エリア（都道府県, カンマ区切り）
+    categories    TEXT DEFAULT '電気工事',  -- 対応業種（カンマ区切り）
+    budget_max    TEXT DEFAULT '',   -- 予算上限（予定価格がこれ以下）。空=制限なし
+    grade         TEXT DEFAULT '',   -- 経審等級（A〜E, 参考）
+    quals         TEXT DEFAULT '',   -- 保有資格メモ
+    representative TEXT DEFAULT '',  -- 代表者氏名
+    address       TEXT DEFAULT '',   -- 本社所在地
+    corp_number   TEXT DEFAULT '',   -- 法人番号
+    qualifications TEXT DEFAULT '[]',-- 入札参加資格・等級（機関別, JSON配列）
+    updated_at    TEXT DEFAULT (datetime('now'))
 );
 
 CREATE TABLE IF NOT EXISTS applications (
@@ -222,6 +226,14 @@ def init_db() -> None:
         cols = [r[1] for r in conn.execute("PRAGMA table_info(profile)")]
         if "company" not in cols:
             conn.execute("ALTER TABLE profile ADD COLUMN company TEXT DEFAULT ''")
+        for col, ddl in (
+            ("representative", "TEXT DEFAULT ''"),
+            ("address",        "TEXT DEFAULT ''"),
+            ("corp_number",    "TEXT DEFAULT ''"),
+            ("qualifications", "TEXT DEFAULT '[]'"),
+        ):
+            if col not in cols:
+                conn.execute(f"ALTER TABLE profile ADD COLUMN {col} {ddl}")
         # cases の後付け列をマイグレーション（無ければ追加）
         case_cols = [r[1] for r in conn.execute("PRAGMA table_info(cases)")]
         if "description" not in case_cols:
@@ -901,28 +913,73 @@ def yen_to_int(s: str) -> int | None:
     return int(digits) if digits else None
 
 
+def _hydrate_profile(row: dict[str, Any]) -> dict[str, Any]:
+    import json
+    try:
+        row["qualifications"] = json.loads(row.get("qualifications") or "[]")
+    except (ValueError, TypeError):
+        row["qualifications"] = []
+    for k in ("representative", "address", "corp_number"):
+        row.setdefault(k, "")
+    return row
+
+
 def get_profile() -> dict[str, Any]:
-    """マイ条件を取得（未設定なら空の既定値）。"""
+    """マイ条件を取得（未設定なら空の既定値）。qualifications は list で返す。"""
     with _connect() as conn:
         row = conn.execute("SELECT * FROM profile WHERE id = 1").fetchone()
     if row:
-        return dict(row)
+        return _hydrate_profile(dict(row))
     return {"id": 1, "company": "", "prefectures": "", "categories": "電気工事",
-            "budget_max": "", "grade": "", "quals": ""}
+            "budget_max": "", "grade": "", "quals": "", "representative": "",
+            "address": "", "corp_number": "", "qualifications": []}
+
+
+def _normalize_qualifications(quals: Any) -> str:
+    """機関別の等級を検証してJSON文字列にする。各行 {issuer, category, grade, score, valid_until, number, note}。"""
+    import json
+    if isinstance(quals, str):
+        try:
+            items = json.loads(quals or "[]")
+        except (ValueError, TypeError):
+            items = []
+    elif isinstance(quals, list):
+        items = quals
+    else:
+        items = []
+    out: list[dict[str, Any]] = []
+    for it in items:
+        if not isinstance(it, dict):
+            continue
+        issuer = str(it.get("issuer", "")).strip()
+        if not issuer:
+            continue
+        out.append({k: str(it.get(k, "")).strip() for k in
+                    ("issuer", "category", "grade", "score", "valid_until", "number", "note")})
+    return json.dumps(out, ensure_ascii=False)
 
 
 def save_profile(prefectures: str, categories: str, budget_max: str,
-                 grade: str = "", quals: str = "", company: str = "") -> None:
+                 grade: str = "", quals: str = "", company: str = "",
+                 representative: str = "", address: str = "",
+                 corp_number: str = "", qualifications: Any = None) -> None:
     """マイ条件を保存（単一行 upsert）。"""
+    quals_json = _normalize_qualifications(qualifications if qualifications is not None else [])
     with _connect() as conn:
         conn.execute(
-            """INSERT INTO profile (id, company, prefectures, categories, budget_max, grade, quals, updated_at)
-               VALUES (1, ?, ?, ?, ?, ?, ?, datetime('now'))
+            """INSERT INTO profile
+                 (id, company, prefectures, categories, budget_max, grade, quals,
+                  representative, address, corp_number, qualifications, updated_at)
+               VALUES (1, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, datetime('now'))
                ON CONFLICT(id) DO UPDATE SET
                  company=excluded.company, prefectures=excluded.prefectures,
                  categories=excluded.categories, budget_max=excluded.budget_max,
-                 grade=excluded.grade, quals=excluded.quals, updated_at=datetime('now')""",
-            (company, prefectures, categories, budget_max, grade, quals),
+                 grade=excluded.grade, quals=excluded.quals,
+                 representative=excluded.representative, address=excluded.address,
+                 corp_number=excluded.corp_number, qualifications=excluded.qualifications,
+                 updated_at=datetime('now')""",
+            (company, prefectures, categories, budget_max, grade, quals,
+             representative, address, corp_number, quals_json),
         )
         conn.commit()
 

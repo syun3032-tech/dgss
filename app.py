@@ -573,9 +573,21 @@ def profile():
         budget_max = request.form.get("budget_max", "").strip()
         grade = request.form.get("grade", "").strip()
         company = request.form.get("company", "").strip()
+        import json
+        try:
+            qualifications = json.loads(request.form.get("qualifications", "[]") or "[]")
+        except (ValueError, TypeError):
+            qualifications = []
         db.save_profile(prefectures, ",".join(categories) or "電気工事",
-                        budget_max, grade, ",".join(quals), company=company)
-        flash("マイ条件を保存しました。マッチ案件・競合企業に反映されます。", "ok")
+                        budget_max, grade, ",".join(quals), company=company,
+                        representative=request.form.get("representative", "").strip(),
+                        address=request.form.get("address", "").strip(),
+                        corp_number=request.form.get("corp_number", "").strip(),
+                        qualifications=qualifications)
+        flash("マイ条件を保存しました。マッチ案件・AI判定の等級照合に反映されます。", "ok")
+        # 等級を編集して保存した時は、そのままマイ条件に留まる（連続編集しやすく）
+        if request.form.get("stay"):
+            return redirect(url_for("profile"))
         return redirect(url_for("matches"))
 
     prof = db.get_profile()
