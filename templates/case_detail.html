@@ -346,8 +346,7 @@
       html += '<div class="ai-block"><h3>注意点</h3>' + ul(d.cautions) + '</div>';
     }
     html += '<p class="ai-foot muted">'
-      + (d.cached ? '保存済みの結果' : 'AI生成') + (d.model ? '（' + esc(d.model) + '）' : '')
-      + ' — 最終確認は必ず公告原本で行ってください。'
+      + 'AIで出した結果です。最終確認は必ず公告原本で行ってください。'
       + ' <a href="#" id="aiRefresh">再生成</a></p>';
     out.innerHTML = html;
     var rf = document.getElementById('aiRefresh');

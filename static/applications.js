@@ -505,11 +505,14 @@
       var rd = root.querySelector("#aiRedo"); if (rd) rd.onclick = function () { runAi(root, true); };
       var ng = root.querySelector("#aiNG"); if (ng) ng.onclick = function () {
         var e = (aiResult && aiResult.eligibility) || {};
-        var reason = (e.reasons || [])[0] || "AI判定で応募不可";
+        var reasons = (e.reasons || []);
+        var first = reasons[0] || "AIが参加資格を満たさないと判定";
+        var memo = "【AI判定: 参加不可】" + (reasons.length ? reasons.join(" / ") : first);
+        if (mtab === "情報") pullInfo(root); else pullMoney(root);  // フォーム現在値を取り込む
+        // 何が足りなかったかを理由メモ(note)に残し、NG列へ振り分ける
         c.status = "NG";
-        c.flag = "AI: " + String(reason).slice(0, 60);
-        if (mtab === "情報") pullInfo(root); else pullMoney(root);
-        c.status = "NG"; c.flag = "AI: " + String(reason).slice(0, 60);
+        c.flag = "AI: " + String(first).slice(0, 40);
+        c.note = memo + (c.note ? " ／ " + c.note : "");
         saveCase(c);
       };
     }
