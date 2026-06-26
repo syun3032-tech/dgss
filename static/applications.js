@@ -129,7 +129,7 @@
 
     var warn = "";
     if (soon.length) {
-      warn = '<div class="warnbar"><span class="wb-title">⚠ 直近の締切（入札1週間前〜）</span>' +
+      warn = '<div class="warnbar"><span class="wb-title">直近の締切（入札1週間前〜）</span>' +
         soon.slice(0, 6).map(function (x) {
           var b = band(x.d);
           return '<span class="wb-item" style="background:' + b.bg + ";color:" + b.fg + '">' +
@@ -167,7 +167,13 @@
       '<div class="kc-title">' + esc(c.title) + "</div>" +
       (ms ? '<div class="kc-dl" style="background:' + b.bg + ";color:" + b.fg + '">' + esc(ms.label) + " " + md(ms.date) + " ・ " + daysLabel(d) + "</div>" : "") +
       (qreq ? '<div class="kc-q">見積 依頼' + qreq + "社/回答" + qrep + "</div>" : "") +
-      (c.flag ? '<div class="kc-flag">🚩 ' + esc(c.flag) + "</div>" : "") +
+      (c.flag ? '<div class="kc-flag">' + esc(c.flag) + "</div>" : "") +
+      '<div class="kc-acts" onclick="event.stopPropagation()">' +
+        '<a class="kc-link" href="/case/' + c.case_id + '" target="_blank" rel="noopener">詳細・公告</a>' +
+        (c.detail_url ? '<a class="kc-link" href="' + esc(c.detail_url) + '" target="_blank" rel="noopener">NJSS</a>' : "") +
+        '<a class="kc-link" href="/case/' + c.case_id + '#aiRun" target="_blank" rel="noopener">AI</a>' +
+        (c.status !== "NG" ? '<button type="button" class="kc-ng" data-ng="' + c.case_id + '">NGへ</button>' : "") +
+      "</div>" +
       "</div>";
   }
 
@@ -201,7 +207,7 @@
         '<div class="co-tags">' + (c.tags || []).map(function (t) {
           return '<span class="co-tag" style="background:' + workColor(t) + '22;color:' + workColor(t) + '">' + esc(t) + "</span>";
         }).join("") + "</div>" +
-        '<div class="co-meta">' + (c.area ? "📍" + esc(c.area) : "") + (c.tel ? " ・ ☎" + esc(c.tel) : "") +
+        '<div class="co-meta">' + (c.area ? esc(c.area) : "") + (c.tel ? " ・ TEL " + esc(c.tel) : "") +
           (c.url ? ' ・ <a href="' + esc(c.url) + '" target="_blank" rel="noopener">サイト</a>' : "") + "</div>" +
         (c.note ? '<div class="co-note">' + esc(c.note) + "</div>" : "") +
         ((c.reviews || []).length ? '<div class="co-revs">' + c.reviews.map(function (r) { return "<div>・" + esc(r) + "</div>"; }).join("") + "</div>" : "") +
@@ -296,6 +302,14 @@
       el.addEventListener("click", function () {
         var c = CASES.filter(function (x) { return String(x.case_id) === el.getAttribute("data-id"); })[0];
         if (c) openCaseModal(c);
+      });
+    });
+    // カードのワンクリック「NGへ」（クリックはkc-actsでstopPropagation済み）
+    Array.prototype.forEach.call(document.querySelectorAll(".kc-ng"), function (btn) {
+      btn.addEventListener("click", function (e) {
+        e.stopPropagation();
+        var c = CASES.filter(function (x) { return String(x.case_id) === btn.getAttribute("data-ng"); })[0];
+        if (c && confirm("「" + c.title + "」をNG（不参加）に移動しますか？")) { c.status = "NG"; saveCase(c); }
       });
     });
     // 協力会社
@@ -417,8 +431,8 @@
         chooser += '<div class="mq-chooser"><input id="chSearch" class="mq-chsearch" placeholder="会社をさがす（空欄＝おすすめ）" value="' + esc(chQ) + '">' +
           '<label class="mq-chpartner"><input type="checkbox" id="chPartner"' + (chPartner ? " checked" : "") + ">★取引先のみ</label>" +
           '<div class="mq-chlist">' + (clist.map(function (co) {
-            return '<button type="button" class="mq-chitem' + (asked[co.name] ? " on" : "") + '" data-co="' + esc(co.name) + '"><span class="ck">' + (asked[co.name] ? "✓" : "") + "</span>" +
-              "<span>" + (co.partner ? "★" : "") + esc(co.name) + " <small>" + esc(co.area || "") + "</small></span></button>";
+            return '<button type="button" class="mq-chitem' + (asked[co.name] ? " on" : "") + '" data-co="' + esc(co.name) + '"><span class="ck">' + (asked[co.name] ? "選択中" : "") + "</span>" +
+              "<span>" + (co.partner ? "[常] " : "") + esc(co.name) + " <small>" + esc(co.area || "") + "</small></span></button>";
           }).join("") || '<p class="dim">該当なし</p>') + "</div></div>";
       }
       var rows = c.partners.length ? c.partners.map(function (q, i) {
@@ -429,7 +443,7 @@
           '<button type="button" class="mq-star' + (q.selected ? " on" : "") + '" data-act="select"' + (q.feasible === 1 ? "" : " disabled") + ">★</button>" +
           '<span class="mq-co">' + esc(q.company) + (isMin ? ' <span class="mq-min">最安</span>' : "") + "</span>" +
           '<span class="mq-stt" style="background:' + st.color + "1a;color:" + st.color + '">' + st.label + "</span>" +
-          (tel ? '<a class="mq-tel" href="tel:' + esc(tel) + '">☎</a>' : "") +
+          (tel ? '<a class="mq-tel" href="tel:' + esc(tel) + '">電話</a>' : "") +
           '<button type="button" class="mq-del" data-act="del">×</button></div><div class="mq-r2">' +
           '<button type="button" class="stp' + (q.requested ? " on" : "") + '" data-act="req">①依頼</button>' +
           '<button type="button" class="stp' + (q.replied ? " on" : "") + '" data-act="rep"' + (q.requested ? "" : " disabled") + ">②返信</button>" +
@@ -442,7 +456,7 @@
         var co2 = COMPANIES.filter(function (x) { return x.name === sel.company; })[0];
         var tel2 = sel.tel || (co2 && co2.tel) || "";
         call = '<div class="mq-call"><b>落札の連絡</b><p>落札したら <b>' + esc(sel.company) + "</b> に連絡</p>" +
-          (tel2 ? '<a class="btn primary small" href="tel:' + esc(tel2) + '">☎ ' + esc(tel2) + " に電話</a> " : '<span class="dim">電話番号が未登録</span> ') +
+          (tel2 ? '<a class="btn primary small" href="tel:' + esc(tel2) + '">' + esc(tel2) + " に電話</a> " : '<span class="dim">電話番号が未登録</span> ') +
           '<button type="button" class="btn ' + (c.award_called ? "primary" : "ghost") + ' small" id="awardBtn">' + (c.award_called ? "連絡済み" : "連絡したら押す") + "</button></div>";
       }
       return money + chooser +

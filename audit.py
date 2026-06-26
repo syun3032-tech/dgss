@@ -3,14 +3,14 @@
 毎日 update.py の後に走らせる想定。次の2つを自動チェックして
 audit.log に追記＋ audit_report.md に最新版を書き出す。
 
-  1) データ品質監査  … 件数/鮮度/締切充足率/予定価格抽出率/区分・業種分布。
-     しきい値を割ったら ⚠️ を立てる（取得0件・データが古い等の異常検知）。
-  2) 好機監査        … 川野電気スコープ（電気系）×今応募できる(締切≥今日)×
-     1000万以上 の案件を抽出。新規に現れたものは 🆕 を付ける。
+  1) データ品質監査 … 件数/鮮度/締切充足率/予定価格抽出率/区分・業種分布。
+     しきい値を割ったら を立てる（取得0件・データが古い等の異常検知）。
+  2) 好機監査 … 川野電気スコープ（電気系）×今応募できる(締切≥今日)×
+     1000万以上 の案件を抽出。新規に現れたものは を付ける。
 
 使い方:
-  python audit.py                 … 監査して結果を表示＋ログ追記
-  python audit.py --quiet         … 表示は最小限（cron/launchd向け）
+  python audit.py … 監査して結果を表示＋ログ追記
+  python audit.py --quiet … 表示は最小限（cron/launchd向け）
 
 新規判定: 前回監査時に見えていた external_id を audit_state.json に保存し、
 今回との差分を「新着の好機」として検知する（毎日の自動監視の核）。
@@ -31,10 +31,10 @@ REPORT_PATH = BASE / "audit_report.md"
 STATE_PATH = BASE / "audit_state.json"
 
 # 品質しきい値（割ったら警告）
-MIN_TOTAL = 500            # 総件数がこれ未満なら取得失敗を疑う
-MAX_STALE_DAYS = 3         # 最新公告日が今日からこれ以上前なら「古い」
-OPPORTUNITY_YEN = 10_000_000  # 好機の予定価格下限（1000万）
-PDF_AUDIT_MIN_ACCURACY = 90   # ToDo精度(PDF実照合)の整合率がこれ未満なら警告
+MIN_TOTAL = 500 # 総件数がこれ未満なら取得失敗を疑う
+MAX_STALE_DAYS = 3 # 最新公告日が今日からこれ以上前なら「古い」
+OPPORTUNITY_YEN = 10_000_000 # 好機の予定価格下限（1000万）
+PDF_AUDIT_MIN_ACCURACY = 90 # ToDo精度(PDF実照合)の整合率がこれ未満なら警告
 
 
 def pdf_audit(sample: int) -> dict | None:
@@ -46,7 +46,7 @@ def pdf_audit(sample: int) -> dict | None:
     try:
         import audit_pdf
         return audit_pdf.run(sample=sample, only_open=True)
-    except Exception:  # noqa: BLE001 — PDF監査の失敗で日次監査を止めない
+    except Exception: # noqa: BLE001 — PDF監査の失敗で日次監査を止めない
         return None
 
 
@@ -166,7 +166,7 @@ def run(quiet: bool = False, pdf_sample: int = 0) -> int:
 
     seen = _load_state()
     now_ids = {o["external_id"] for o in opps}
-    fresh = now_ids - seen  # 前回監査に無かった＝新着の好機
+    fresh = now_ids - seen # 前回監査に無かった＝新着の好機
     _save_state(now_ids)
 
     # ---- レポート(md) を書き出し ----
@@ -176,9 +176,9 @@ def run(quiet: bool = False, pdf_sample: int = 0) -> int:
     md.append(f"- 最新公告日: {metrics['latest_announced']}")
     md.append(f"- 締切あり: {metrics['with_deadline']}（{metrics['deadline_rate']}%）")
     md.append(f"- 予定価格あり: {metrics['with_price']}（{metrics['price_rate']}%）")
-    md.append("- 状態: " + ("✅ 正常" if not warns else "⚠️ 要確認"))
+    md.append("- 状態: " + ("正常" if not warns else "要確認"))
     for w in warns:
-        md.append(f"  - ⚠️ {w}")
+        md.append(f" - {w}")
     if pdf_rep is not None and pdf_rep.get("checked"):
         md.append(f"\n## ToDo精度（公告PDF実照合）")
         md.append(f"- 照合 {pdf_rep['checked']} 件 / 整合率 **{pdf_rep['accuracy']}%**"
@@ -187,16 +187,16 @@ def run(quiet: bool = False, pdf_sample: int = 0) -> int:
             md.append(f"- 不一致内訳: {pdf_rep['by_type']}")
         for d in pdf_rep["details"][:8]:
             for typ, msg in d["issues"]:
-                md.append(f"  - ⚠️ {typ}: {d['title']} — {msg}")
+                md.append(f" - {typ}: {d['title']} — {msg}")
 
     md.append(f"\n## 好機（電気×今応募できる×1000万以上）: {len(opps)} 件 / 新着 {len(fresh)} 件")
     for o in opps[:30]:
-        new = "🆕 " if o["external_id"] in fresh else ""
+        new = "" if o["external_id"] in fresh else ""
         price = o["budget"] or f"{o['budget_yen']:,}円"
         md.append(f"- {new}【{price}】締切{o['deadline']} {o['prefecture']} "
                   f"[{o['procurement_type']}] {o['title'][:40]}")
         if o["detail_url"]:
-            md.append(f"  - {o['detail_url']}")
+            md.append(f" - {o['detail_url']}")
     report = "\n".join(md) + "\n"
     REPORT_PATH.write_text(report, encoding="utf-8")
 

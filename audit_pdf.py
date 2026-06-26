@@ -11,7 +11,7 @@
 日次で回すための監査（Plan-Do-Check-Act）に使う。
 
 使い方:
-  python audit_pdf.py --sample 40            # 開いている案件40件をPDF照合
+  python audit_pdf.py --sample 40 # 開いている案件40件をPDF照合
   python audit_pdf.py --sample 40 --json out.json
   ※ pdftotext(poppler) が必要。無ければ pypdf にフォールバック。
 """
@@ -78,7 +78,7 @@ def extract_pdf_text(url: str, timeout: int = 25) -> str:
         req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0"})
         with urllib.request.urlopen(req, timeout=timeout) as res:
             data = res.read()
-    except Exception:  # noqa: BLE001
+    except Exception: # noqa: BLE001
         return ""
     with tempfile.NamedTemporaryFile(suffix=".pdf", delete=True) as f:
         f.write(data)
@@ -88,13 +88,13 @@ def extract_pdf_text(url: str, timeout: int = 25) -> str:
                                  capture_output=True, timeout=30)
             if out.returncode == 0 and out.stdout:
                 return out.stdout.decode("utf-8", "ignore")
-        except Exception:  # noqa: BLE001
+        except Exception: # noqa: BLE001
             pass
-        try:  # フォールバック: pypdf
+        try: # フォールバック: pypdf
             import pypdf
             r = pypdf.PdfReader(f.name)
             return "\n".join((p.extract_text() or "") for p in r.pages)
-        except Exception:  # noqa: BLE001
+        except Exception: # noqa: BLE001
             return ""
 
 
@@ -170,8 +170,8 @@ def audit_case(case: dict, pdf_text: str) -> dict:
     if kind == "工事" and gt["needs_genba_dairinin"] and "現場代理人" not in labels:
         issues.append(("現場代理人_漏れ", "公告に現場代理人の記載があるがToDoに無い"))
     # 5) 全省庁統一資格の検証（役務×国）: 公告が統一資格を求めるのに当方が
-    #    案内していなければ漏れ。工事の公告にも「（工事は対象外）」等で語が出るため
-    #    役務に限定して評価する（工事での誤検知を避ける）。
+    # 案内していなければ漏れ。工事の公告にも「（工事は対象外）」等で語が出るため
+    # 役務に限定して評価する（工事での誤検知を避ける）。
     if kind == "役務" and gt["needs_toitsu_shikaku"] and "全省庁統一資格" not in labels:
         issues.append(("統一資格_漏れ",
                        "役務公告が全省庁統一資格を求めるが当方ToDoに無い（国の機関判定漏れの可能性）"))
@@ -223,9 +223,9 @@ def _print_report(rep: dict) -> None:
     print(f"不一致のあった案件: {rep['with_issues']} / 整合率 {rep['accuracy']}%")
     print(f"不一致の内訳: {rep['by_type']}")
     for d in rep["details"][:30]:
-        print(f"  ⚠ {d['title']} [{d['kind']}]")
+        print(f" {d['title']} [{d['kind']}]")
         for typ, msg in d["issues"]:
-            print(f"      - {typ}: {msg}")
+            print(f" - {typ}: {msg}")
 
 
 if __name__ == "__main__":

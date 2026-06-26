@@ -30,7 +30,7 @@
       <td class="num">{{ r.njss_count }}</td>
       <td><span class="tag">{{ r.platform }}</span>{% if r.platform_n > 1 %} <span class="dim">+{{ r.platform_n }}機関</span>{% endif %}</td>
       <td>
-        {% if r.bid_url %}<a href="{{ r.bid_url }}" target="_blank" rel="noopener">入札ページを開く ↗</a>{% else %}—{% endif %}
+        {% if r.bid_url %}<a href="{{ r.bid_url }}" target="_blank" rel="noopener">入札ページを開く</a>{% else %}—{% endif %}
       </td>
     </tr>
     {% endfor %}

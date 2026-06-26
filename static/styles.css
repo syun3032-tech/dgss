@@ -610,3 +610,9 @@ tr.row-check td { background: #fffaf0; }
 .cochip.on{border-color:#1c1917;background:#1c1917;color:#fff}
 .co-sep{width:1px;height:16px;background:#ddd9d0;margin:0 2px}
 .btn.small{padding:5px 11px;font-size:12px}
+/* カード下部のアクション（詳細・公告・NJSS・AI・NGへ） */
+.kc-acts { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; margin-top: 8px; padding-top: 7px; border-top: 1px dashed var(--border); }
+.kc-link { font-size: 10.5px; color: var(--accent); white-space: nowrap; }
+.kc-link:hover { text-decoration: underline; }
+.kc-ng { margin-left: auto; font-size: 10.5px; border: 1px solid #f3b0b4; background: #fff; color: #dc2626; border-radius: 6px; padding: 1px 8px; cursor: pointer; }
+.kc-ng:hover { background: #fef2f2; }

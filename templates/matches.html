@@ -34,7 +34,7 @@
           {% if c.budget %}<span class="price"><span class="lbl">予定価格</span>{{ c.budget }}</span>{% endif %}
         </div>
         <div class="match-reasons">
-          {% for r in c.match_reasons %}<span class="match-tag">✓ {{ r }}</span>{% endfor %}
+          {% for r in c.match_reasons %}<span class="match-tag">{{ r }}</span>{% endfor %}
         </div>
       </div>
       <div class="cr-side">

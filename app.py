@@ -261,7 +261,7 @@ def cases():
     if budget_min > 0:
         man = f"{budget_min // 10000:,}"
         view = {
-            "icon": "💡",
+            "icon": "",
             "title": (f"今応募できる {man}万円以上の案件" if open_only
                       else f"{man}万円以上の案件"),
             "desc": "予定価格の高い順に表示中。" + (
@@ -270,15 +270,15 @@ def cases():
         }
         nav_active = "budget"
     elif fresh == "today":
-        view = {"icon": "🆕", "title": "本日の新着案件",
+        view = {"icon": "", "title": "本日の新着案件",
                 "desc": "今日公告された電気工事案件です。"}
         nav_active = "new"
     elif fresh == "week":
-        view = {"icon": "🆕", "title": "新着案件（直近1週間）",
+        view = {"icon": "", "title": "新着案件（直近1週間）",
                 "desc": "直近7日間に公告された電気工事案件です。"}
         nav_active = "new"
     else:
-        view = {"icon": "🔎", "title": "案件を探す",
+        view = {"icon": "", "title": "案件を探す",
                 "desc": "地方・都道府県・業種・予定価格などで絞り込めます。"}
         nav_active = "cases"
 
