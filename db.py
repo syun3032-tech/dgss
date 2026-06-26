@@ -129,6 +129,12 @@ CREATE TABLE IF NOT EXISTS agencies (
     fetched_at  TEXT DEFAULT ''      -- 取得日時
 );
 
+-- 監視機関のホワイトリスト除外（チェックを外した発注機関＝案件一覧に出さない）。
+-- 既定は「全機関ON（除外なし）」。ここに入っている機関名の案件だけ非表示にする。
+CREATE TABLE IF NOT EXISTS agency_exclusions (
+    name TEXT PRIMARY KEY
+);
+
 -- 協力会社マスタ（bid-next-eta の X 配列に相当）。
 CREATE TABLE IF NOT EXISTS companies (
     id      INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -323,10 +329,17 @@ def _build_case_filter(
     hide_closed: bool = False,
     q: str = "",
     announced_after: str | None = None,
+    exclude_agencies: list[str] | set[str] | None = None,
 ) -> tuple[str, list[Any]]:
     """絞り込み条件から WHERE句とパラメータを組み立てる（list_cases と件数で共用）。"""
     where: list[str] = []
     params: list[Any] = []
+
+    # 監視機関のチェックを外した発注機関は案件一覧から除外する。
+    exc = [a for a in (exclude_agencies or []) if a]
+    if exc:
+        where.append("agency NOT IN (%s)" % ",".join("?" * len(exc)))
+        params.extend(exc)
 
     if prefecture:
         where.append("prefecture = ?")
@@ -394,6 +407,7 @@ def list_cases(
     hide_closed: bool = False,
     q: str = "",
     announced_after: str | None = None,
+    exclude_agencies: list[str] | set[str] | None = None,
     sort: str = "deadline",
     limit: int = 200,
     offset: int = 0,
@@ -413,6 +427,7 @@ def list_cases(
         procurement_type=procurement_type, bid_method=bid_method,
         spec_status=spec_status, budget_min=budget_min, open_only=open_only,
         hide_closed=hide_closed, q=q, announced_after=announced_after,
+        exclude_agencies=exclude_agencies,
     )
     # 締切が空文字の案件は末尾に回す
     order = {
@@ -523,6 +538,38 @@ def upsert_agencies(rows: list[dict[str, Any]]) -> int:
         conn.executemany(sql, [tuple(r.get(c, "") for c in cols) for r in rows])
         conn.commit()
     return len(rows)
+
+
+# --- 監視機関のホワイトリスト除外（チェックを外した機関の案件を一覧から消す）---
+
+def list_agency_exclusions() -> set[str]:
+    """案件一覧から除外する発注機関名の集合。"""
+    with _connect() as conn:
+        return {r[0] for r in conn.execute("SELECT name FROM agency_exclusions")}
+
+
+def set_agency_excluded(name: str, excluded: bool) -> None:
+    """1機関の除外ON/OFF（excluded=True で除外＝チェックを外す）。"""
+    name = (name or "").strip()
+    if not name:
+        return
+    with _connect() as conn:
+        if excluded:
+            conn.execute("INSERT OR IGNORE INTO agency_exclusions (name) VALUES (?)", (name,))
+        else:
+            conn.execute("DELETE FROM agency_exclusions WHERE name = ?", (name,))
+        conn.commit()
+
+
+def replace_agency_exclusions(names: list[str]) -> None:
+    """除外リストを丸ごと置き換える（localStorage からの復元用）。"""
+    clean = [str(n).strip() for n in (names or []) if str(n).strip()]
+    with _connect() as conn:
+        conn.execute("DELETE FROM agency_exclusions")
+        if clean:
+            conn.executemany("INSERT OR IGNORE INTO agency_exclusions (name) VALUES (?)",
+                             [(n,) for n in clean])
+        conn.commit()
 
 
 def list_agencies(q: str = "") -> list[dict[str, Any]]:

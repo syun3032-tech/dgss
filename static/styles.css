@@ -657,3 +657,10 @@ tr.row-check td { background: #fffaf0; }
   font-family: inherit; padding: 7px 9px; border: 1px solid var(--border-strong); border-radius: 6px; font-size: 13.5px;
 }
 .apply-form.grid label.grow { grid-column: 1 / -1; }
+
+/* 監視機関のチェック（ホワイトリスト除外） */
+.agc-col { width: 48px; text-align: center; }
+table.list td.center { text-align: center; }
+.agc { width: 16px; height: 16px; accent-color: var(--accent); cursor: pointer; }
+tr.agc-off td { opacity: .45; }
+tr.agc-off td.center { opacity: 1; }

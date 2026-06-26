@@ -238,6 +238,8 @@ def cases():
         hide_closed=not show_closed,
         q=q,
         announced_after=announced_after,
+        # 監視機関でチェックを外した発注機関の案件は最初から除外する
+        exclude_agencies=db.list_agency_exclusions(),
     )
     matched = db.count_list_cases(**filters)          # 該当件数（上限なしの実数）
     total_pages = max(1, (matched + per_page - 1) // per_page)
@@ -678,13 +680,39 @@ def export_csv():
 
 @app.route("/agencies")
 def agencies():
-    """監視対象の発注機関（全国）一覧。公式入札ページへの導線つき。"""
+    """監視対象の発注機関（全国）一覧。チェックを外すと案件を探すから除外される。"""
     import agency_import
     q = request.args.get("q", "").strip()
     rows = db.list_agencies(q=q)
+    excluded = db.list_agency_exclusions()
     for r in rows:
         r["platform"] = agency_import.platform_of(r.get("domain", ""))
-    return render_template("agencies.html", rows=rows, q=q, total=db.count_agencies())
+        r["included"] = r["name"] not in excluded  # チェック状態（既定ON）
+    return render_template("agencies.html", rows=rows, q=q,
+                           total=db.count_agencies(),
+                           excluded_count=len(excluded))
+
+
+@app.route("/agencies/toggle", methods=["POST"])
+def agency_toggle():
+    """1機関のチェックON/OFF（included=False で案件一覧から除外）。"""
+    data = request.get_json(silent=True) or {}
+    name = (data.get("name") or "").strip()
+    included = bool(data.get("included"))
+    if not name:
+        return jsonify({"error": "name required"}), 400
+    db.set_agency_excluded(name, excluded=not included)  # 含めない＝除外
+    return jsonify({"name": name, "included": included,
+                    "excluded": sorted(db.list_agency_exclusions())})
+
+
+@app.route("/agencies/exclusions/restore", methods=["POST"])
+def agency_exclusions_restore():
+    """localStorage に退避した除外リストをサーバへ復元（揮発DB対策）。"""
+    data = request.get_json(silent=True) or {}
+    names = data.get("excluded") or []
+    db.replace_agency_exclusions(names)
+    return jsonify({"restored": len(names)})
 
 
 @app.route("/api/prefectures")

@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>{% block title %}Kawanoさん NJSSモドキ{% endblock %}</title>
-  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}?v=3">
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}?v=4">
 </head>
 <body>
 <div class="app">
@@ -103,6 +103,26 @@
       location.reload();
     }
   }).catch(function () { sessionStorage.setItem('kawanoAppsRestored', '1'); });
+})();
+</script>
+<script>
+/* 監視機関の除外リスト（ホワイトリスト）をブラウザ保存→自動復元。
+   サーバDBは毎日のデプロイで揮発するため localStorage を真の保存先とする。 */
+(function () {
+  if (sessionStorage.getItem('kawanoAgcRestored')) return;
+  var raw = localStorage.getItem('kawanoAgencyExclusions');
+  if (!raw) return;
+  var list;
+  try { list = JSON.parse(raw) || []; } catch (e) { return; }
+  if (!list.length) { sessionStorage.setItem('kawanoAgcRestored', '1'); return; }
+  fetch('/agencies/exclusions/restore', {
+    method: 'POST', headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ excluded: list })
+  }).then(function (r) { return r.json(); }).then(function (d) {
+    sessionStorage.setItem('kawanoAgcRestored', '1');
+    var p = location.pathname;
+    if (d && d.restored > 0 && (p === '/' || p === '/agencies')) location.reload();
+  }).catch(function () { sessionStorage.setItem('kawanoAgcRestored', '1'); });
 })();
 </script>
 </body>
