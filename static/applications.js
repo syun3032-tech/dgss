@@ -412,7 +412,7 @@
         fld("開札日", '<input type="date" name="open_date" value="' + esc(c.open_date) + '">') +
         fld("資料受取", '<input name="materials" value="' + esc(c.materials) + '" placeholder="6/1以降受取 等">') +
         fld("要確認の一言", '<input name="flag" value="' + esc(c.flag) + '" placeholder="資料待ち 等">') +
-        fld("メモ", '<input name="note" value="' + esc(c.note) + '">', "full") +
+        fld("メモ", '<textarea name="note" rows="3" class="note-area">' + esc(c.note) + '</textarea>', "full") +
       "</div><div class=\"tl\"><div class=\"tl-h\">工程タイムライン</div>" + tl + "</div>";
     }
 

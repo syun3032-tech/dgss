@@ -649,3 +649,11 @@ tr.row-check td { background: #fffaf0; }
 .ng-btn { background: #dc2626; color: #fff; border-color: #dc2626; }
 .ng-btn:hover { background: #b91c1c; }
 .ng-btn:disabled { opacity: .6; cursor: default; }
+
+/* メモは複数行（縦に伸ばせて縦スクロール。横にはみ出さない） */
+.note-area, .m-fld textarea, .apply-form textarea {
+  width: 100%; min-height: 64px; resize: vertical; line-height: 1.5;
+  white-space: pre-wrap; word-break: break-word; overflow-y: auto;
+  font-family: inherit; padding: 7px 9px; border: 1px solid var(--border-strong); border-radius: 6px; font-size: 13.5px;
+}
+.apply-form.grid label.grow { grid-column: 1 / -1; }

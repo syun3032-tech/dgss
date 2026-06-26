@@ -192,7 +192,7 @@
       </label>
       <label class="grow">
         <span>メモ</span>
-        <input type="text" name="note" value="{{ application.note if application else '' }}" placeholder="必要書類・注意点など">
+        <textarea name="note" rows="3" class="note-area" placeholder="必要書類・注意点など">{{ application.note if application else '' }}</textarea>
       </label>
       <label class="check inline">
         <input type="checkbox" name="needs_check" value="1" {{ 'checked' if application and application.needs_check }}>
