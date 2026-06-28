@@ -554,7 +554,22 @@
         });
       });
     }
-    showModal(esc(c.title), bodyHtml(), function (root) { bindModal(root); });
+    showModal(esc(c.title), bodyHtml(), function (root) { bindModal(root); }, {
+      danger: {
+        label: "申請管理から削除",
+        onClick: function () {
+          if (!confirm("「" + c.title + "」を申請管理から削除しますか？\n（案件自体は残り、カンバンから外れます）")) return;
+          // localStorageのミラーからも消す（自動復元で戻らないように）
+          try {
+            var KEY = "kawanoApplications", map = JSON.parse(localStorage.getItem(KEY)) || {};
+            if (c.external_id && map[c.external_id]) { delete map[c.external_id]; localStorage.setItem(KEY, JSON.stringify(map)); }
+          } catch (e) {}
+          fetch("/applications/" + c.case_id + "/delete", {
+            method: "POST", headers: { "X-Requested-With": "fetch" }
+          }).then(function () { location.reload(); }).catch(function () { location.reload(); });
+        }
+      }
+    });
   }
   function saveCase(c) {
     // 採用(selected)した見積があり発注先が未入力なら、その会社名を自動セット（擦り合わせ）。
@@ -629,15 +644,18 @@
 
   /* ---------- モーダル土台 ---------- */
   function fld(label, inner, cls) { return '<label class="m-fld ' + (cls || "") + '"><span>' + label + "</span>" + inner + "</label>"; }
-  function showModal(title, body, onMount) {
+  function showModal(title, body, onMount, opts) {
+    opts = opts || {};
+    var del = opts.danger ? '<button type="button" class="btn modal-del">' + esc(opts.danger.label) + '</button>' : '';
     $("modalRoot").innerHTML = '<div class="modal-bg"><div class="modal"><div class="modal-h"><h2>' + title +
       '</h2><button class="modal-x">×</button></div><div class="modal-b">' + body +
-      '</div><div class="modal-f"><button class="btn ghost modal-x2">閉じる</button><button class="btn primary m-save">保存</button></div></div></div>';
+      '</div><div class="modal-f">' + del + '<button class="btn ghost modal-x2">閉じる</button><button class="btn primary m-save">保存</button></div></div></div>';
     var root = $("modalRoot");
     var close = function () { closeModal(); };
     root.querySelector(".modal-x").addEventListener("click", close);
     root.querySelector(".modal-x2").addEventListener("click", close);
     root.querySelector(".modal-bg").addEventListener("click", function (e) { if (e.target.classList.contains("modal-bg")) close(); });
+    if (opts.danger) { var dl = root.querySelector(".modal-del"); if (dl) dl.addEventListener("click", opts.danger.onClick); }
     if (onMount) onMount(root);
   }
   function closeModal() { $("modalRoot").innerHTML = ""; }

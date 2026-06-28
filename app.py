@@ -453,6 +453,16 @@ def apply_case(case_id: int):
     return redirect(request.form.get("next") or url_for("case_detail", case_id=case_id))
 
 
+@app.route("/applications/<int:case_id>/delete", methods=["POST"])
+def application_delete(case_id: int):
+    """案件を申請管理から削除（カンバンから外す）。案件自体は残る。"""
+    db.delete_application(case_id)
+    if request.headers.get("X-Requested-With") == "fetch" or request.is_json:
+        return ("", 204)
+    flash("申請管理から削除しました。", "ok")
+    return redirect(url_for("applications"))
+
+
 @app.route("/applications/restore", methods=["POST"])
 def applications_restore():
     """ブラウザ(localStorage)に保存された申請をサーバDBへ復元する。

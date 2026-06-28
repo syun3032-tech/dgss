@@ -664,3 +664,7 @@ table.list td.center { text-align: center; }
 .agc { width: 16px; height: 16px; accent-color: var(--accent); cursor: pointer; }
 tr.agc-off td { opacity: .45; }
 tr.agc-off td.center { opacity: 1; }
+
+/* モーダルの削除ボタン（左寄せ・赤） */
+.modal-del { margin-right: auto; color: #dc2626; border-color: #f3b0b4; background: #fff; }
+.modal-del:hover { background: #fef2f2; }

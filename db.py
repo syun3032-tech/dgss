@@ -735,6 +735,13 @@ _APP_TEXT_FIELDS = (
 _APP_INT_FIELDS = ("needs_check", "bid_plan", "win_amount", "award_called")
 
 
+def delete_application(case_id: int) -> None:
+    """案件を申請管理から外す（applications行を削除）。案件(cases)自体は残す。"""
+    with _connect() as conn:
+        conn.execute("DELETE FROM applications WHERE case_id = ?", (case_id,))
+        conn.commit()
+
+
 def set_application(case_id: int, status: str, **fields: Any) -> None:
     """案件の入札参加申請ステータスと管理項目を登録・更新する。
 
