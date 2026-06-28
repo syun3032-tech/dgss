@@ -25,7 +25,7 @@ from typing import Any
 
 log = logging.getLogger(__name__)
 
-_TIMEOUT = 8
+_TIMEOUT = 5  # 保存時に長くブロックしないよう短め（不通でもSQLite＋localStorageで担保）
 
 
 def _url() -> str:

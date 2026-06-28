@@ -442,13 +442,17 @@ def apply_case(case_id: int):
         "partner": text("partner"),
         "partners": partners,
     }
+    is_ajax = bool(f.get("ajax") or request.headers.get("X-Requested-With") == "fetch")
     try:
         db.set_application(case_id, status, **fields)
-        flash(f"申請状況を「{db.normalize_status(status)}」に更新しました。", "ok")
     except ValueError:
+        # 不正ステータスは「保存できなかった」ことを必ず伝える（AJAXでも握りつぶさない）。
+        if is_ajax:
+            return jsonify({"error": f"ステータスが不正です: {status}"}), 400
         flash("ステータスが不正です。", "error")
-    # AJAX(fetch)からの保存は204で返し、画面側で再描画する。
-    if f.get("ajax") or request.headers.get("X-Requested-With") == "fetch":
+        return redirect(request.form.get("next") or url_for("case_detail", case_id=case_id))
+    flash(f"申請状況を「{db.normalize_status(status)}」に更新しました。", "ok")
+    if is_ajax:
         return ("", 204)
     return redirect(request.form.get("next") or url_for("case_detail", case_id=case_id))
 

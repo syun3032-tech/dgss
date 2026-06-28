@@ -834,9 +834,9 @@ def restore_from_supa() -> dict[str, int]:
                     counts["applications"] += 1
                 except ValueError:
                     pass
-        # 協力会社（全消し→投入）
+        # 協力会社（全消し→投入）。空/欠損のときは消さない（誤って全消しする事故を防ぐ）。
         comps = supa.load("companies")
-        if isinstance(comps, list):
+        if isinstance(comps, list) and comps:
             with _connect() as conn:
                 conn.execute("DELETE FROM companies")
                 conn.commit()
@@ -856,9 +856,9 @@ def restore_from_supa() -> dict[str, int]:
                 address=prof.get("address", ""), corp_number=prof.get("corp_number", ""),
                 qualifications=prof.get("qualifications", []))
             counts["profile"] = 1
-        # 監視機関の除外
+        # 監視機関の除外。空/欠損のときは置換しない（既存を消さない）。
         exc = supa.load("agency_exclusions")
-        if isinstance(exc, list):
+        if isinstance(exc, list) and exc:
             replace_agency_exclusions(exc)
             counts["exclusions"] = len(exc)
     except Exception as e:  # noqa: BLE001 — 復元失敗でアプリを落とさない

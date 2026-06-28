@@ -45,10 +45,16 @@ def _fetch_pdf_text(url: str, timeout: int = 25) -> str:
     """
     if not url or not (url.lower().endswith(".pdf")):
         return ""
+    # 公開Web(https)のPDFのみ取得。内部アドレス等への誤アクセスとメモリ肥大を防ぐ。
+    if not url.lower().startswith("https://"):
+        return ""
+    _MAX_BYTES = 20 * 1024 * 1024  # 20MB上限（巨大PDFでメモリを食わない）
     try:
         req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0"})
         with urllib.request.urlopen(req, timeout=timeout) as res:
-            data = res.read()
+            data = res.read(_MAX_BYTES + 1)
+        if len(data) > _MAX_BYTES:
+            return ""  # 大きすぎる＝読まない
     except Exception:  # noqa: BLE001
         return ""
     with tempfile.NamedTemporaryFile(suffix=".pdf", delete=True) as f:
