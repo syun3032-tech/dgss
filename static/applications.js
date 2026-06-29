@@ -75,6 +75,22 @@
   /* ---------- ステート ---------- */
   var state = { tab: "案件", assignee: null, sector: null, statuses: [], q: "", coTag: null, coPartner: false, coSort: false };
 
+  // フィルタ・並び替え・タブの選択を localStorage に保持する。
+  // 案件保存やNG移動は location.reload() を伴うため、保持しないと毎回初期化されてしまう。
+  // ページを離れて戻ってきたときも直前の絞り込みを復元する。
+  var UI_KEY = "kawanoUiState";
+  function saveState() {
+    try { localStorage.setItem(UI_KEY, JSON.stringify(state)); } catch (e) {}
+  }
+  function loadState() {
+    var s; try { s = JSON.parse(localStorage.getItem(UI_KEY)); } catch (e) { return; }
+    if (!s || typeof s !== "object") return;
+    ["tab", "assignee", "sector", "statuses", "q", "coTag", "coPartner", "coSort"].forEach(function (k) {
+      if (s[k] !== undefined && s[k] !== null) state[k] = s[k];
+    });
+    if (!Array.isArray(state.statuses)) state.statuses = [];
+  }
+
   /* ============================================================
      タブバー
   ============================================================ */
@@ -323,6 +339,7 @@
      レンダリング統合 + イベント
   ============================================================ */
   function render() {
+    saveState();   // 絞り込み・並び替え・タブの選択を保持（reload/遷移で初期化しない）
     renderTabs();
     var panel = $("tabPanel"), html;
     if (state.tab === "案件") html = renderKanban();
@@ -773,6 +790,7 @@
       }).catch(function () {});
   }
 
+  loadState();   // 直前の絞り込み・並び替え・タブを復元してから描画
   render();
   restoreCompanies();
 })();
