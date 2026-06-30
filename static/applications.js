@@ -73,7 +73,7 @@
   }
 
   /* ---------- ステート ---------- */
-  var state = { tab: "案件", assignee: null, sector: null, statuses: [], q: "", coTag: null, coPartner: false, coSort: false };
+  var state = { tab: "公共", assignee: null, sector: null, statuses: [], q: "", coTag: null, coPartner: false, coSort: false };
 
   // フィルタ・並び替え・タブの選択を localStorage に保持する。
   // 案件保存やNG移動は location.reload() を伴うため、保持しないと毎回初期化されてしまう。
@@ -89,14 +89,20 @@
       if (s[k] !== undefined && s[k] !== null) state[k] = s[k];
     });
     if (!Array.isArray(state.statuses)) state.statuses = [];
+    // 旧版の統合タブ「案件」を復元した場合は、公共の管理シートへ読み替える。
+    if (state.tab === "案件") state.tab = "公共";
   }
 
   /* ============================================================
      タブバー
   ============================================================ */
   function renderTabs() {
+    // 公共・民間はそれぞれ独立した管理シート（タブ）として扱う。
+    var pubN = CASES.filter(function (c) { return (c.sector || "公共") === "公共"; }).length;
+    var privN = CASES.filter(function (c) { return (c.sector || "公共") === "民間"; }).length;
     var tabs = [
-      { id: "案件", label: "案件・工程", sub: CASES.length + "件" },
+      { id: "公共", label: "公共 管理シート", sub: pubN + "件" },
+      { id: "民間", label: "民間 管理シート", sub: privN + "件" },
       { id: "会社", label: "協力会社", sub: COMPANIES.length + "社" },
       { id: "もうけ", label: "利益計算", sub: "落札−発注" },
       { id: "レポート", label: "月次レポート", sub: "月別" }
@@ -113,18 +119,15 @@
   /* ============================================================
      タブ1: 案件・工程（カンバン）
   ============================================================ */
-  function renderKanban() {
-    // 担当者で絞り込み → さらに区分(公共/民間)で絞り込み
-    var byAssignee = state.assignee ? CASES.filter(function (c) { return (c.assignee || "未割当") === state.assignee; }) : CASES;
-    var rows = state.sector ? byAssignee.filter(function (c) { return (c.sector || "公共") === state.sector; }) : byAssignee;
+  function renderKanban(sector) {
+    // この管理シート(公共/民間)に属する案件だけを母集団にする。タブ自体が区分を兼ねる。
+    var sectorCases = CASES.filter(function (c) { return (c.sector || "公共") === sector; });
+    // 担当者で絞り込み
+    var rows = state.assignee ? sectorCases.filter(function (c) { return (c.assignee || "未割当") === state.assignee; }) : sectorCases;
 
-    // 担当者チップ件数
+    // 担当者チップ件数（この区分内で数える）
     var counts = {}; ASSIGNEES.forEach(function (a) { counts[a.id] = 0; });
-    CASES.forEach(function (c) { var a = c.assignee || "未割当"; counts[a] = (counts[a] || 0) + 1; });
-
-    // 区分(公共/民間)チップ件数（担当の絞り込み後で数える）
-    var secCount = { "公共": 0, "民間": 0 };
-    byAssignee.forEach(function (c) { var s = c.sector || "公共"; secCount[s] = (secCount[s] || 0) + 1; });
+    sectorCases.forEach(function (c) { var a = c.assignee || "未割当"; counts[a] = (counts[a] || 0) + 1; });
 
     // サマリー
     var active = rows.filter(function (c) { return ["自社落札", "他社落札", "NG", "見積集まらず"].indexOf(c.status) < 0; });
@@ -138,21 +141,11 @@
     soon.sort(function (a, b) { return a.d - b.d; });
 
     var chips = '<div class="chips"><span class="chips-label">担当で絞る:</span>' +
-      '<button class="chip2' + (!state.assignee ? " on" : "") + '" data-as="">全員 <b>' + CASES.length + "</b></button>" +
+      '<button class="chip2' + (!state.assignee ? " on" : "") + '" data-as="">全員 <b>' + sectorCases.length + "</b></button>" +
       ASSIGNEES.map(function (a) {
         return '<button class="chip2' + (state.assignee === a.id ? " on" : "") + '" data-as="' + esc(a.id) + '" style="--c:' + a.color + '">' +
           '<span class="dot" style="background:' + a.color + '"></span>' + esc(a.id) + " <b>" + (counts[a.id] || 0) + "</b></button>";
       }).join("") + "</div>";
-
-    // 区分（公共/民間）で絞る。
-    var chipsSector = '<div class="chips"><span class="chips-label">区分で絞る:</span>' +
-      '<button class="chip2' + (!state.sector ? " on" : "") + '" data-sec="">すべて <b>' + byAssignee.length + "</b></button>" +
-      [["公共", "#2563eb"], ["民間", "#d97706"]].map(function (p) {
-        var on = state.sector === p[0];
-        return '<button class="chip2' + (on ? " on" : "") + '" data-sec="' + p[0] + '" style="--c:' + p[1] + '">' +
-          '<span class="dot" style="background:' + p[1] + '"></span>' + p[0] + " <b>" + (secCount[p[0]] || 0) + "</b></button>";
-      }).join("") + "</div>";
-    chips += chipsSector;
 
     // 状態（ステータス）で絞る。担当の絞り込み後(rows)の件数で表示。
     var scnt = {}; rows.forEach(function (c) { scnt[c.status] = (scnt[c.status] || 0) + 1; });
@@ -169,7 +162,7 @@
       sumCard(active.length, "進行中の案件") +
       sumCard(soon.length, "1週間以内の締切", soon.length ? "warn" : "") +
       sumCard(over, "期限超過・要対応", over ? "danger" : "") +
-      '<button class="addcase" id="addCaseBtn">＋ 案件を追加<small>民間・公共をその場で</small></button>' +
+      '<button class="addcase" id="addCaseBtn" data-sec="' + sector + '">＋ 案件を追加<small>' + sector + 'の案件をその場で</small></button>' +
       "</div>";
 
     var warn = "";
@@ -195,8 +188,11 @@
     }).join("");
 
     var html = chips + cards + warn + '<div class="kanban">' + cols + "</div>";
-    if (!CASES.length) {
-      html = chips + cards + '<p class="empty">まだ管理中の案件がありません。<b>＋案件を追加</b>で民間・公共の案件をその場で登録するか、<a href="/">案件を探す</a>から公共案件を開いて登録できます。</p>';
+    if (!sectorCases.length) {
+      var emptyMsg = sector === "民間"
+        ? 'まだ民間の管理案件がありません。<b>＋案件を追加</b>で民間案件をその場で登録できます。'
+        : 'まだ公共の管理案件がありません。<b>＋案件を追加</b>で公共案件をその場で登録するか、<a href="/">案件を探す</a>から公共案件を開いて登録できます。';
+      html = chips + cards + '<p class="empty">' + emptyMsg + "</p>";
     }
     return html;
   }
@@ -342,7 +338,7 @@
     saveState();   // 絞り込み・並び替え・タブの選択を保持（reload/遷移で初期化しない）
     renderTabs();
     var panel = $("tabPanel"), html;
-    if (state.tab === "案件") html = renderKanban();
+    if (state.tab === "公共" || state.tab === "民間") html = renderKanban(state.tab);
     else if (state.tab === "会社") html = renderCompanies();
     else if (state.tab === "もうけ") html = renderProfit();
     else html = renderReports();
@@ -362,8 +358,6 @@
             if (i >= 0) state.statuses.splice(i, 1);          // 選択中なら外す
             else state.statuses.push(v);                       // 未選択なら追加
           }
-        } else if (b.hasAttribute("data-sec")) {
-          state.sector = b.getAttribute("data-sec") || null;  // 公共/民間/すべて
         } else {
           state.assignee = b.getAttribute("data-as") || null;
         }
@@ -385,8 +379,8 @@
         if (c && confirm("「" + c.title + "」をNG（不参加）に移動しますか？")) { c.status = "NG"; saveCase(c); }
       });
     });
-    // 案件を追加（民間・公共をその場で）
-    var ac = $("addCaseBtn"); if (ac) ac.addEventListener("click", function () { openNewCaseModal(); });
+    // 案件を追加（開いている管理シートの区分を初期値にする）
+    var ac = $("addCaseBtn"); if (ac) ac.addEventListener("click", function () { openNewCaseModal(ac.getAttribute("data-sec") || "公共"); });
     // 協力会社
     var s = $("coSearch"); if (s) s.addEventListener("input", function () { state.q = s.value; var p = s.selectionStart; render(); var n = $("coSearch"); if (n) { n.focus(); try { n.setSelectionRange(p, p); } catch (e) {} } });
     var pf = document.querySelector(".co-pf"); if (pf) pf.addEventListener("click", function () { state.coPartner = !state.coPartner; render(); });
@@ -669,8 +663,8 @@
   }
 
   /* ---------- 案件を追加（手動・民間/公共）モーダル ---------- */
-  function openNewCaseModal() {
-    var sector = "公共";
+  function openNewCaseModal(initialSector) {
+    var sector = (initialSector === "民間" || initialSector === "公共") ? initialSector : "公共";
     var opt = function (arr, sel) { return arr.map(function (v) { return '<option value="' + esc(v) + '"' + (v === sel ? " selected" : "") + ">" + esc(v) + "</option>"; }).join(""); };
     var secPick = ["公共", "民間"].map(function (s) {
       var col = s === "民間" ? "#d97706" : "#2563eb";
