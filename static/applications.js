@@ -544,6 +544,23 @@
           : '<button type="button" class="btn small ngbtn" id="aiNG">理由を添えてNGに入れる</button>') + "</div>";
     }
 
+    // 要望⑦STEP1: 仕様書の紐付け（URL/添付ファイル）。AI概要の入力にも使う。
+    function specSection() {
+      var files = c.spec_files || [];
+      var items = files.length ? files.map(function (f, i) {
+        var icon = f.kind === "url" ? "🔗" : "📄";
+        return '<div class="spec-item"><a href="/case/' + c.case_id + "/spec/" + i + '/download" target="_blank" rel="noopener">' +
+          icon + " " + esc(f.name || "仕様書") + "</a>" +
+          '<button type="button" class="spec-del" data-i="' + i + '" title="外す">×</button></div>';
+      }).join("") : '<p class="spec-empty">まだ仕様書は紐付いていません。URLの追加かファイル添付ができます。</p>';
+      return '<div class="spec-box"><div class="spec-head">仕様書の紐付け <small>（AI概要の材料にも使われます）</small></div>' +
+        '<div class="spec-list">' + items + "</div>" +
+        '<div class="spec-acts"><button type="button" class="btn small" id="specUrl">＋ URLを追加</button>' +
+        '<button type="button" class="btn small" id="specFileBtn">＋ ファイルを添付</button>' +
+        '<input type="file" id="specFile" style="display:none"></div>' +
+        '<span class="spec-msg" id="specMsg"></span></div>';
+    }
+
     function infoHtml() {
       var steps = [
         { label: "公開開始", date: c.announced_date },
@@ -557,7 +574,7 @@
           '<span class="tl-label">' + s.label + '</span><span class="tl-date">' + (s.date ? md(s.date) : "—") + '</span>' +
           '<span class="tl-days" style="color:' + (d == null ? "#a8a29e" : b.fg) + '">' + (d == null ? "" : daysLabel(d)) + "</span></div>";
       }).join("");
-      return summaryPanel() + '<div class="m-grid">' +
+      return summaryPanel() + specSection() + '<div class="m-grid">' +
         fld("元機関（発注機関）", '<input name="agency_override" value="' + esc(c.agency || "") + '" placeholder="発注機関名（修正可）">', "full") +
         fld("状況", '<select name="status">' + opt(STATUSES.map(function (s) { return s.id; }), c.status) + "</select>") +
         fld("担当者", '<select name="assignee" class="assignee-sel" data-prev="' + esc(c.assignee || "未割当") + '">' + assigneeOptions(c.assignee || "未割当") + "</select>") +
@@ -671,9 +688,47 @@
       if (mtab === "情報") {
         var sb = root.querySelector("#sumBtn"); if (sb) sb.onclick = function () { pullInfo(root); runSummary(root, false); };
         var sr = root.querySelector("#sumRedo"); if (sr) sr.onclick = function () { runSummary(root, true); };
+        bindSpec(root);
       }
       bindAi(root);
       root.querySelector(".m-save").onclick = function () { if (mtab === "情報") pullInfo(root); else pullMoney(root); saveCase(c); };
+    }
+    // 要望⑦STEP1: 仕様書の追加/削除/添付を束ねる。
+    function bindSpec(root) {
+      var msg = root.querySelector("#specMsg");
+      function apply(d) {
+        if (d && d.spec_files) { c.spec_files = d.spec_files; redraw(root); }
+        else if (d && d.error && msg) { msg.className = "spec-msg err"; msg.textContent = d.error; }
+      }
+      Array.prototype.forEach.call(root.querySelectorAll(".spec-del"), function (b) {
+        b.onclick = function () {
+          if (!confirm("この仕様書の紐付けを外しますか？")) return;
+          fetch("/case/" + c.case_id + "/spec/" + b.getAttribute("data-i") + "/delete", { method: "POST" })
+            .then(function (r) { return r.json(); }).then(apply);
+        };
+      });
+      var us = root.querySelector("#specUrl");
+      if (us) us.onclick = function () {
+        var url = (window.prompt("仕様書のURLを入力してください（http(s)://…）") || "").trim();
+        if (!url) return;
+        var name = (window.prompt("表示名（任意）", url) || url).trim();
+        if (msg) { msg.className = "spec-msg"; msg.textContent = "追加中…"; }
+        fetch("/case/" + c.case_id + "/spec", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ url: url, name: name }) })
+          .then(function (r) { return r.json(); }).then(apply)
+          .catch(function () { if (msg) { msg.className = "spec-msg err"; msg.textContent = "追加に失敗しました。"; } });
+      };
+      var fb = root.querySelector("#specFileBtn"), fi = root.querySelector("#specFile");
+      if (fb && fi) {
+        fb.onclick = function () { fi.click(); };
+        fi.onchange = function () {
+          if (!fi.files || !fi.files[0]) return;
+          var fd = new FormData(); fd.append("file", fi.files[0]);
+          if (msg) { msg.className = "spec-msg"; msg.textContent = "アップロード中…"; }
+          fetch("/case/" + c.case_id + "/spec", { method: "POST", body: fd })
+            .then(function (r) { return r.json(); }).then(apply)
+            .catch(function () { if (msg) { msg.className = "spec-msg err"; msg.textContent = "アップロードに失敗しました。"; } });
+        };
+      }
     }
     function runSummary(root, refresh) {
       summaryBusy = true; redraw(root);

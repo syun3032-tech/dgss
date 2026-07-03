@@ -57,6 +57,13 @@ def _fetch_pdf_text(url: str, timeout: int = 25) -> str:
             return ""  # 大きすぎる＝読まない
     except Exception:  # noqa: BLE001
         return ""
+    return pdf_text_from_bytes(data)
+
+
+def pdf_text_from_bytes(data: bytes) -> str:
+    """PDFのバイト列をテキスト化（pdftotext→pypdf）。失敗時 ""。"""
+    if not data:
+        return ""
     with tempfile.NamedTemporaryFile(suffix=".pdf", delete=True) as f:
         f.write(data)
         f.flush()
@@ -400,8 +407,8 @@ _SUMMARY_SYSTEM = (
 )
 
 
-def summarize_case(case: dict) -> dict[str, Any]:
-    """案件の概要をAIで生成（要望⑦STEP2）。公告PDFがあれば全文を読ませる。"""
+def summarize_case(case: dict, spec_text: str = "") -> dict[str, Any]:
+    """案件の概要をAIで生成（要望⑦STEP2）。公告PDF＋紐付けた仕様書を読ませる。"""
     if not is_enabled():
         return {"enabled": False}
     notice = _fetch_pdf_text(case.get("detail_url", ""))
@@ -417,11 +424,13 @@ def summarize_case(case: dict) -> dict[str, Any]:
     ]
     if notice:
         lines.append("\n【公告本文（抜粋）】\n" + notice)
+    if spec_text:
+        lines.append("\n【紐付けた仕様書（抜粋）】\n" + spec_text[:_PDF_MAX_CHARS])
     try:
         data = _call_gemini_schema("\n".join(lines), _SUMMARY_SCHEMA, _SUMMARY_SYSTEM)
     except Exception:  # noqa: BLE001
         return {"enabled": True, "error": "AI概要の生成に失敗しました。時間をおいて再度お試しください。"}
     data["enabled"] = True
     data["model"] = _model()
-    data["source"] = "pdf_full" if notice else "description"
+    data["source"] = "spec" if spec_text else ("pdf_full" if notice else "description")
     return data

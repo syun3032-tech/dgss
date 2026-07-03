@@ -16,9 +16,10 @@ from __future__ import annotations
 
 import logging
 import os
+import urllib.parse
 from datetime import date, timedelta
 
-from flask import Flask, abort, flash, jsonify, redirect, render_template, request, url_for
+from flask import Flask, Response, abort, flash, jsonify, redirect, render_template, request, url_for
 
 import db
 import procurement
@@ -416,7 +417,23 @@ def case_summary(case_id: int):
     if not case:
         abort(404)
     ext = case.get("external_id", "")
-    cache_key = "sum:" + ext if ext else ""
+    # 紐付けた仕様書のテキストを収集（URLのPDF＋添付ファイルPDF）。要望⑦STEP1×STEP2。
+    spec_files = db.get_spec_files(case_id)
+    spec_texts = []
+    for f in spec_files:
+        try:
+            if f.get("kind") == "url":
+                t = ai_assist._fetch_pdf_text(f.get("url", ""))
+            else:
+                blob = db.get_spec_blob(f.get("key", ""))
+                t = ai_assist.pdf_text_from_bytes(blob[2]) if blob else ""
+            if t:
+                spec_texts.append("《" + str(f.get("name", "")) + "》\n" + t)
+        except Exception:  # noqa: BLE001
+            pass
+    spec_text = "\n\n".join(spec_texts)
+    # 仕様書の有無・件数をキャッシュキーに含め、添付が変わったら作り直す。
+    cache_key = ("sum:%d:%s" % (len(spec_files), ext)) if ext else ""
     refresh = request.args.get("refresh") == "1"
     if not refresh and cache_key:
         cached = db.get_ai_assist(cache_key)
@@ -425,7 +442,7 @@ def case_summary(case_id: int):
             data["cached"] = True
             return jsonify(data)
     try:
-        result = ai_assist.summarize_case(case)
+        result = ai_assist.summarize_case(case, spec_text=spec_text)
     except Exception as e:  # noqa: BLE001
         logging.getLogger(__name__).warning("ai summary failed", exc_info=True)
         return jsonify({"enabled": True, "error": str(e)[:200]}), 200
@@ -452,6 +469,67 @@ def company_extract():
         logging.getLogger(__name__).warning("company extract failed", exc_info=True)
         return jsonify({"enabled": True, "error": str(e)[:200]}), 200
     return jsonify(result)
+
+
+# ---- 仕様書の紐付け（要望⑦STEP1） -----------------------------------------
+_SPEC_MAX_BYTES = 8 * 1024 * 1024  # 添付ファイルは1件8MBまで
+
+
+@app.route("/case/<int:case_id>/spec", methods=["POST"])
+def case_spec_add(case_id: int):
+    """案件に仕様書を紐付ける。URL（JSON/フォーム）またはファイル添付（multipart）。"""
+    import uuid
+    if not db.get_case(case_id):
+        abort(404)
+    files = db.get_spec_files(case_id)
+    up = request.files.get("file")
+    if up and up.filename:
+        data = up.read(_SPEC_MAX_BYTES + 1)
+        if len(data) > _SPEC_MAX_BYTES:
+            return jsonify({"error": "ファイルが大きすぎます（8MBまで）。URLでの紐付けをご検討ください。"}), 200
+        key = uuid.uuid4().hex
+        db.save_spec_blob(key, up.filename, up.mimetype or "application/octet-stream", data)
+        files.append({"name": up.filename, "kind": "file", "key": key, "size": len(data)})
+    else:
+        url = (request.form.get("url") or (request.get_json(silent=True) or {}).get("url") or "").strip()
+        if not url:
+            return jsonify({"error": "URLまたはファイルを指定してください。"}), 200
+        if not url.lower().startswith(("http://", "https://")):
+            return jsonify({"error": "URLは http(s):// で始まる必要があります。"}), 200
+        name = (request.form.get("name") or (request.get_json(silent=True) or {}).get("name") or url).strip()
+        files.append({"name": name, "kind": "url", "url": url})
+    db.set_spec_files(case_id, files)
+    return jsonify({"spec_files": files})
+
+
+@app.route("/case/<int:case_id>/spec/<int:idx>/delete", methods=["POST"])
+def case_spec_delete(case_id: int, idx: int):
+    """紐付けた仕様書を1件外す。"""
+    files = db.get_spec_files(case_id)
+    if 0 <= idx < len(files):
+        files.pop(idx)
+        db.set_spec_files(case_id, files)
+    return jsonify({"spec_files": files})
+
+
+@app.route("/case/<int:case_id>/spec/<int:idx>/download")
+def case_spec_download(case_id: int, idx: int):
+    """紐付けた仕様書を開く（URLはリダイレクト・ファイルは実体を返す）。"""
+    files = db.get_spec_files(case_id)
+    if not (0 <= idx < len(files)):
+        abort(404)
+    f = files[idx]
+    if f.get("kind") == "url":
+        return redirect(f.get("url"))
+    blob = db.get_spec_blob(f.get("key", ""))
+    if not blob:
+        abort(404)
+    mime, name, data = blob
+    resp = Response(data, mimetype=mime or "application/octet-stream")
+    dispo = "inline" if (mime or "").endswith("pdf") else "attachment"
+    fname = urllib.parse.quote(name or f.get("name") or "spec")
+    resp.headers["Content-Disposition"] = f"{dispo}; filename*=UTF-8''{fname}"
+    return resp
 
 
 @app.route("/case/<int:case_id>/apply", methods=["POST"])

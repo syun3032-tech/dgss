@@ -278,9 +278,16 @@ def init_db() -> None:
             ("partner",        "TEXT DEFAULT ''"),
             ("partners",       "TEXT DEFAULT '[]'"),
             ("agency_override", "TEXT DEFAULT ''"),
+            ("spec_files",     "TEXT DEFAULT '[]'"),  # 仕様書の紐付け（URL/添付ファイル・要望⑦STEP1）
         ):
             if col not in app_cols:
                 conn.execute(f"ALTER TABLE applications ADD COLUMN {col} {ddl}")
+        # 仕様書ファイルの実体（BLOB）。案件JSONを軽く保つため別テーブルに保管。
+        conn.execute(
+            "CREATE TABLE IF NOT EXISTS spec_blobs ("
+            " key TEXT PRIMARY KEY, mime TEXT DEFAULT '', name TEXT DEFAULT '',"
+            " data BLOB, created_at TEXT DEFAULT (datetime('now')))"
+        )
         conn.commit()
     # Supabaseの保存内容をSQLiteへ復元（揮発DB対策）。未設定/不通でも黙って続行。
     try:
@@ -900,6 +907,10 @@ def restore_from_supa() -> dict[str, int]:
                     "needs_check", "bid_plan", "win_amount", "award_called", "partner", "partners")}
                 try:
                     set_application(cid, it.get("status") or "参加申請準備前", **fields)
+                    # 仕様書の紐付けは set_application では書かないので個別に復元（要望⑦STEP1）
+                    sf = it.get("spec_files")
+                    if isinstance(sf, list) and sf:
+                        set_spec_files(cid, sf)
                     counts["applications"] += 1
                 except ValueError:
                     pass
@@ -982,13 +993,96 @@ def set_application(case_id: int, status: str, **fields: Any) -> None:
 
 
 def _hydrate_application(row: dict[str, Any]) -> dict[str, Any]:
-    """DB行の partners(JSON文字列) を list に展開して返す。"""
+    """DB行の partners / spec_files(JSON文字列) を list に展開して返す。"""
     import json
     try:
         row["partners"] = json.loads(row.get("partners") or "[]")
     except (ValueError, TypeError):
         row["partners"] = []
+    try:
+        row["spec_files"] = json.loads(row.get("spec_files") or "[]")
+    except (ValueError, TypeError):
+        row["spec_files"] = []
     return row
+
+
+# ---- 仕様書の紐付け（要望⑦STEP1） -----------------------------------------
+# spec_files は set_application では触らず専用APIで更新する（通常保存で消えないように）。
+
+def get_spec_files(case_id: int) -> list[dict[str, Any]]:
+    """案件に紐付いた仕様書リスト（[{name,kind,url|key,size}])。"""
+    import json
+    with _connect() as conn:
+        row = conn.execute(
+            "SELECT spec_files FROM applications WHERE case_id = ?", (case_id,)
+        ).fetchone()
+    if not row:
+        return []
+    try:
+        return json.loads(row[0] or "[]")
+    except (ValueError, TypeError):
+        return []
+
+
+def set_spec_files(case_id: int, files: list[dict[str, Any]]) -> None:
+    """仕様書リストを保存。applications 行が無ければ既定ステータスで作る。"""
+    import json
+    payload = json.dumps(files or [], ensure_ascii=False)
+    with _connect() as conn:
+        conn.execute(
+            """INSERT INTO applications (case_id, status, spec_files, updated_at)
+               VALUES (?, ?, ?, datetime('now'))
+               ON CONFLICT(case_id) DO UPDATE SET spec_files=excluded.spec_files,
+                 updated_at=datetime('now')""",
+            (case_id, "参加申請準備前", payload),
+        )
+        conn.commit()
+    _push_applications()
+
+
+def save_spec_blob(key: str, name: str, mime: str, data: bytes) -> None:
+    """仕様書ファイルの実体を保存（SQLite＋Supabaseへbase64でミラー＝揮発対策）。"""
+    import base64
+    with _connect() as conn:
+        conn.execute(
+            "INSERT OR REPLACE INTO spec_blobs (key, mime, name, data) VALUES (?, ?, ?, ?)",
+            (key, mime, name, data),
+        )
+        conn.commit()
+    try:  # 永続化（未設定/不通でも黙って続行）
+        supa.save("specblob:" + key,
+                  {"mime": mime, "name": name,
+                   "b64": base64.b64encode(data).decode("ascii")})
+    except Exception:  # noqa: BLE001
+        pass
+
+
+def get_spec_blob(key: str) -> tuple[str, str, bytes] | None:
+    """仕様書ファイルの実体を取得 (mime, name, bytes)。SQLite→Supabaseの順。"""
+    import base64
+    with _connect() as conn:
+        row = conn.execute(
+            "SELECT mime, name, data FROM spec_blobs WHERE key = ?", (key,)
+        ).fetchone()
+    if row and row[2] is not None:
+        return (row[0] or "", row[1] or "", bytes(row[2]))
+    obj = None
+    try:
+        obj = supa.load("specblob:" + key)
+    except Exception:  # noqa: BLE001
+        obj = None
+    if isinstance(obj, dict) and obj.get("b64"):
+        try:
+            data = base64.b64decode(obj["b64"])
+        except Exception:  # noqa: BLE001
+            return None
+        # SQLiteへ書き戻して次回以降を速く（揮発復元）
+        try:
+            save_spec_blob(key, obj.get("name", ""), obj.get("mime", ""), data)
+        except Exception:  # noqa: BLE001
+            pass
+        return (obj.get("mime", ""), obj.get("name", ""), data)
+    return None
 
 
 def get_application(case_id: int) -> dict[str, Any] | None:
