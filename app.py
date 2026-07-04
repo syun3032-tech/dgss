@@ -25,6 +25,7 @@ import db
 import procurement
 import ai_assist
 import auth
+import supa
 from regions import ALL_PREFECTURES, REGIONS, prefectures_in
 
 # 公告日がこの日付以降なら「新着」とみなす（直近7日）
@@ -920,9 +921,14 @@ def agencies():
     for r in rows:
         r["platform"] = agency_import.platform_of(r.get("domain", ""))
         r["included"] = r["name"] not in excluded  # チェック状態（既定ON）
+    try:
+        presets = supa.load("agency_presets") or []
+    except Exception:  # noqa: BLE001
+        presets = []
     return render_template("agencies.html", rows=rows, q=q,
                            total=db.count_agencies(),
-                           excluded_count=len(excluded))
+                           excluded_count=len(excluded),
+                           presets=presets if isinstance(presets, list) else [])
 
 
 @app.route("/agencies/toggle", methods=["POST"])
@@ -947,6 +953,36 @@ def agency_toggle_bulk():
     db.set_agencies_excluded(names, excluded=not included)  # 含める=除外解除
     return jsonify({"count": len(names), "included": included,
                     "excluded": sorted(db.list_agency_exclusions())})
+
+
+@app.route("/agencies/presets", methods=["POST"])
+def agency_presets():
+    """監視セット（プリセット）を保存/削除（最大5件・Supabaseで永続＝端末が変わっても残る）。"""
+    data = request.get_json(silent=True) or {}
+    presets = []
+    try:
+        loaded = supa.load("agency_presets")
+        if isinstance(loaded, list):
+            presets = loaded
+    except Exception:  # noqa: BLE001
+        presets = []
+    if data.get("action") == "delete":
+        name = (data.get("name") or "").strip()
+        presets = [p for p in presets if p.get("name") != name]
+    else:
+        name = (data.get("name") or "").strip()
+        if not name:
+            return jsonify({"error": "名前を入力してください。"}), 200
+        excluded = [str(n).strip() for n in (data.get("excluded") or []) if str(n).strip()]
+        others = [p for p in presets if p.get("name") != name]  # 同名は上書き
+        if len(others) >= 5:
+            return jsonify({"error": "監視セットは5件までです。不要なものを削除してください。"}), 200
+        presets = others + [{"name": name, "excluded": excluded}]
+    try:
+        supa.save("agency_presets", presets)
+    except Exception:  # noqa: BLE001
+        pass
+    return jsonify({"presets": presets})
 
 
 @app.route("/agencies/exclusions/restore", methods=["POST"])

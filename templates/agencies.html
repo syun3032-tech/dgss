@@ -21,6 +21,7 @@
   <span class="count">{{ rows|length }} 機関</span>
   {% if rows %}
   <span class="bulk-tools" style="margin-left:auto">
+    <button type="button" class="btn" id="undoBtn" title="直前の状態に戻す" disabled>↩ 元に戻す</button>
     <span class="muted">表示中を一括:</span>
     <button type="button" class="btn" id="bulkOn">全てON</button>
     <button type="button" class="btn" id="bulkOff">全てOFF</button>
@@ -59,25 +60,51 @@
 {% endblock %}
 
 {% block scripts %}
+<script id="presetsData" type="application/json">{{ presets | tojson }}</script>
 <script>
 /* 監視機関のチェック＝ホワイトリスト。外した機関は「案件を探す」から除外。
    サーバへトグル送信＋localStorageへ退避（揮発DB対策、base.html で自動復元）。 */
 (function () {
   var KEY = 'kawanoAgencyExclusions';
+  var UNDO_KEY = 'kawanoAgencyExclusionsUndo';
+  var PKEY = 'kawanoAgencyPresets';
   function load() { try { return JSON.parse(localStorage.getItem(KEY)) || []; } catch (e) { return []; } }
   function save(list) { try { localStorage.setItem(KEY, JSON.stringify(list)); } catch (e) {} }
+  function esc(s) { var d = document.createElement('div'); d.textContent = s == null ? '' : s; return d.innerHTML; }
+
+  /* 元に戻す（直前の状態）。変更のたびに直前を退避しておく。 */
+  var undoBtn = document.getElementById('undoBtn');
+  function hasUndo() { try { return localStorage.getItem(UNDO_KEY) !== null; } catch (e) { return false; } }
+  function refreshUndoBtn() { if (undoBtn) undoBtn.disabled = !hasUndo(); }
+  function snapshot() { try { localStorage.setItem(UNDO_KEY, JSON.stringify(load())); } catch (e) {} refreshUndoBtn(); }
+  refreshUndoBtn();
+  function applyExclusions(list) {
+    save(list);
+    fetch('/agencies/exclusions/restore', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ excluded: list })
+    }).then(function () { location.reload(); }).catch(function () { location.reload(); });
+  }
+  if (undoBtn) undoBtn.addEventListener('click', function () {
+    if (!hasUndo()) return;
+    var prev; try { prev = JSON.parse(localStorage.getItem(UNDO_KEY)); } catch (e) { return; }
+    if (!Array.isArray(prev)) return;
+    try { localStorage.setItem(UNDO_KEY, JSON.stringify(load())); } catch (e) {}  // 相互に行き来できる
+    applyExclusions(prev);
+  });
+
+  // 単体トグル
   Array.prototype.forEach.call(document.querySelectorAll('.agc'), function (cb) {
     cb.addEventListener('change', function () {
+      snapshot();
       var name = cb.getAttribute('data-name');
       var included = cb.checked;
       cb.closest('tr').classList.toggle('agc-off', !included);
-      // localStorage を更新（除外名の配列）
       var list = load();
       var i = list.indexOf(name);
       if (!included && i < 0) list.push(name);
       if (included && i >= 0) list.splice(i, 1);
       save(list);
-      // サーバへ反映
       fetch('/agencies/toggle', {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ name: name, included: included })
@@ -89,16 +116,16 @@
   function bulk(included) {
     var cbs = Array.prototype.slice.call(document.querySelectorAll('.agc'));
     if (!cbs.length) return;
-    var names = [];
-    var list = load();
+    snapshot();
+    var names = [], list = load();
     cbs.forEach(function (cb) {
       cb.checked = included;
       cb.closest('tr').classList.toggle('agc-off', !included);
       var name = cb.getAttribute('data-name');
       names.push(name);
       var i = list.indexOf(name);
-      if (!included && i < 0) list.push(name);   // 除外に追加
-      if (included && i >= 0) list.splice(i, 1); // 除外から解除
+      if (!included && i < 0) list.push(name);
+      if (included && i >= 0) list.splice(i, 1);
     });
     save(list);
     fetch('/agencies/toggle-bulk', {
@@ -109,15 +136,15 @@
   var on = document.getElementById('bulkOn'), off = document.getElementById('bulkOff');
   if (on) on.addEventListener('click', function () { bulk(true); });
   if (off) off.addEventListener('click', function () {
-    if (confirm('表示中の ' + document.querySelectorAll('.agc').length + ' 機関を全て「案件を探す」から除外します。よろしいですか？')) bulk(false);
+    if (confirm('表示中の ' + document.querySelectorAll('.agc').length + ' 機関を全て「案件を探す」から除外します。（元に戻すで戻せます）')) bulk(false);
   });
 
-  /* 監視セットのプリセット保存（最大5件・要望）。現在のON/OFF(=除外リスト)に名前を付けて
-     ブラウザに保存し、ワンタップで呼び出せる。 */
-  var PKEY = 'kawanoAgencyPresets';
-  function esc(s) { var d = document.createElement('div'); d.textContent = s == null ? '' : s; return d.innerHTML; }
-  function presets() { try { return JSON.parse(localStorage.getItem(PKEY)) || []; } catch (e) { return []; } }
-  function savePresets(l) { try { localStorage.setItem(PKEY, JSON.stringify(l)); } catch (e) {} }
+  /* 監視セット（プリセット・最大5件）。Supabaseで永続＝端末が変わっても残る。
+     オフライン時はローカルへ退避。 */
+  var serverPresets = (function () { try { return JSON.parse(document.getElementById('presetsData').textContent) || []; } catch (e) { return []; } })();
+  function localPresets() { try { return JSON.parse(localStorage.getItem(PKEY)) || []; } catch (e) { return []; } }
+  function setLocalPresets(l) { try { localStorage.setItem(PKEY, JSON.stringify(l)); } catch (e) {} }
+  function presets() { return (serverPresets && serverPresets.length) ? serverPresets : localPresets(); }
   function renderPresets() {
     var box = document.getElementById('presetList'); if (!box) return;
     var list = presets();
@@ -126,33 +153,36 @@
         esc(p.name) + ' <small>(' + ((p.excluded || []).length) + '機関除外)</small></button>' +
         '<button type="button" class="preset-del" data-i="' + i + '" title="削除">×</button></span>';
     }).join('') : '<span class="preset-empty">まだありません</span>';
-    Array.prototype.forEach.call(box.querySelectorAll('.preset-load'), function (b) {
-      b.onclick = function () { loadPreset(Number(b.getAttribute('data-i'))); };
-    });
-    Array.prototype.forEach.call(box.querySelectorAll('.preset-del'), function (b) {
-      b.onclick = function () {
-        var l = presets(); var p = l[Number(b.getAttribute('data-i'))];
-        if (p && confirm('監視セット「' + p.name + '」を削除しますか？')) { l.splice(Number(b.getAttribute('data-i')), 1); savePresets(l); renderPresets(); }
-      };
-    });
+    Array.prototype.forEach.call(box.querySelectorAll('.preset-load'), function (b) { b.onclick = function () { loadPreset(Number(b.getAttribute('data-i'))); }; });
+    Array.prototype.forEach.call(box.querySelectorAll('.preset-del'), function (b) { b.onclick = function () { delPreset(Number(b.getAttribute('data-i'))); }; });
   }
   function loadPreset(i) {
     var p = presets()[i]; if (!p) return;
-    if (!confirm('監視セット「' + p.name + '」を適用します。\n現在のON/OFF設定を上書きしますがよろしいですか？')) return;
-    save(p.excluded || []);   // localStorageの除外リストを上書き
-    fetch('/agencies/exclusions/restore', {
-      method: 'POST', headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ excluded: p.excluded || [] })
-    }).then(function () { location.reload(); }).catch(function () { location.reload(); });
+    if (!confirm('監視セット「' + p.name + '」を適用します。\n現在のON/OFF設定を上書きします（元に戻すで戻せます）。よろしいですか？')) return;
+    snapshot();
+    applyExclusions(p.excluded || []);
+  }
+  function delPreset(i) {
+    var p = presets()[i]; if (!p) return;
+    if (!confirm('監視セット「' + p.name + '」を削除しますか？')) return;
+    fetch('/agencies/presets', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ action: 'delete', name: p.name }) })
+      .then(function (r) { return r.json(); }).then(function (d) { serverPresets = d.presets || []; setLocalPresets(serverPresets); renderPresets(); })
+      .catch(function () { var l = localPresets().filter(function (x) { return x.name !== p.name; }); setLocalPresets(l); serverPresets = l; renderPresets(); });
   }
   var ps = document.getElementById('presetSave');
   if (ps) ps.onclick = function () {
-    var list = presets();
-    if (list.length >= 5) { alert('保存できる監視セットは5件までです。不要なセットを削除してください。'); return; }
+    if (presets().length >= 5) { alert('保存できる監視セットは5件までです。不要なセットを削除してください。'); return; }
     var name = (prompt('この監視セットの名前を入力してください（例: 関西のみ / 電気に強い自治体）') || '').trim();
     if (!name) return;
-    list.push({ name: name, excluded: load() });   // 現在の除外リスト全体を保存
-    savePresets(list); renderPresets();
+    var excluded = load();
+    fetch('/agencies/presets', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ name: name, excluded: excluded }) })
+      .then(function (r) { return r.json(); }).then(function (d) {
+        if (d.error) { alert(d.error); return; }
+        serverPresets = d.presets || []; setLocalPresets(serverPresets); renderPresets();
+        alert('監視セット「' + name + '」を保存しました。');
+      }).catch(function () {
+        var l = localPresets().filter(function (x) { return x.name !== name; }); l.push({ name: name, excluded: excluded }); setLocalPresets(l); serverPresets = l; renderPresets();
+      });
   };
   renderPresets();
 })();
