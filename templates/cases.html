@@ -136,7 +136,7 @@
 {% if rows %}
 <div class="case-list">
   {% for c in rows %}
-  <a class="case-row {{ 'closed' if c.deadline and c.deadline < today }}" href="{{ url_for('case_detail', case_id=c.id) }}" data-id="{{ c.id }}" data-eid="{{ c.external_id }}" data-title="{{ c.title }}">
+  <a class="case-row {{ 'closed' if c.deadline and c.deadline < today }}" href="{{ url_for('case_detail', case_id=c.id) }}{{ ('?ret=' + (request.query_string.decode('utf-8') | urlencode)) if request.query_string else '' }}" data-id="{{ c.id }}" data-eid="{{ c.external_id }}" data-title="{{ c.title }}">
     <div class="cr-main">
       <div class="cr-title">{{ c.title }}</div>
       <div class="cr-meta">

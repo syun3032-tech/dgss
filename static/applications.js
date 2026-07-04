@@ -736,7 +736,7 @@
       var url = "/case/" + c.case_id + "/summary" + (refresh ? "?refresh=1" : "");
       fetch(url, { method: "POST", headers: { "X-Requested-With": "XMLHttpRequest" } })
         .then(function (r) { if (r.status === 401 || r.status === 403) return { enabled: false }; return r.json(); })
-        .then(function (j) { summaryResult = j || { error: true }; summaryBusy = false; redraw(root); })
+        .then(function (j) { summaryResult = j || { error: true }; if (j && j.spec_files) c.spec_files = j.spec_files; summaryBusy = false; redraw(root); })
         .catch(function () { summaryResult = { enabled: true, error: "AI概要の生成に失敗しました。" }; summaryBusy = false; redraw(root); });
     }
     function runAi(root, refresh) {
@@ -744,7 +744,7 @@
       var url = "/case/" + c.case_id + "/ai-assist" + (refresh ? "?refresh=1" : "");
       fetch(url, { method: "POST", headers: { "X-Requested-With": "XMLHttpRequest" } })
         .then(function (r) { if (r.status === 401 || r.status === 403) return { enabled: false }; return r.json(); })
-        .then(function (j) { aiResult = j || { error: true }; aiBusy = false; redraw(root); })
+        .then(function (j) { aiResult = j || { error: true }; if (j && j.spec_files) c.spec_files = j.spec_files; aiBusy = false; redraw(root); })
         .catch(function () { aiResult = { error: true }; aiBusy = false; redraw(root); });
     }
     function bindAi(root) {

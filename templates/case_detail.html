@@ -2,7 +2,7 @@
 {% block title %}{{ c.title }} — 電気入札サーチ{% endblock %}
 
 {% block content %}
-<a class="back" href="{{ url_for('cases') }}">← 一覧へ戻る</a>
+<a class="back" href="{{ ('/?' + request.args.get('ret')) if request.args.get('ret') else url_for('cases') }}">← 一覧へ戻る</a>
 
 <article class="detail">
   <div class="cc-top">

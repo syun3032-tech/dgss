@@ -361,6 +361,24 @@ def case_detail(case_id: int):
     )
 
 
+def _autoattach_spec(case: dict) -> list:
+    """案件に既に仕様書URL(spec_url)があれば、仕様書の紐付けへ自動追加する（要望）。
+
+    AIで調べる時点で公告の仕様書が分かっているなら、手作業なしで付けておく。
+    既に同じURLが紐付いていれば何もしない。更新後の spec_files を返す。
+    """
+    cid = case.get("id")
+    url = (case.get("spec_url") or "").strip()
+    files = db.get_spec_files(cid) if cid else []
+    if not url or not url.lower().startswith(("http://", "https://")):
+        return files
+    if any((f.get("kind") == "url" and f.get("url") == url) for f in files):
+        return files
+    files.append({"name": "公告の仕様書（自動添付）", "kind": "url", "url": url, "auto": True})
+    db.set_spec_files(cid, files)
+    return files
+
+
 @app.route("/case/<int:case_id>/ai-assist", methods=["POST"])
 def case_ai_assist(case_id: int):
     """【課金プラン・オンデマンド】AI応募アシストを生成して返す（タップ時のみ課金）。
@@ -377,6 +395,7 @@ def case_ai_assist(case_id: int):
     if not case:
         abort(404)
     ext = case.get("external_id", "")
+    spec_files = _autoattach_spec(case)   # 公告の仕様書があれば自動で紐付け（要望）
     refresh = request.args.get("refresh") == "1"
 
     if not refresh:
@@ -384,6 +403,7 @@ def case_ai_assist(case_id: int):
         if cached:
             data = json.loads(cached["payload"])
             data["cached"] = True
+            data["spec_files"] = spec_files
             return jsonify(data)
 
     if not ai_assist.is_enabled():
@@ -400,6 +420,7 @@ def case_ai_assist(case_id: int):
         db.set_ai_assist(ext, json.dumps(result, ensure_ascii=False),
                          result.get("model", ""))
     result["cached"] = False
+    result["spec_files"] = spec_files   # 自動添付を画面へ反映
     return jsonify(result)
 
 
@@ -417,6 +438,8 @@ def case_summary(case_id: int):
     if not case:
         abort(404)
     ext = case.get("external_id", "")
+    # 公告に仕様書URLがあれば自動で紐付け（要望）。手作業なしでAI概要の材料にも使う。
+    _autoattach_spec(case)
     # 紐付けた仕様書のテキストを収集（URLのPDF＋添付ファイルPDF）。要望⑦STEP1×STEP2。
     spec_files = db.get_spec_files(case_id)
     spec_texts = []
@@ -450,6 +473,7 @@ def case_summary(case_id: int):
         db.set_ai_assist(cache_key, json.dumps(result, ensure_ascii=False),
                          result.get("model", ""))
     result["cached"] = False
+    result["spec_files"] = spec_files   # 自動添付を画面へ反映させる
     return jsonify(result)
 
 
