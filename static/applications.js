@@ -191,24 +191,25 @@
     });
     soon.sort(function (a, b) { return a.d - b.d; });
 
-    var chips = '<div class="chips"><span class="chips-label">担当で絞る:</span>' +
+    // チップは最大2行に収めて縦スクロール（横に長く広がらないよう .chips-wrap で内包）。
+    var chips = '<div class="chips"><span class="chips-label">担当で絞る:</span><div class="chips-wrap">' +
       '<button class="chip2' + (!state.assignee ? " on" : "") + '" data-as="">全員 <b>' + sectorCases.length + "</b></button>" +
       ASSIGNEES.map(function (a) {
         return '<button class="chip2' + (state.assignee === a.id ? " on" : "") + '" data-as="' + esc(a.id) + '" style="--c:' + a.color + '">' +
           '<span class="dot" style="background:' + a.color + '"></span>' + esc(a.id) + " <b>" + (counts[a.id] || 0) + "</b></button>";
       }).join("") +
       '<button class="chip2" data-addas="1" title="担当者を追加" style="--c:#64748b;border-style:dashed">＋ 担当者</button>' +
-      "</div>";
+      "</div></div>";
 
     // 状態（ステータス）で絞る。担当の絞り込み後(rows)の件数で表示。
     var scnt = {}; rows.forEach(function (c) { scnt[c.status] = (scnt[c.status] || 0) + 1; });
-    var chipsStatus = '<div class="chips"><span class="chips-label">状態で絞る:</span>' +
+    var chipsStatus = '<div class="chips"><span class="chips-label">状態で絞る:</span><div class="chips-wrap">' +
       '<button class="chip2' + (!state.statuses.length ? " on" : "") + '" data-st="">すべて <b>' + rows.length + "</b></button>" +
       STATUSES.map(function (s) {
         var on = state.statuses.indexOf(s.id) >= 0;
         return '<button class="chip2' + (on ? " on" : "") + '" data-st="' + esc(s.id) + '" style="--c:' + s.accent + '">' +
           '<span class="dot" style="background:' + s.accent + '"></span>' + esc(s.id) + " <b>" + (scnt[s.id] || 0) + "</b></button>";
-      }).join("") + "</div>";
+      }).join("") + "</div></div>";
     chips += chipsStatus;
 
     var cards = '<div class="sumrow">' +

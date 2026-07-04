@@ -29,6 +29,12 @@
 </div>
 
 {% if rows %}
+<div class="preset-bar" id="presetBar">
+  <span class="preset-title">保存した監視セット <small>（最大5件・現在のON/OFFに名前を付けて保存）</small></span>
+  <span id="presetList"></span>
+  <button type="button" class="btn small" id="presetSave">＋ 現在の選択を保存</button>
+</div>
+
 <table class="list">
   <thead>
     <tr><th class="agc-col" title="案件を探すに出すか">表示</th><th>発注機関</th><th class="num">NJSS案件数</th><th>使用システム</th><th>公式入札ページ</th></tr>
@@ -105,6 +111,50 @@
   if (off) off.addEventListener('click', function () {
     if (confirm('表示中の ' + document.querySelectorAll('.agc').length + ' 機関を全て「案件を探す」から除外します。よろしいですか？')) bulk(false);
   });
+
+  /* 監視セットのプリセット保存（最大5件・要望）。現在のON/OFF(=除外リスト)に名前を付けて
+     ブラウザに保存し、ワンタップで呼び出せる。 */
+  var PKEY = 'kawanoAgencyPresets';
+  function esc(s) { var d = document.createElement('div'); d.textContent = s == null ? '' : s; return d.innerHTML; }
+  function presets() { try { return JSON.parse(localStorage.getItem(PKEY)) || []; } catch (e) { return []; } }
+  function savePresets(l) { try { localStorage.setItem(PKEY, JSON.stringify(l)); } catch (e) {} }
+  function renderPresets() {
+    var box = document.getElementById('presetList'); if (!box) return;
+    var list = presets();
+    box.innerHTML = list.length ? list.map(function (p, i) {
+      return '<span class="preset-chip"><button type="button" class="preset-load" data-i="' + i + '">' +
+        esc(p.name) + ' <small>(' + ((p.excluded || []).length) + '機関除外)</small></button>' +
+        '<button type="button" class="preset-del" data-i="' + i + '" title="削除">×</button></span>';
+    }).join('') : '<span class="preset-empty">まだありません</span>';
+    Array.prototype.forEach.call(box.querySelectorAll('.preset-load'), function (b) {
+      b.onclick = function () { loadPreset(Number(b.getAttribute('data-i'))); };
+    });
+    Array.prototype.forEach.call(box.querySelectorAll('.preset-del'), function (b) {
+      b.onclick = function () {
+        var l = presets(); var p = l[Number(b.getAttribute('data-i'))];
+        if (p && confirm('監視セット「' + p.name + '」を削除しますか？')) { l.splice(Number(b.getAttribute('data-i')), 1); savePresets(l); renderPresets(); }
+      };
+    });
+  }
+  function loadPreset(i) {
+    var p = presets()[i]; if (!p) return;
+    if (!confirm('監視セット「' + p.name + '」を適用します。\n現在のON/OFF設定を上書きしますがよろしいですか？')) return;
+    save(p.excluded || []);   // localStorageの除外リストを上書き
+    fetch('/agencies/exclusions/restore', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ excluded: p.excluded || [] })
+    }).then(function () { location.reload(); }).catch(function () { location.reload(); });
+  }
+  var ps = document.getElementById('presetSave');
+  if (ps) ps.onclick = function () {
+    var list = presets();
+    if (list.length >= 5) { alert('保存できる監視セットは5件までです。不要なセットを削除してください。'); return; }
+    var name = (prompt('この監視セットの名前を入力してください（例: 関西のみ / 電気に強い自治体）') || '').trim();
+    if (!name) return;
+    list.push({ name: name, excluded: load() });   // 現在の除外リスト全体を保存
+    savePresets(list); renderPresets();
+  };
+  renderPresets();
 })();
 </script>
 {% endblock %}
