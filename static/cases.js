@@ -16,10 +16,13 @@
   (function persistFilter() {
     var s = location.search;
     if (s && s.length > 1) {
-      lsSet(FILTER_KEY, s);
+      lsSet(FILTER_KEY, s);   // JSON文字列として保存
     } else {
-      var saved = null; try { saved = localStorage.getItem(FILTER_KEY); } catch (x) {}
-      if (saved && saved.length > 1) { location.replace(location.pathname + saved); }
+      // lsGet(JSON.parse)で読む。生のgetItemだと引用符が残り /%22?... となり404になる。
+      var saved = lsGet(FILTER_KEY);
+      if (typeof saved === "string" && saved.charAt(0) === "?" && saved.length > 1) {
+        location.replace(location.pathname + saved);
+      }
     }
   })();
   // 「クリア」押下時は保持を破棄
