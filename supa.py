@@ -27,6 +27,20 @@ log = logging.getLogger(__name__)
 
 _TIMEOUT = 5  # 保存時に長くブロックしないよう短め（不通でもSQLite＋localStorageで担保）
 
+# 直近の永続化保存が成功したか（--workers 1 前提でプロセス内共有）。
+# 無言の保存失敗に運用者が気づけるよう、画面バナー表示の判定に使う。
+_last_save_ok: bool = True
+_last_save_error: str = ""
+
+
+def last_save_ok() -> bool:
+    """直近の save() が成功していれば True（enabled 時のみ意味を持つ）。"""
+    return _last_save_ok
+
+
+def last_save_error() -> str:
+    return _last_save_error
+
 
 def _url() -> str:
     return os.environ.get("SUPABASE_DB_URL", "").strip()
@@ -61,6 +75,7 @@ def init() -> None:
 
 def save(key: str, obj: Any) -> bool:
     """key にデータ(JSON可能な値)を丸ごと保存。成功で True。"""
+    global _last_save_ok, _last_save_error
     if not enabled():
         return False
     try:
@@ -72,8 +87,13 @@ def save(key: str, obj: Any) -> bool:
                 (key, Json(obj)),
             )
             conn.commit()
+        _last_save_ok = True
+        _last_save_error = ""
         return True
     except Exception as e:  # noqa: BLE001
+        # 無言の消失を防ぐため、失敗を記録して画面バナーで警告できるようにする。
+        _last_save_ok = False
+        _last_save_error = str(e)[:200]
         log.warning("supa: save %s failed: %s", key, e)
         return False
 

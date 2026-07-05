@@ -184,21 +184,25 @@ def inject_data_health():
     return {"data_health": info}
 
 
+@app.context_processor
+def inject_save_health():
+    """永続化(Supabase)への直近の保存が失敗していたら警告を全テンプレへ渡す。
+
+    Render無料はディスク揮発のため、保存はSupabaseが本当の保管先。保存が無言で
+    失敗すると次のデプロイでその変更が消える。運用者が気づけるようバナーを出す。
+    読み取りのみ（直近保存の成否フラグを見るだけ）で軽量。
+    """
+    try:
+        down = supa.enabled() and not supa.last_save_ok()
+    except Exception:  # noqa: BLE001
+        down = False
+    return {"save_alert": down}
+
+
 @app.route("/healthz")
 def healthz():
     """軽量ヘルスチェック（DBに触れず即返す）。Renderスリープ防止のkeep-alive用。"""
     return ("ok", 200, {"Content-Type": "text/plain; charset=utf-8"})
-
-
-@app.route("/healthz/supa")
-def healthz_supa():
-    """【一時診断】本番でSupabase永続化が生きているか確認する。確認後に撤去する。
-    パスワードは出さない（diagnose がホスト名のみ返す）。"""
-    import json as _json
-    return app.response_class(
-        _json.dumps(supa.diagnose(), ensure_ascii=False),
-        mimetype="application/json",
-    )
 
 
 @app.route("/")

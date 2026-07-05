@@ -36,6 +36,12 @@
         <span class="muted">（総件数 {{ '{:,}'.format(data_health.total) }}件／最新公告 {{ data_health.latest or '不明' }}）</span>
       </div>
     {% endif %}
+    {% if save_alert %}
+      <div class="flash error data-alert">
+        <strong>保存先に接続できていません</strong>：直近の変更がサーバに保存されていない可能性があります。
+        通信が回復してから、もう一度保存し直してください。
+      </div>
+    {% endif %}
     {% with messages = get_flashed_messages(with_categories=true) %}
       {% for category, msg in messages %}
         <div class="flash {{ category }}">{{ msg }}</div>
