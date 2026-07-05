@@ -190,6 +190,17 @@ def healthz():
     return ("ok", 200, {"Content-Type": "text/plain; charset=utf-8"})
 
 
+@app.route("/healthz/supa")
+def healthz_supa():
+    """【一時診断】本番でSupabase永続化が生きているか確認する。確認後に撤去する。
+    パスワードは出さない（diagnose がホスト名のみ返す）。"""
+    import json as _json
+    return app.response_class(
+        _json.dumps(supa.diagnose(), ensure_ascii=False),
+        mimetype="application/json",
+    )
+
+
 @app.route("/")
 def cases():
     # 初期表示は関西中心（クエリ無しのランディング時は近畿をデフォルト）
