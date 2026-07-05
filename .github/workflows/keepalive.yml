@@ -1,33 +1,41 @@
 name: キープアライブ（営業時間のスリープ防止）
 
-# Render 無料プランは15分アクセスが無いとスリープし、次回起動に30秒〜1分かかる。
-# 営業時間帯(JST 7:00〜22:59)だけ /healthz を5分おきに叩いて常時起動を保つ。
-# 夜間は叩かないのでスリープし、Render無料枠(月750インスタンス時間)に十分収まる。
-#   UTC 22:00〜13:59 = JST 7:00〜22:59（JST = UTC+9）
+# Render 無料プランは15分アクセスが無いとスリープし、次回起動に30秒〜1分かかる
+# （＝あの「起動中...」画面）。これを防ぐため /healthz を叩き続ける。
+#
+# 【重要な学び】GitHubのcronは "*/5"（5分おき）のような高頻度指定を勝手に間引き、
+# 実際には1〜4時間おきにしか発火しない（実行履歴で確認済）。1発火=1pingだと
+# 隙間でスリープしてしまう。そこで方式を変更：
+#   ・cronは30分おき（この頻度なら比較的素直に発火する）
+#   ・1回の起動ごとに「約50分ぶん、5分おきにping」し続ける内部ループにする
+#   ・concurrency で多重起動を直列化 → runが途切れず鎖のように繋がり隙間を埋める
+# 営業時間帯(JST 7:00〜22:59 = UTC 22:00〜13:59)だけ実行。夜間はスリープさせ、
+# Render無料枠(月750インスタンス時間)に十分収まる（約16h/日×30 = 約480h）。
 on:
   schedule:
-    - cron: "*/5 22,23,0-13 * * *"
+    - cron: "*/30 22,23,0-13 * * *"
   workflow_dispatch: {}
 
-# 同時実行や遅延の積み上がりを防ぐ（古い実行はキャンセル）
+# 走行中に次の発火が来たら「待たせる（＝直列化）」。多重起動を防ぎつつ、
+# 前のrunが終わり次第すぐ次が始まるので、実質的に切れ目なく叩き続けられる。
 concurrency:
   group: keepalive
-  cancel-in-progress: true
+  cancel-in-progress: false
 
 jobs:
   ping:
     runs-on: ubuntu-latest
-    timeout-minutes: 3
+    timeout-minutes: 58
     steps:
-      - name: Ping /healthz to keep Render awake
+      - name: 約50分間、5分おきに /healthz を叩いて起動を維持
         run: |
           URL="https://kawano-njss-modoki.onrender.com/healthz"
-          echo "ping $URL"
-          # スリープからの起動を待つため最大90秒・数回リトライ
-          for i in 1 2 3; do
-            code=$(curl -s -o /dev/null -w "%{http_code}" --max-time 90 "$URL" || echo "000")
-            echo "attempt $i: HTTP $code"
-            [ "$code" = "200" ] && exit 0
-            sleep 10
+          END=$(( $(date +%s) + 3000 ))   # 今から約50分後まで
+          while [ "$(date +%s)" -lt "$END" ]; do
+            # スリープからの復帰待ちを見込んで最大90秒
+            CODE=$(curl -s -o /dev/null -w "%{http_code}" --max-time 90 "$URL" || echo "000")
+            echo "$(date -u +%H:%M:%S)Z ping $URL -> HTTP $CODE"
+            # 残り時間があるときだけ5分待つ（末尾で無駄に待たない）
+            [ "$(date +%s)" -lt "$END" ] && sleep 300 || break
           done
-          echo "keep-alive ping did not get 200 (service may be cold-starting)"
+          echo "keep-alive ループ終了"
