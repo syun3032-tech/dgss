@@ -11,8 +11,13 @@
   var CASES = read("casesData") || [];
   var COMPANIES = read("companiesData") || [];
   var TODAY = new Date((CFG.today || "") + "T00:00:00");
-  var STATUSES = CFG.statuses || [];                       // [{id,accent}]
-  var ACCENT = {}; STATUSES.forEach(function (s) { ACCENT[s.id] = s.accent; });
+  var STATUSES = CFG.statuses || [];                       // 公共シートの状況 [{id,accent}]
+  var STATUSES_PRIVATE = CFG.statuses_private || [];       // 民間シートの状況 [{id,accent}]
+  var ACCENT = {};
+  STATUSES.forEach(function (s) { ACCENT[s.id] = s.accent; });
+  STATUSES_PRIVATE.forEach(function (s) { ACCENT[s.id] = s.accent; });
+  // シート区分(公共/民間)に応じた状況リストを返す。民間だけ見積フローの列を使う。
+  function statusesFor(sector) { return sector === "民間" ? STATUSES_PRIVATE : STATUSES; }
   var ASSIGNEES = CFG.assignees || [];                     // [{id,color}]
   var ACOLOR = {}; ASSIGNEES.forEach(function (a) { ACOLOR[a.id] = a.color; });
   var WORK = CFG.works || {};                              // {name:color}
@@ -78,6 +83,9 @@
 
   // 次の締切マイルストーン（ei）
   function milestone(c) {
+    // 民間シートは「見積提出期限」(apply_deadline を流用)を締切マイルストーンにする。
+    if ((c.sector || "公共") === "民間")
+      return c.apply_deadline ? { label: "見積提出", date: c.apply_deadline } : null;
     var apply = c.apply_deadline || c.deadline || "";
     if (c.status === "参加申請準備前") return apply ? { label: "参加申請", date: apply } : null;
     if (["入札参加申請済み", "協力会社探し中", "見積取得"].indexOf(c.status) >= 0)
@@ -163,7 +171,11 @@
         '<span class="bt-label">' + t.label + '</span><span class="bt-sub">' + t.sub + "</span></button>";
     }).join("");
     Array.prototype.forEach.call($("bidTabs").querySelectorAll(".bidtab"), function (b) {
-      b.addEventListener("click", function () { state.tab = b.getAttribute("data-tab"); render(); });
+      b.addEventListener("click", function () {
+        state.tab = b.getAttribute("data-tab");
+        state.statuses = [];   // 公共/民間で状況が違うため、シート切替時は状況フィルタを解除
+        render();
+      });
     });
   }
 
@@ -173,6 +185,7 @@
   function renderKanban(sector) {
     // この管理シート(公共/民間)に属する案件だけを母集団にする。タブ自体が区分を兼ねる。
     var sectorCases = CASES.filter(function (c) { return (c.sector || "公共") === sector; });
+    var SL = statusesFor(sector);   // このシートの状況リスト（公共/民間で列が異なる）
     // 担当者で絞り込み
     var rows = state.assignee ? sectorCases.filter(function (c) { return (c.assignee || "未割当") === state.assignee; }) : sectorCases;
 
@@ -205,7 +218,7 @@
     var scnt = {}; rows.forEach(function (c) { scnt[c.status] = (scnt[c.status] || 0) + 1; });
     var chipsStatus = '<div class="chips"><span class="chips-label">状態で絞る:</span><div class="chips-wrap">' +
       '<button class="chip2' + (!state.statuses.length ? " on" : "") + '" data-st="">すべて <b>' + rows.length + "</b></button>" +
-      STATUSES.map(function (s) {
+      SL.map(function (s) {
         var on = state.statuses.indexOf(s.id) >= 0;
         return '<button class="chip2' + (on ? " on" : "") + '" data-st="' + esc(s.id) + '" style="--c:' + s.accent + '">' +
           '<span class="dot" style="background:' + s.accent + '"></span>' + esc(s.id) + " <b>" + (scnt[s.id] || 0) + "</b></button>";
@@ -232,8 +245,8 @@
 
     // カンバン列（状態フィルタ時は選んだ状態の列だけ表示・複数可）
     var shownStatuses = state.statuses.length
-      ? STATUSES.filter(function (s) { return state.statuses.indexOf(s.id) >= 0; })
-      : STATUSES;
+      ? SL.filter(function (s) { return state.statuses.indexOf(s.id) >= 0; })
+      : SL;
     var cols = shownStatuses.map(function (s) {
       var list = rows.filter(function (c) { return c.status === s.id; });
       return '<div class="kcol">' +
@@ -563,7 +576,12 @@
     }
 
     function infoHtml() {
-      var steps = [
+      // 民間シートは入札フローを持たない（見積〜提出〜結果）。
+      var priv = (c.sector || "公共") === "民間";
+      var steps = priv ? [
+        { label: "公開開始", date: c.announced_date },
+        { label: "見積提出期限", date: c.apply_deadline || c.deadline }
+      ] : [
         { label: "公開開始", date: c.announced_date },
         { label: "参加申請期限", date: c.apply_deadline || c.deadline },
         { label: "入札書提出期限", date: c.bid_deadline },
@@ -577,13 +595,13 @@
       }).join("");
       return summaryPanel() + specSection() + '<div class="m-grid">' +
         fld("元機関（発注機関）", '<input name="agency_override" value="' + esc(c.agency || "") + '" placeholder="発注機関名（修正可）">', "full") +
-        fld("状況", '<select name="status">' + opt(STATUSES.map(function (s) { return s.id; }), c.status) + "</select>") +
+        fld("状況", '<select name="status">' + opt(statusesFor(c.sector).map(function (s) { return s.id; }), c.status) + "</select>") +
         fld("担当者", '<select name="assignee" class="assignee-sel" data-prev="' + esc(c.assignee || "未割当") + '">' + assigneeOptions(c.assignee || "未割当") + "</select>") +
         fld("工事カテゴリ", '<select name="work"><option value="">（案件の業種）</option>' + opt(Object.keys(WORK), c.work || c.work_eff) + "</select>") +
-        fld("入札タイプ", '<select name="submit_method"><option value="">—</option>' + opt(METHODS, c.submit_method) + "</select>") +
-        fld("参加申請 期限", '<input type="date" name="apply_deadline" value="' + esc(c.apply_deadline) + '">') +
-        fld("入札書提出 期限", '<input type="date" name="bid_deadline" value="' + esc(c.bid_deadline) + '">') +
-        fld("開札日", '<input type="date" name="open_date" value="' + esc(c.open_date) + '">') +
+        (priv ? "" : fld("入札タイプ", '<select name="submit_method"><option value="">—</option>' + opt(METHODS, c.submit_method) + "</select>")) +
+        fld(priv ? "見積提出 期限" : "参加申請 期限", '<input type="date" name="apply_deadline" value="' + esc(c.apply_deadline) + '">') +
+        (priv ? "" : fld("入札書提出 期限", '<input type="date" name="bid_deadline" value="' + esc(c.bid_deadline) + '">')) +
+        (priv ? "" : fld("開札日", '<input type="date" name="open_date" value="' + esc(c.open_date) + '">')) +
         fld("資料受取", '<input name="materials" value="' + esc(c.materials) + '" placeholder="6/1以降受取 等">') +
         fld("要確認の一言", '<input name="flag" value="' + esc(c.flag) + '" placeholder="資料待ち 等">') +
         fld("メモ", '<textarea name="note" rows="3" class="note-area">' + esc(c.note) + '</textarea>', "full") +
@@ -854,17 +872,29 @@
       fld("発注機関・取引先", '<input name="agency" placeholder="発注者／客先名（任意）">', "full") +
       fld("工事カテゴリ", '<select name="work"><option value="">（未指定）</option>' + opt(Object.keys(WORK), "") + "</select>") +
       fld("担当者", '<select name="assignee" class="assignee-sel" data-prev="未割当">' + assigneeOptions("未割当") + "</select>") +
-      fld("状態", '<select name="status">' + opt(STATUSES.map(function (s) { return s.id; }), "参加申請準備前") + "</select>") +
-      fld("参加申請 期限", '<input type="date" name="apply_deadline">') +
-      fld("入札書提出 期限", '<input type="date" name="bid_deadline">') +
-      fld("開札日", '<input type="date" name="open_date">') +
+      // 状況・期限は区分(公共/民間)で内容が変わる。onMount の applySectorUI で切替える。
+      '<label class="m-fld"><span>状態</span><select name="status" id="ncStatus"></select></label>' +
+      '<label class="m-fld"><span id="ncApplyLbl">参加申請 期限</span><input type="date" name="apply_deadline"></label>' +
+      '<label class="m-fld pub-only"><span>入札書提出 期限</span><input type="date" name="bid_deadline"></label>' +
+      '<label class="m-fld pub-only"><span>開札日</span><input type="date" name="open_date"></label>' +
       fld("メモ", '<textarea name="note" rows="2" class="note-area"></textarea>', "full") +
       "</div>";
     showModal("案件を追加（民間・公共）", body, function (root) {
+      // 区分に応じて状況の選択肢・期限ラベル・公共専用項目の表示を切り替える。
+      function applySectorUI(sec) {
+        var priv = sec === "民間";
+        var sel = root.querySelector("#ncStatus");
+        if (sel) sel.innerHTML = opt((priv ? STATUSES_PRIVATE : STATUSES).map(function (s) { return s.id; }), priv ? "見積中" : "参加申請準備前");
+        var lbl = root.querySelector("#ncApplyLbl");
+        if (lbl) lbl.textContent = priv ? "見積提出 期限" : "参加申請 期限";
+        Array.prototype.forEach.call(root.querySelectorAll(".pub-only"), function (e) { e.style.display = priv ? "none" : ""; });
+      }
+      applySectorUI(sector);
       Array.prototype.forEach.call(root.querySelectorAll("#secPick .tagpick"), function (b) {
         b.addEventListener("click", function () {
           sector = b.getAttribute("data-s");
           Array.prototype.forEach.call(root.querySelectorAll("#secPick .tagpick"), function (x) { x.classList.toggle("on", x === b); });
+          applySectorUI(sector);
         });
       });
       root.querySelector(".m-save").addEventListener("click", function () {

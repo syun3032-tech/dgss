@@ -667,7 +667,9 @@ def application_new():
     if sector not in ("公共", "民間"):
         sector = "公共"
     work = (f.get("work") or "").strip()
-    status = (f.get("status") or "参加申請準備前").strip()
+    # 既定の状況はシート区分で変える（民間は見積フローの先頭「見積中」）。
+    default_status = "見積中" if sector == "民間" else "参加申請準備前"
+    status = (f.get("status") or default_status).strip()
 
     case_id, _ext = db.add_manual_case(
         title, agency=(f.get("agency") or "").strip(), sector=sector, category=work)
@@ -682,7 +684,7 @@ def application_new():
     try:
         db.set_application(case_id, status, **fields)
     except ValueError:
-        db.set_application(case_id, "参加申請準備前", **fields)
+        db.set_application(case_id, default_status, **fields)
 
     created = next((_enrich_application(r) for r in db.list_applications(None)
                     if r.get("case_id") == case_id), None)
@@ -704,7 +706,7 @@ def applications_restore():
     for it in items:
         ext = (it.get("external_id") or "").strip()
         status = db.normalize_status((it.get("status") or "").strip())
-        if not ext or status not in db.APP_STATUSES:
+        if not ext or status not in db.APP_STATUSES_ALL:
             continue
         case_id = db.get_case_id_by_external(ext)
         if case_id is None:
@@ -756,6 +758,9 @@ def applications():
     config = {
         "statuses": [{"id": s, "accent": db.STATUS_ACCENT.get(s, "#94a3b8")}
                      for s in db.APP_STATUSES],
+        # 民間シート専用の状況（見積〜提出〜結果）。公共とは別の列でカンバンを描く。
+        "statuses_private": [{"id": s, "accent": db.STATUS_ACCENT.get(s, "#94a3b8")}
+                             for s in db.APP_STATUSES_PRIVATE],
         "assignees": [{"id": a, "color": db.ASSIGNEE_COLOR.get(a, "#a8a29e")}
                       for a in db.ASSIGNEES],
         "works": db.WORK_COLOR,

@@ -180,7 +180,26 @@ STATUS_ACCENT: dict[str, str] = {
     "他社落札": "#64748b",
     "NG": "#dc2626",
     "見積集まらず": "#b45309",
+    # 民間シート専用の状況（下記 APP_STATUSES_PRIVATE）の色。
+    "見積中": "#0891b2",
+    "見積完了": "#7c3aed",
+    "提出確認中": "#db2777",
+    "提出完了": "#2563eb",
+    "失注か受注か保留中": "#64748b",
 }
+
+# 民間シート専用の状況（公共の入札フローとは別の、見積〜提出〜結果の流れ）。
+# 公共(APP_STATUSES)はそのまま。民間タブだけこの列でカンバンを描く。
+APP_STATUSES_PRIVATE: list[str] = [
+    "見積中",
+    "見積完了",
+    "提出確認中",
+    "提出完了",
+    "失注か受注か保留中",
+]
+
+# 保存時の検証に使う全状況（公共・民間どちらの状況も受け付ける）。
+APP_STATUSES_ALL: list[str] = APP_STATUSES + APP_STATUSES_PRIVATE
 
 # 旧ステータス → 現ステータスの読み替え（既存データ・localStorage退避分の救済）。
 STATUS_ALIASES: dict[str, str] = {
@@ -956,7 +975,7 @@ def set_application(case_id: int, status: str, **fields: Any) -> None:
     未指定の列はデフォルト（空文字 / 0 / '[]'）になる。
     """
     status = normalize_status(status)
-    if status not in APP_STATUSES:
+    if status not in APP_STATUSES_ALL:
         raise ValueError(f"不正なステータス: {status}")
 
     def _int(v: Any) -> int:
