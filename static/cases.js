@@ -10,25 +10,56 @@
   var lsSet = function (k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (x) {} };
 
   /* ---------- 要望④: 検索条件の保持 ---------- */
-  // フィルタ付きで開いたらクエリを保存。素の「/」で来たら直近フィルタを復元する。
-  // 「クリア」は保存を消してから遷移するので、意図的なリセットは効く。
-  var FILTER_KEY = "kawanoCaseFilter";
+  // 絞り込んだクエリを画面（案件を探す／新着／1000万↑）ごとに保存し、
+  // サイドバーの素のリンクで戻って来たら直近の絞り込みを復元する。
+  // 旧実装はサイドバーの「?new=1」等も“絞り込み”として保存を上書きしてしまい、
+  // 画面遷移のたびに選択が初期化されていた。プリセットと一致する遷移は復元に回す。
+  var FILTER_KEY = "kawanoCaseFilter";      // 旧: 単一キー保存（上記バグの世代）
+  var FILTER_NS = "kawanoCaseFilter:";      // 新: 画面別保存
+  var SECTIONS = ["cases", "new", "budget"];
+  // サイドバー各リンクの「素の」クエリ。これと一致＝フィルタ未指定の遷移とみなす。
+  var PRESETS = { cases: "", "new": "new=1", budget: "budget_min=10000000&open=1&sort=budget" };
+  function sectionOf(p) {
+    if (parseInt(p.get("budget_min") || "0", 10) > 0) return "budget";
+    if (p.get("new") === "1" || p.get("fresh")) return "new";
+    return "cases";
+  }
+  // 比較用の正規形（pageは無視・キー順を揃える）
+  function normQuery(p) {
+    var kv = [];
+    p.forEach(function (v, k) { if (k !== "page") kv.push(k + "=" + v); });
+    return kv.sort().join("&");
+  }
   (function persistFilter() {
-    var s = location.search;
-    if (s && s.length > 1) {
-      lsSet(FILTER_KEY, s);   // JSON文字列として保存
-    } else {
-      // lsGet(JSON.parse)で読む。生のgetItemだと引用符が残り /%22?... となり404になる。
-      var saved = lsGet(FILTER_KEY);
-      if (typeof saved === "string" && saved.charAt(0) === "?" && saved.length > 1) {
-        location.replace(location.pathname + saved);
+    var params = new URLSearchParams(location.search);
+    // 旧形式の保存が残っていれば画面別キーへ引き継ぐ
+    var legacy = lsGet(FILTER_KEY);
+    if (typeof legacy === "string" && legacy.charAt(0) === "?") {
+      try { localStorage.removeItem(FILTER_KEY); } catch (x) {}
+      var lp = new URLSearchParams(legacy);
+      if (!lsGet(FILTER_NS + sectionOf(lp))) lsSet(FILTER_NS + sectionOf(lp), legacy.slice(1));
+    }
+    var sec = sectionOf(params);
+    if (normQuery(params) === PRESETS[sec]) {
+      // 素のリンクで来た → この画面で前回絞り込んだ条件を復元
+      var saved = lsGet(FILTER_NS + sec);
+      if (typeof saved === "string" && saved &&
+          normQuery(new URLSearchParams("?" + saved)) !== normQuery(params)) {
+        location.replace(location.pathname + "?" + saved);
       }
+    } else {
+      // フィルタ指定つきで開いた → この画面の条件として保存（pageは持ち越さない）
+      params.delete("page");
+      lsSet(FILTER_NS + sec, params.toString());
     }
   })();
-  // 「クリア」押下時は保持を破棄
+  // 「クリア」押下時は保持を破棄（全画面分）。これだけが意図的なリセット。
   Array.prototype.forEach.call(document.querySelectorAll(".filterbar .actions a.btn"), function (a) {
     if ((a.textContent || "").indexOf("クリア") >= 0) {
-      a.addEventListener("click", function () { try { localStorage.removeItem(FILTER_KEY); } catch (x) {} });
+      a.addEventListener("click", function () {
+        try { localStorage.removeItem(FILTER_KEY); } catch (x) {}
+        SECTIONS.forEach(function (s) { try { localStorage.removeItem(FILTER_NS + s); } catch (x) {} });
+      });
     }
   });
 
