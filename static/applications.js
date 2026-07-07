@@ -120,6 +120,7 @@
       work: c.work || "", materials: c.materials || "",
       needs_check: c.needs_check ? 1 : 0, award_called: c.award_called ? 1 : 0,
       bid_plan: c.bid_plan || 0, win_amount: c.win_amount || 0,
+      win_company: c.win_company || "", cost_items: c.cost_items || [],
       partner: c.partner || "", partners: c.partners || [],
       // 手動案件(manual:)は案件本体がDB再生成で消えるため、復元用に案件情報も保持する。
       title: c.title || "", agency: c.agency || "", sector: c.sector || "公共",
@@ -132,7 +133,7 @@
   }
 
   /* ---------- ステート ---------- */
-  var state = { tab: "公共", assignee: null, sector: null, statuses: [], q: "", coTag: null, coPartner: false, coSort: false };
+  var state = { tab: "公共", assignee: null, sector: null, statuses: [], q: "", coTag: null, coPartner: false, coSort: false, coSector: null };
 
   // フィルタ・並び替え・タブの選択を localStorage に保持する。
   // 案件保存やNG移動は location.reload() を伴うため、保持しないと毎回初期化されてしまう。
@@ -304,6 +305,7 @@
   function renderCompanies() {
     var q = state.q.trim();
     var list = COMPANIES.filter(function (c) {
+      if (state.coSector && (c.sector || "公共") !== state.coSector) return false;
       if (state.coPartner && !c.partner) return false;
       if (state.coTag && (c.tags || []).indexOf(state.coTag) < 0) return false;
       if (!q) return true;
@@ -317,12 +319,20 @@
     }).join("");
     var head = '<div class="co-head"><input id="coSearch" class="co-search" placeholder="会社名・エリア・工事内容でさがす" value="' + esc(state.q) + '">' +
       '<button class="btn primary" id="coAdd">＋ 会社を追加</button></div>' +
-      '<div class="co-filters"><button class="cochip co-pf' + (state.coPartner ? " on" : "") + '">★よく頼む会社</button>' +
+      '<div class="co-filters">' +
+      // 公共/民間の切替（協力業者リストの分割・会議要望）
+      '<button class="cochip co-secf' + (state.coSector === "公共" ? " on" : "") + '" data-s="公共" style="--c:#2563eb">公共</button>' +
+      '<button class="cochip co-secf' + (state.coSector === "民間" ? " on" : "") + '" data-s="民間" style="--c:#d97706">民間</button>' +
+      '<span class="co-sep"></span>' +
+      '<button class="cochip co-pf' + (state.coPartner ? " on" : "") + '">★よく頼む会社</button>' +
       '<button class="cochip co-sf' + (state.coSort ? " on" : "") + '">評価が高い順</button><span class="co-sep"></span>' + tagChips + "</div>";
     var cards = list.map(function (c) {
       var stars = "★★★★★".slice(0, c.rating || 0) + "☆☆☆☆☆".slice(0, 5 - (c.rating || 0));
+      var secCol = (c.sector || "公共") === "民間" ? "#d97706" : "#2563eb";
       return '<div class="cocard" data-id="' + c.id + '">' +
-        '<div class="co-row1">' + (c.partner ? '<span class="co-fav">★よく頼む</span>' : "") +
+        '<div class="co-row1">' +
+          '<span class="co-tag" style="background:' + secCol + '22;color:' + secCol + '">' + esc(c.sector || "公共") + "</span>" +
+          (c.partner ? '<span class="co-fav">★よく頼む</span>' : "") +
           '<span class="co-name">' + esc(c.name) + "</span>" +
           '<span class="co-stars">' + stars + "</span></div>" +
         '<div class="co-tags">' + (c.tags || []).map(function (t) {
@@ -465,6 +475,13 @@
     var s = $("coSearch"); if (s) s.addEventListener("input", function () { state.q = s.value; var p = s.selectionStart; render(); var n = $("coSearch"); if (n) { n.focus(); try { n.setSelectionRange(p, p); } catch (e) {} } });
     var pf = document.querySelector(".co-pf"); if (pf) pf.addEventListener("click", function () { state.coPartner = !state.coPartner; render(); });
     var sf = document.querySelector(".co-sf"); if (sf) sf.addEventListener("click", function () { state.coSort = !state.coSort; render(); });
+    Array.prototype.forEach.call(document.querySelectorAll(".co-secf"), function (b) {
+      b.addEventListener("click", function () {
+        var s = b.getAttribute("data-s");
+        state.coSector = state.coSector === s ? null : s;   // 同じチップ再クリックで解除
+        render();
+      });
+    });
     Array.prototype.forEach.call(document.querySelectorAll(".co-tagf"), function (b) {
       b.addEventListener("click", function () { var t = b.getAttribute("data-t"); state.coTag = state.coTag === t ? null : t; render(); });
     });
@@ -612,10 +629,27 @@
       var sel = c.partners.filter(function (q) { return q.selected; })[0];
       var exp = (toYen(c.bid_plan) && sel && toYen(sel.amount)) ? toYen(c.bid_plan) - toYen(sel.amount) : null;
       var ch = cheapestQ(c.partners);
+      // 落札額は「自社・他社を問わず案件の最終落札金額」。落札会社名も残してデータ取りに使う。
       var money = '<div class="mq-money">' +
         '<label class="mb"><span>入札予定額</span><input name="bid_plan" value="' + (c.bid_plan || "") + '" placeholder="3000000"></label>' +
-        '<label class="mb"><span>落札額(取れたら)</span><input name="win_amount" value="' + (c.win_amount || "") + '" placeholder="取れたら"></label>' +
+        '<label class="mb"><span>落札額(自社・他社問わず)</span><input name="win_amount" value="' + (c.win_amount || "") + '" placeholder="最終落札金額"></label>' +
+        '<label class="mb"><span>落札会社名</span><input name="win_company" value="' + esc(c.win_company || "") + '" placeholder="自社 / ○○電気 等"></label>' +
         '<div class="mb exp ' + (exp == null ? "" : exp < 0 ? "neg" : "pos") + '"><span>想定利益</span><b>' + (exp == null ? "—" : fmtMan(exp)) + "</b><small>入札−採用見積</small></div></div>";
+      // 自社原価の内訳（項目＋金額を行で追加→自動合計。メモに埋もれないデータとして残す）
+      var costs = c.cost_items || [];
+      var costTot = costs.reduce(function (s, it) { return s + (toYen(it.amount) || 0); }, 0);
+      var gross = (toYen(c.bid_plan) && costTot) ? toYen(c.bid_plan) - costTot : null;
+      var costRows = costs.map(function (it, i) {
+        return '<div class="mq-row"><div class="mq-r1">' +
+          '<input class="mq-co q-clabel" data-i="' + i + '" value="' + esc(it.label || "") + '" placeholder="例: 照明器具 材料費 / LED 60台">' +
+          '<span class="mq-amt">¥<input class="q-camt" data-i="' + i + '" value="' + (it.amount || "") + '" placeholder="金額"></span>' +
+          '<button type="button" class="mq-del q-cdel" data-i="' + i + '">×</button></div></div>';
+      }).join("");
+      var costBox = '<div class="mq-rowshead">自社原価の内訳（機器代・材料費など）' +
+        '<button type="button" class="btn ghost small" id="costAdd">＋内訳を追加</button></div>' +
+        '<div class="mq-rows">' + (costRows || '<p class="dim">＋内訳を追加 で項目と金額を登録すると自動で合計します。</p>') + "</div>" +
+        (costs.length ? '<div class="mq-money"><div class="mb"><span>原価合計</span><b>' + fmtMan(costTot) + "</b></div>" +
+          '<div class="mb exp ' + (gross == null ? "" : gross < 0 ? "neg" : "pos") + '"><span>粗利(入札−原価)</span><b>' + (gross == null ? "—" : fmtMan(gross)) + "</b><small>入札予定額−原価合計</small></div></div>" : "");
       var asked = {}; c.partners.forEach(function (q) { asked[q.company] = 1; });
       var work = c.work || c.work_eff;
       // 要望⑦STEP3: 案件の工事カテゴリ・エリア・AI概要の推奨カテゴリと突き合わせて
@@ -632,8 +666,11 @@
         if (c.prefecture && co.area && co.area.indexOf(c.prefecture) >= 0) s += 3;
         return s;
       }
-      var clist = chQ ? COMPANIES.filter(function (co) { return ([co.name, co.area].concat(co.tags || []).join(" ")).indexOf(chQ) >= 0; })
-        : COMPANIES.filter(function (co) { return (co.tags || []).indexOf(work) >= 0 || co.partner || (suited.length && (co.tags || []).some(function (t) { return suited.indexOf(t) >= 0; })); });
+      // 協力業者リストは公共/民間で分割管理。この案件の区分に属する会社だけ候補に出す。
+      var caseSec = c.sector || "公共";
+      var POOL = COMPANIES.filter(function (co) { return (co.sector || "公共") === caseSec; });
+      var clist = chQ ? POOL.filter(function (co) { return ([co.name, co.area].concat(co.tags || []).join(" ")).indexOf(chQ) >= 0; })
+        : POOL.filter(function (co) { return (co.tags || []).indexOf(work) >= 0 || co.partner || (suited.length && (co.tags || []).some(function (t) { return suited.indexOf(t) >= 0; })); });
       if (chPartner) clist = clist.filter(function (co) { return co.partner; });
       clist = clist.slice().sort(function (a, b) { return coScore(b) - coScore(a); });
       var chooser = '<button type="button" class="mq-chtoggle" id="chToggle">＋ ① 依頼先を選ぶ（おすすめ＝この工事に合う会社）</button>';
@@ -664,6 +701,12 @@
           '<button type="button" class="stp' + (q.replied ? " on" : "") + '" data-act="rep"' + (q.requested ? "" : " disabled") + ">②返信</button>" +
           (q.replied ? '<span class="yn"><button type="button" class="ynb' + (q.feasible === 1 ? " yes" : "") + '" data-act="yes">可</button><button type="button" class="ynb' + (q.feasible === -1 ? " no" : "") + '" data-act="no">否</button></span>' : "") +
           (q.feasible === 1 ? '<span class="mq-amt">¥<input class="q-amt" data-i="' + i + '" value="' + esc(q.amount) + '" placeholder="金額"></span>' : "") +
+          // 入札予定額とこの会社の見積をリンクして想定利益を行内に出す（会議要望）
+          (q.feasible === 1 && toYen(q.amount) && toYen(c.bid_plan)
+            ? '<span class="dim">想定利益 ' + fmtMan(toYen(c.bid_plan) - toYen(q.amount)) + "</span>" : "") +
+          // 手入力の新規業者は、その場で協力会社リストへ登録できる（会議要望）
+          (editable && (q.company || "").trim()
+            ? '<button type="button" class="stp q-reg" data-i="' + i + '" title="協力会社リストへ登録">会社登録→</button>' : "") +
           "</div></div>";
       }).join("") : '<p class="dim">①から依頼先を選ぶか、＋追加で会社を足してください。</p>';
       var call = "";
@@ -674,7 +717,7 @@
           (tel2 ? '<a class="btn primary small" href="tel:' + esc(tel2) + '">' + esc(tel2) + " に電話</a> " : '<span class="dim">電話番号が未登録</span> ') +
           '<button type="button" class="btn ' + (c.award_called ? "primary" : "ghost") + ' small" id="awardBtn">' + (c.award_called ? "連絡済み" : "連絡したら押す") + "</button></div>";
       }
-      return money + chooser +
+      return money + costBox + chooser +
         '<div class="mq-rowshead">② 依頼先ごとの進捗（' + c.partners.length + "社）" + (ch ? ' <span class="dim">最安 ' + fmtMan(toYen(ch.amount)) + "</span>" : "") +
           '<button type="button" class="btn ghost small" id="mqAdd">＋手入力</button></div><div class="mq-rows">' + rows + "</div>" + call;
     }
@@ -694,6 +737,7 @@
     function pullMoney(root) {
       var bp = root.querySelector('[name="bid_plan"]'); if (bp) c.bid_plan = toYen(bp.value);
       var wa = root.querySelector('[name="win_amount"]'); if (wa) c.win_amount = toYen(wa.value);
+      var wc = root.querySelector('[name="win_company"]'); if (wc) c.win_company = wc.value.trim();
     }
     function redraw(root) { root.querySelector(".modal-b").innerHTML = bodyHtml(); bindModal(root); }
     function bindModal(root) {
@@ -802,6 +846,38 @@
       var aw = root.querySelector("#awardBtn"); if (aw) aw.onclick = function () { c.award_called = c.award_called ? 0 : 1; redraw(root); };
       Array.prototype.forEach.call(root.querySelectorAll(".q-amt"), function (inp) {
         inp.oninput = function () { c.partners[Number(inp.getAttribute("data-i"))].amount = inp.value; };
+        // 金額の入力を確定(blur)したら行内の想定利益を計算し直す
+        inp.onchange = function () { pullMoney(root); redraw(root); };
+      });
+      // 自社原価の内訳行（追加・編集・削除。金額確定で合計と粗利を再計算）
+      var ca = root.querySelector("#costAdd");
+      if (ca) ca.onclick = function () { pullMoney(root); (c.cost_items = c.cost_items || []).push({ label: "", amount: "" }); redraw(root); };
+      Array.prototype.forEach.call(root.querySelectorAll(".q-clabel"), function (inp) {
+        inp.oninput = function () { c.cost_items[Number(inp.getAttribute("data-i"))].label = inp.value; };
+      });
+      Array.prototype.forEach.call(root.querySelectorAll(".q-camt"), function (inp) {
+        inp.oninput = function () { c.cost_items[Number(inp.getAttribute("data-i"))].amount = inp.value; };
+        inp.onchange = function () { pullMoney(root); redraw(root); };
+      });
+      Array.prototype.forEach.call(root.querySelectorAll(".q-cdel"), function (b) {
+        b.onclick = function () { pullMoney(root); c.cost_items.splice(Number(b.getAttribute("data-i")), 1); redraw(root); };
+      });
+      // 手入力した新規業者を協力会社リストへその場で登録（この案件の区分・工事カテゴリ付き）
+      Array.prototype.forEach.call(root.querySelectorAll(".q-reg"), function (b) {
+        b.onclick = function () {
+          var q = c.partners[Number(b.getAttribute("data-i"))];
+          if (!q || !(q.company || "").trim()) { alert("会社名を入力してください"); return; }
+          b.disabled = true; b.textContent = "登録中…";
+          var work2 = c.work || c.work_eff;
+          fetch("/companies", {
+            method: "POST", headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ name: q.company.trim(), tel: q.tel || "", tags: work2 ? [work2] : [], sector: c.sector || "公共" })
+          }).then(function (r) { return r.json(); }).then(function (d) {
+            if (d.error) { alert(d.error); b.disabled = false; b.textContent = "会社登録→"; return; }
+            COMPANIES = d.companies || COMPANIES; mirrorCompanies();
+            pullMoney(root); redraw(root);
+          }).catch(function () { b.disabled = false; b.textContent = "会社登録→"; });
+        };
       });
       Array.prototype.forEach.call(root.querySelectorAll(".mq-row"), function (rowEl) {
         var i = Number(rowEl.getAttribute("data-i"));
@@ -844,15 +920,17 @@
     }
     mirrorCase(c);
     var MANAGED = "status,assignee,work,submit_method,apply_deadline,bid_deadline,open_date," +
-      "materials,partner,flag,note,needs_check,bid_plan,win_amount,award_called,partners,agency_override";
+      "materials,partner,flag,note,needs_check,bid_plan,win_amount,win_company,award_called,partners,agency_override,cost_items";
     var fd = new URLSearchParams();
     fd.append("ajax", "1");
     fd.append("managed", MANAGED);
     ["status", "assignee", "work", "submit_method", "apply_deadline", "bid_deadline",
       "open_date", "materials", "partner", "flag", "note", "agency_override"].forEach(function (k) { fd.append(k, c[k] || ""); });
     fd.append("bid_plan", c.bid_plan || 0); fd.append("win_amount", c.win_amount || 0);
+    fd.append("win_company", c.win_company || "");
     if (c.award_called) fd.append("award_called", "1");
     fd.append("partners", JSON.stringify(c.partners || []));
+    fd.append("cost_items", JSON.stringify(c.cost_items || []));
     fetch("/case/" + c.case_id + "/apply", {
       method: "POST", headers: { "Content-Type": "application/x-www-form-urlencoded", "X-Requested-With": "fetch" }, body: fd.toString()
     }).then(function () { location.reload(); }).catch(function () { location.reload(); });
@@ -954,8 +1032,15 @@
     }).join("");
     var stars = [1, 2, 3, 4, 5].map(function (n) { return '<button type="button" class="starpick' + (n <= (c.rating || 0) ? " on" : "") + '" data-n="' + n + '">★</button>'; }).join("");
     var revs = (c.reviews || []).join("\n");
+    // 区分（公共/民間）。協力業者リストは公共・民間で分割管理する（会議要望）。
+    var secInit = c.sector === "民間" ? "民間" : "公共";
+    var secBtns = ["公共", "民間"].map(function (s) {
+      var col = s === "民間" ? "#d97706" : "#2563eb";
+      return '<button type="button" class="secpick tagpick' + (s === secInit ? " on" : "") + '" data-s="' + s + '" style="--c:' + col + '">' + s + "</button>";
+    }).join("");
     var body = '<div class="m-grid">' +
       fld("会社名", '<input name="name" value="' + esc(c.name) + '">', "full") +
+      '<div class="m-fld full"><span>区分（公共/民間）</span><div class="tagpicks" id="secPickCo">' + secBtns + "</div></div>" +
       '<div class="m-fld full"><span>対応エリア（地方）<em style="font-weight:400;color:var(--text-tertiary)"> 複数選択可</em></span><div class="tagpicks" id="regionPick">' + regionBtns + "</div></div>" +
       fld("対応可能エリアの詳細", '<input name="area_detail" value="' + esc(parsedArea.detail) + '" placeholder="例: 大阪府のみ対応可能 / 兵庫県東部 等">', "full") +
       fld("電話", '<input name="tel" value="' + esc(c.tel) + '">') +
@@ -978,6 +1063,12 @@
       });
       Array.prototype.forEach.call(root.querySelectorAll(".tagpick"), function (b) {
         b.addEventListener("click", function () { b.classList.toggle("on"); });
+      });
+      // 区分（公共/民間）は単一選択。汎用トグルの後に走らせて必ずどちらか1つをONにする。
+      Array.prototype.forEach.call(root.querySelectorAll("#secPickCo .secpick"), function (b) {
+        b.addEventListener("click", function () {
+          Array.prototype.forEach.call(root.querySelectorAll("#secPickCo .secpick"), function (x) { x.classList.toggle("on", x === b); });
+        });
       });
       // 要望⑨①: URLからAIで会社情報を取得してフォームに下書きする。
       var ex = root.querySelector("#coExtract");
@@ -1010,8 +1101,10 @@
         var g = function (n) { var e = root.querySelector('[name="' + n + '"]'); return e ? e.value.trim() : ""; };
         if (!g("name")) { alert("会社名は必須です"); return; }
         var regions = Array.prototype.map.call(root.querySelectorAll("#regionPick .regionpick.on"), function (b) { return b.getAttribute("data-r"); });
+        var secBtn = root.querySelector("#secPickCo .secpick.on");
         var data = {
           id: c.id, name: g("name"), area: buildArea(regions, g("area_detail")), tel: g("tel"), url: g("url"), note: g("note"),
+          sector: secBtn ? secBtn.getAttribute("data-s") : "公共",
           partner: root.querySelector('[name="partner"]').checked, rating: rating,
           // 工事カテゴリのみ拾う（地方チップと混ざらないよう #tagPick に限定）
           tags: Array.prototype.map.call(root.querySelectorAll("#tagPick .tagpick.on"), function (b) { return b.getAttribute("data-t"); }),

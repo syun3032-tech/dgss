@@ -298,9 +298,15 @@ def init_db() -> None:
             ("partners",       "TEXT DEFAULT '[]'"),
             ("agency_override", "TEXT DEFAULT ''"),
             ("spec_files",     "TEXT DEFAULT '[]'"),  # 仕様書の紐付け（URL/添付ファイル・要望⑦STEP1）
+            ("win_company",    "TEXT DEFAULT ''"),    # 落札会社名（自社・他社問わず最終落札先）
+            ("cost_items",     "TEXT DEFAULT '[]'"),  # 自社原価の内訳（[{label,amount}]・JSON）
         ):
             if col not in app_cols:
                 conn.execute(f"ALTER TABLE applications ADD COLUMN {col} {ddl}")
+        # companies: 公共/民間の切り分け（既存の登録は全て公共案件由来）
+        co_cols = [r[1] for r in conn.execute("PRAGMA table_info(companies)")]
+        if "sector" not in co_cols:
+            conn.execute("ALTER TABLE companies ADD COLUMN sector TEXT DEFAULT '公共'")
         # 仕様書ファイルの実体（BLOB）。案件JSONを軽く保つため別テーブルに保管。
         conn.execute(
             "CREATE TABLE IF NOT EXISTS spec_blobs ("
@@ -777,6 +783,30 @@ def clear_cases(source: str | None = None) -> int:
 # 入札参加申請（applications）
 # ============================================================
 
+def _normalize_cost_items(items: Any) -> str:
+    """自社原価の内訳を検証してJSON文字列にする。
+
+    各行 {label, amount(円)}。項目名も金額も空の行は捨てる。
+    """
+    import json
+    if isinstance(items, str):
+        try:
+            items = json.loads(items or "[]")
+        except (ValueError, TypeError):
+            items = []
+    if not isinstance(items, list):
+        items = []
+    cleaned: list[dict[str, Any]] = []
+    for it in items:
+        if not isinstance(it, dict):
+            continue
+        label = str(it.get("label", "") or "").strip()
+        amount = yen_to_int(str(it.get("amount", "") or "")) or 0
+        if label or amount:
+            cleaned.append({"label": label, "amount": amount})
+    return json.dumps(cleaned, ensure_ascii=False)
+
+
 def _normalize_partners(partners: Any) -> str:
     """協力会社見積(quotes)を検証してJSON文字列にする。
 
@@ -822,6 +852,7 @@ _APP_TEXT_FIELDS = (
     "applied_date", "note", "assignee", "apply_deadline", "bid_deadline",
     "open_date", "submit_method", "work", "materials", "flag", "partner",
     "agency_override",  # 元機関(発注機関)の手書き上書き（案件のagencyが不正確な時に修正）
+    "win_company",      # 落札会社名（自社・他社問わず最終落札先）
 )
 _APP_INT_FIELDS = ("needs_check", "bid_plan", "win_amount", "award_called")
 
@@ -996,6 +1027,8 @@ def set_application(case_id: int, status: str, **fields: Any) -> None:
         vals.append(_int(fields.get(f, 0)))
     cols.append("partners")
     vals.append(_normalize_partners(fields.get("partners", [])))
+    cols.append("cost_items")
+    vals.append(_normalize_cost_items(fields.get("cost_items", [])))
 
     set_clause = ", ".join(f"{c}=excluded.{c}" for c in cols)
     placeholders = ", ".join(["?"] * (len(cols) + 1))  # +case_id
@@ -1022,6 +1055,10 @@ def _hydrate_application(row: dict[str, Any]) -> dict[str, Any]:
         row["spec_files"] = json.loads(row.get("spec_files") or "[]")
     except (ValueError, TypeError):
         row["spec_files"] = []
+    try:
+        row["cost_items"] = json.loads(row.get("cost_items") or "[]")
+    except (ValueError, TypeError):
+        row["cost_items"] = []
     return row
 
 
@@ -1146,6 +1183,7 @@ def _hydrate_company(row: dict[str, Any]) -> dict[str, Any]:
         except (ValueError, TypeError):
             row[k] = []
     row["partner"] = bool(row.get("partner"))
+    row["sector"] = row.get("sector") or "公共"
     return row
 
 
@@ -1172,20 +1210,22 @@ def upsert_company(data: dict[str, Any]) -> int:
         1 if data.get("partner") else 0,
         int(data.get("rating") or 0),
         json.dumps([r for r in (data.get("reviews") or []) if r], ensure_ascii=False),
+        # 区分（公共/民間）。協力業者リストは公共・民間で分けて管理する。
+        ("民間" if str(data.get("sector", "")).strip() == "民間" else "公共"),
     )
     with _connect() as conn:
         if cid:
             conn.execute(
                 """UPDATE companies SET name=?, area=?, tags=?, tel=?, url=?,
-                   note=?, partner=?, rating=?, reviews=? WHERE id=?""",
+                   note=?, partner=?, rating=?, reviews=?, sector=? WHERE id=?""",
                 (*vals, int(cid)),
             )
             conn.commit()
             ret = int(cid)
         else:
             cur = conn.execute(
-                """INSERT INTO companies (name, area, tags, tel, url, note, partner, rating, reviews)
-                   VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)""", vals,
+                """INSERT INTO companies (name, area, tags, tel, url, note, partner, rating, reviews, sector)
+                   VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)""", vals,
             )
             conn.commit()
             ret = int(cur.lastrowid)

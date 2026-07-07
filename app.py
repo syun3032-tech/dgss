@@ -608,6 +608,14 @@ def apply_case(case_id: int):
     else:
         partners = cur.get("partners") or []
 
+    if owns("cost_items"):
+        try:
+            cost_items = json.loads(f.get("cost_items", "[]") or "[]")
+        except (ValueError, TypeError):
+            cost_items = []
+    else:
+        cost_items = cur.get("cost_items") or []
+
     fields = {
         "applied_date": text("applied_date"),
         "note": text("note"),
@@ -623,9 +631,11 @@ def apply_case(case_id: int):
         "needs_check": flag("needs_check"),
         "bid_plan": yen("bid_plan"),
         "win_amount": yen("win_amount"),
+        "win_company": text("win_company"),
         "award_called": flag("award_called"),
         "partner": text("partner"),
         "partners": partners,
+        "cost_items": cost_items,
     }
     is_ajax = bool(f.get("ajax") or request.headers.get("X-Requested-With") == "fetch")
     try:
@@ -737,9 +747,11 @@ def applications_restore():
             needs_check=bool(it.get("needs_check")),
             bid_plan=db.yen_to_int(str(it.get("bid_plan") or "")) or 0,
             win_amount=db.yen_to_int(str(it.get("win_amount") or "")) or 0,
+            win_company=(it.get("win_company") or "").strip(),
             award_called=bool(it.get("award_called")),
             partner=(it.get("partner") or "").strip(),
             partners=it.get("partners") or [],
+            cost_items=it.get("cost_items") or [],
         )
         # localStorage を真の保存先として上書き復元する（揮発DB対策）。
         db.set_application(case_id, status, **fields)
