@@ -149,7 +149,12 @@
     ["sheet", "tab", "assignee", "sector", "statuses", "q", "coTag", "coPartner", "coSort"].forEach(function (k) {
       if (s[k] !== undefined && s[k] !== null) state[k] = s[k];
     });
+    // 復元値の型ガード。壊れた保存状態（型違い）で描画ごと落ちないようにする。
     if (!Array.isArray(state.statuses)) state.statuses = [];
+    if (typeof state.q !== "string") state.q = "";
+    if (typeof state.assignee !== "string") state.assignee = null;
+    if (typeof state.coTag !== "string") state.coTag = null;
+    state.coPartner = !!state.coPartner; state.coSort = !!state.coSort;
     // 旧版はタブがシートを兼ねていた（公共/民間/会社/もうけ/レポート）。新構造へ読み替える。
     if (state.tab === "公共" || state.tab === "民間") { state.sheet = state.tab; state.tab = "案件"; }
     if (["案件", "会社", "もうけ", "レポート"].indexOf(state.tab) < 0) state.tab = "案件";
@@ -1211,6 +1216,21 @@
     var sheet = decodeURIComponent(m[1]);
     if (sheet === "公共" || sheet === "民間") { state.sheet = sheet; state.tab = "案件"; }
   })();
-  render();
+  // 描画の安全網: 端末ごとの保存状態が壊れていると画面が真っ白のまま「動かない」ため、
+  // 初回描画が落ちたら保存状態を初期化して一度だけ再試行し、それでも駄目なら
+  // 黙って死なずエラーを画面に出す（原因の特定もできるように）。
+  try {
+    render();
+  } catch (err) {
+    try { localStorage.removeItem(UI_KEY); } catch (x) {}
+    state = { sheet: "公共", tab: "案件", assignee: null, sector: null, statuses: [], q: "", coTag: null, coPartner: false, coSort: false };
+    try {
+      render();
+    } catch (err2) {
+      var panel2 = $("tabPanel");
+      if (panel2) panel2.innerHTML = '<p class="empty">画面の表示でエラーが発生しました。ページを再読み込みしてください。<br>' +
+        '<small style="color:#b45309">直らない場合はこの表示のスクリーンショットを松本まで: ' + esc(err2 && err2.message ? err2.message : String(err2)) + "</small></p>";
+    }
+  }
   restoreCompanies();
 })();
