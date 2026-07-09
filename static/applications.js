@@ -494,11 +494,20 @@
         render();
       });
     });
-    // カードクリック→編集
+    // カードクリック→編集。開けない時は黙って無反応にせず、原因を画面に出す。
+    function safeOpenCase(c) {
+      if (!c) return;
+      try { openCaseModal(c); }
+      catch (e) {
+        alert("案件を開く途中でエラーが発生しました。\n" +
+          (e && e.message ? e.message : String(e)) +
+          "\n\nお手数ですが、この表示のスクリーンショットを松本までお送りください。");
+      }
+    }
     Array.prototype.forEach.call(document.querySelectorAll(".kcard"), function (el) {
       el.addEventListener("click", function () {
         var c = CASES.filter(function (x) { return String(x.case_id) === el.getAttribute("data-id"); })[0];
-        if (c) openCaseModal(c);
+        safeOpenCase(c);
       });
     });
     // カードのワンクリック「NGへ」（クリックはkc-actsでstopPropagation済み）
@@ -513,7 +522,7 @@
     Array.prototype.forEach.call(document.querySelectorAll(".wb-item"), function (b) {
       b.addEventListener("click", function () {
         var c = CASES.filter(function (x) { return String(x.case_id) === b.getAttribute("data-case"); })[0];
-        if (c) openCaseModal(c);
+        safeOpenCase(c);
       });
     });
     // 案件を追加（開いている管理シートの区分を初期値にする）
