@@ -93,6 +93,27 @@ def load() -> int:
     return db.upsert_agencies(rows) if rows else 0
 
 
+# NJSS「発注機関を探す」由来の追加監視機関（クライアント要望: 独法851件→順次全機関）。
+# njss_org_scraper.py + njss_org_resolver.py がローカルで生成しコミットするCSV。
+EXTRA_CSV = "research/njss_dokuho_agencies.csv"
+
+
+def load_extra(path: str = EXTRA_CSV) -> int:
+    """リポジトリ内CSVの追加監視機関を取り込む（スプシ既載の機関は上書きしない）。"""
+    import csv
+    import os
+
+    if not os.path.exists(path):
+        return 0
+    db.init_db()
+    with open(path, newline="", encoding="utf-8-sig") as f:
+        rows = [dict(r) for r in csv.DictReader(f)]
+    existing = {a["name"] for a in db.list_agencies()}
+    fresh = [r for r in rows if r.get("name") and r["name"] not in existing]
+    return db.upsert_agencies(fresh) if fresh else 0
+
+
 if __name__ == "__main__":
     n = load()
-    print(f"監視対象の発注機関 {n} 件を取り込みました")
+    n2 = load_extra()
+    print(f"監視対象の発注機関 {n} 件＋追加リスト {n2} 件を取り込みました")

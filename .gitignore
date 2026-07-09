@@ -27,3 +27,6 @@ set_render_env.sh
 newscreen/
 応募ターゲット_*.csv
 応募準備_*.md
+
+# クライアント向けExcel（CSVから都度生成する派生物）
+research/*.xlsx
