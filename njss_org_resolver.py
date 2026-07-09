@@ -127,6 +127,15 @@ PARENT_SITES: dict[str, str] = {
     "日本原子力研究開発機構 敦賀廃止措置実証本部": "https://www.jaea.go.jp/",
 }
 
+# 自動探索で見つからない/誤りやすい法人の調達ページ（実アクセスで確認済みの確定値）
+KNOWN_BID_PAGES: dict[str, str] = {
+    "日本原子力研究開発機構": "https://tenkai.jaea.go.jp/agreement/",
+    "国立がん研究センター": "https://www.ncc.go.jp/jp/chotatsu/index.html",
+    "海洋研究開発機構": "https://www.jamstec.go.jp/j/about/procurement/",
+    "自動車事故対策機構": "https://www.nasva.go.jp/tyoutatsu/",
+    "水資源機構": "https://www.water.go.jp/honsya/honsya/keiyaku/",
+}
+
 # 調達・入札ページらしさのキーワード（リンクテキスト用）
 BID_WORDS = ("入札", "調達", "契約情報", "契約に関する", "公募情報", "発注情報", "公告")
 
@@ -216,21 +225,63 @@ def find_bid_page(top_url: str, html: str) -> str:
     return best if best_score >= 1 else ""
 
 
+# 2階層目を辿る価値のあるリンクテキスト（トップに調達リンクが無いサイト向け）
+HUB_WORDS = ("情報公開", "調達", "契約", "公告", "公募", "法人情報", "組織情報", "事業者")
+
+
+def find_bid_page_deep(top_url: str, html: str, max_hubs: int = 4) -> str:
+    """トップで見つからなければ、情報公開系の中間ページを最大 max_hubs 件辿って探す。"""
+    bid = find_bid_page(top_url, html)
+    if bid:
+        return bid
+    parser = _LinkParser()
+    try:
+        parser.feed(html)
+    except Exception:  # noqa: BLE001
+        pass
+    hubs: list[str] = []
+    for href, text in parser.links:
+        if href.startswith(("#", "javascript:", "mailto:")):
+            continue
+        if any(w in (text or "") for w in HUB_WORDS):
+            u = urljoin(top_url, href)
+            if u.startswith("http") and not u.lower().endswith((".pdf", ".xlsx", ".doc")) \
+                    and u not in hubs and _domain(u) == _domain(top_url):
+                hubs.append(u)
+    for hub in hubs[:max_hubs]:
+        try:
+            bid = find_bid_page(hub, fetch_page(hub))
+        except Exception:  # noqa: BLE001 — 中間ページの不達は次の候補へ
+            continue
+        if bid:
+            return bid
+    return ""
+
+
 def _domain(url: str) -> str:
     m = re.match(r"https?://([^/]+)", url or "")
     return m.group(1) if m else ""
 
 
-def match_parent(name: str) -> str:
-    """機関名から親法人の公式トップURLを引く（最長一致）。"""
+def _match_longest(name: str, table: dict[str, str]) -> str:
+    """機関名にマッチする最長キーの値を返す（無ければ ''）。"""
     n = normalize(name)
     best, best_len = "", 0
-    for parent, url in PARENT_SITES.items():
-        p = normalize(parent)
-        if n.startswith(p) or p in n:
-            if len(p) > best_len:
-                best, best_len = url, len(p)
+    for key, url in table.items():
+        k = normalize(key)
+        if (n.startswith(k) or k in n) and len(k) > best_len:
+            best, best_len = url, len(k)
     return best
+
+
+def match_parent(name: str) -> str:
+    """機関名から親法人の公式トップURLを引く（最長一致）。"""
+    return _match_longest(name, PARENT_SITES)
+
+
+def match_known_bid(name: str) -> str:
+    """機関名から確認済みの調達ページを引く（無ければ ''）。"""
+    return _match_longest(name, KNOWN_BID_PAGES)
 
 
 def resolve(orgs: list[dict], existing: dict[str, dict], workers: int = 8) -> list[dict]:
@@ -238,17 +289,35 @@ def resolve(orgs: list[dict], existing: dict[str, dict], workers: int = 8) -> li
 
     existing: 正規化名 → 既存agencies行（クライアント提供シート由来）
     """
-    # 1) 既存流用 or 親法人マッピング
+    # 1) 確定リスト → 既存流用 → 親法人マッピング
     for o in orgs:
         n = normalize(o["name"])
+        known = match_known_bid(o["name"])
+        if known:
+            note = "" if n in {normalize(k) for k in KNOWN_BID_PAGES} \
+                else "※親法人の調達ページを設定（支部・施設個別ページは要人力確認）"
+            o.update(top_url=match_parent(o["name"]) or known, bid_url=known,
+                     status="追加済み",
+                     reason=("調達ページを実アクセスで確認済み " + note).strip(),
+                     source="確定リスト")
+            continue
         ex = existing.get(n)
         if not ex:  # 部分一致（NJSS側とシート側の表記差の吸収）
             ex = next((v for k, v in existing.items() if (n in k or k in n) and abs(len(k) - len(n)) <= 6), None)
         if ex and (ex.get("top_url") or ex.get("bid_url")):
-            o.update(top_url=ex.get("top_url", ""), bid_url=ex.get("bid_url", ""),
-                     status="追加済み", reason="既存の監視機関シートに登録あり（URL流用）",
-                     source="既存シート")
-            continue
+            top, bid = ex.get("top_url", ""), ex.get("bid_url", "")
+            if bid and not bid.lower().endswith(".pdf"):
+                o.update(top_url=top, bid_url=bid, status="追加済み",
+                         reason="既存の監視機関シートに登録あり（URL流用）",
+                         source="既存シート")
+                continue
+            # シートの bid_url は「NJSS公示リンク先」＝単発の公告PDFのことが多く、
+            # 調達ページとしては不適切。トップURLを起点に自前で探し直す。
+            base = top or match_parent(o["name"])
+            if base:
+                o.update(top_url=base, bid_url=bid, status="検証待ち",
+                         reason="", source="既存シート(調達ページ再探索)")
+                continue
         parent_url = match_parent(o["name"])
         if parent_url:
             o.update(top_url=parent_url, bid_url="", status="検証待ち",
@@ -267,7 +336,7 @@ def resolve(orgs: list[dict], existing: dict[str, dict], workers: int = 8) -> li
         except Exception as e:  # noqa: BLE001 — 到達不可は理由として記録
             results[url] = (f"到達不可: {type(e).__name__}", "")
             return
-        results[url] = ("OK", find_bid_page(url, html))
+        results[url] = ("OK", find_bid_page_deep(url, html))
 
     with ThreadPoolExecutor(max_workers=workers) as pool:
         list(pool.map(check, to_check))
@@ -283,6 +352,9 @@ def resolve(orgs: list[dict], existing: dict[str, dict], workers: int = 8) -> li
                 else "※親法人の調達ページを設定（支部・施設個別ページは要人力確認）"
             o.update(bid_url=bid, status="追加済み",
                      reason=(f"公式サイト・調達ページを自動確認 {note}").strip())
+        elif o.get("bid_url"):  # シート由来の公告PDFだけは手掛かりとして残す
+            o.update(status="追加済み(要確認)",
+                     reason="調達ページを自動発見できず（シート記載の公告リンクのみ・要人力確認）")
         else:
             o.update(status="追加済み(要確認)",
                      reason="公式サイトは到達可だがトップから調達・入札ページを自動発見できず（要人力確認）")
@@ -290,12 +362,18 @@ def resolve(orgs: list[dict], existing: dict[str, dict], workers: int = 8) -> li
 
 
 def load_existing_agencies(db_path: str = "denki_bid.db") -> dict[str, dict]:
+    """クライアント提供シート由来の agencies だけを返す。
+
+    自分（load_extra）が取り込んだ行は sample_url が NJSS機関ページなので除外する。
+    含めると前回実行の結果を「既存シート」と誤認して再解決されなくなる（自己汚染）。
+    """
     import sqlite3
     conn = sqlite3.connect(db_path)
     conn.row_factory = sqlite3.Row
     rows = [dict(r) for r in conn.execute("SELECT * FROM agencies")]
     conn.close()
-    return {normalize(r["name"]): r for r in rows}
+    return {normalize(r["name"]): r for r in rows
+            if "organizations/proc/" not in (r.get("sample_url") or "")}
 
 
 def write_outputs(orgs: list[dict], agencies_out: str, report_out: str) -> tuple[int, int]:

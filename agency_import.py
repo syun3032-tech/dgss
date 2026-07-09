@@ -99,7 +99,11 @@ EXTRA_CSV = "research/njss_dokuho_agencies.csv"
 
 
 def load_extra(path: str = EXTRA_CSV) -> int:
-    """リポジトリ内CSVの追加監視機関を取り込む（スプシ既載の機関は上書きしない）。"""
+    """リポジトリ内CSVの追加監視機関を取り込む（スプシ既載の機関は上書きしない）。
+
+    「既載」の判定はシート由来の行のみ。自分が過去に取り込んだ行
+    （sample_url がNJSS機関ページ）はCSVの最新値で毎回上書き更新する。
+    """
     import csv
     import os
 
@@ -108,8 +112,9 @@ def load_extra(path: str = EXTRA_CSV) -> int:
     db.init_db()
     with open(path, newline="", encoding="utf-8-sig") as f:
         rows = [dict(r) for r in csv.DictReader(f)]
-    existing = {a["name"] for a in db.list_agencies()}
-    fresh = [r for r in rows if r.get("name") and r["name"] not in existing]
+    sheet_names = {a["name"] for a in db.list_agencies()
+                   if "organizations/proc/" not in (a.get("sample_url") or "")}
+    fresh = [r for r in rows if r.get("name") and r["name"] not in sheet_names]
     return db.upsert_agencies(fresh) if fresh else 0
 
 
