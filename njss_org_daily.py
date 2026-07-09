@@ -16,8 +16,8 @@ import subprocess
 import njss_org_resolver as resolver
 import njss_org_scraper as scraper
 
-CATEGORY = "114"  # 独立行政法人。完走後に他カテゴリを追加していく
-ORGS_CSV = "research/njss_orgs_114.csv"
+CATEGORY = ""  # 空=全カテゴリ（発注機関 全9,041件）。当初は "114"=独法のみだった
+ORGS_CSV = "research/njss_orgs_all.csv"
 AGENCIES_CSV = "research/njss_dokuho_agencies.csv"
 REPORT_CSV = "research/njss_dokuho_report.csv"
 
@@ -46,7 +46,7 @@ def main() -> None:
         subprocess.run(["git", "add", ORGS_CSV, AGENCIES_CSV, REPORT_CSV], check=False)
         subprocess.run(
             ["git", "commit", "-m",
-             f"data: NJSS機関リスト更新（独法 {len(rows)}/{851}件・自動取得）"],
+             f"data: NJSS発注機関リスト更新（{len(rows)}件・自動取得）"],
             check=False,
         )
 

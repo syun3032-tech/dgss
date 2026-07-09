@@ -135,6 +135,278 @@ PARENT_SITES: dict[str, str] = {
     "男女共同参画機構": "https://www.jgepa.go.jp/",
 }
 
+# 国の機関（府省庁・立法・司法）→ 公式サイト。機関名の先頭一致でルーティングする。
+# 地方支分部局（地方整備局・労働局・税関等）は省庁名プレフィクスで親に寄せる。
+MINISTRY_SITES: dict[str, str] = {
+    "内閣官房": "https://www.cas.go.jp/",
+    "内閣府": "https://www.cao.go.jp/",
+    "内閣法制局": "https://www.clb.go.jp/",
+    "宮内庁": "https://www.kunaicho.go.jp/",
+    "公正取引委員会": "https://www.jftc.go.jp/",
+    "警察庁": "https://www.npa.go.jp/",
+    "個人情報保護委員会": "https://www.ppc.go.jp/",
+    "金融庁": "https://www.fsa.go.jp/",
+    "消費者庁": "https://www.caa.go.jp/",
+    "こども家庭庁": "https://www.cfa.go.jp/",
+    "デジタル庁": "https://www.digital.go.jp/",
+    "復興庁": "https://www.reconstruction.go.jp/",
+    "総務省": "https://www.soumu.go.jp/",
+    "消防庁": "https://www.fdma.go.jp/",
+    "法務省": "https://www.moj.go.jp/",
+    "出入国在留管理庁": "https://www.moj.go.jp/isa/",
+    "公安調査庁": "https://www.moj.go.jp/psia/",
+    "検察庁": "https://www.kensatsu.go.jp/",
+    "外務省": "https://www.mofa.go.jp/mofaj/",
+    "財務省": "https://www.mof.go.jp/",
+    "国税庁": "https://www.nta.go.jp/",
+    "税関": "https://www.customs.go.jp/",
+    "文部科学省": "https://www.mext.go.jp/",
+    "スポーツ庁": "https://www.mext.go.jp/sports/",
+    "文化庁": "https://www.bunka.go.jp/",
+    "厚生労働省": "https://www.mhlw.go.jp/",
+    "農林水産省": "https://www.maff.go.jp/",
+    "林野庁": "https://www.rinya.maff.go.jp/",
+    "水産庁": "https://www.jfa.maff.go.jp/",
+    "経済産業省": "https://www.meti.go.jp/",
+    "資源エネルギー庁": "https://www.enecho.meti.go.jp/",
+    "特許庁": "https://www.jpo.go.jp/",
+    "中小企業庁": "https://www.chusho.meti.go.jp/",
+    "国土交通省": "https://www.mlit.go.jp/",
+    "観光庁": "https://www.mlit.go.jp/kankocho/",
+    "気象庁": "https://www.jma.go.jp/",
+    "海上保安庁": "https://www.kaiho.mlit.go.jp/",
+    "環境省": "https://www.env.go.jp/",
+    "原子力規制委員会": "https://www.nra.go.jp/",
+    "防衛省": "https://www.mod.go.jp/",
+    "防衛装備庁": "https://www.mod.go.jp/atla/",
+    "会計検査院": "https://www.jbaudit.go.jp/",
+    "人事院": "https://www.jinji.go.jp/",
+    "最高裁判所": "https://www.courts.go.jp/",
+    "裁判所": "https://www.courts.go.jp/",
+    "衆議院": "https://www.shugiin.go.jp/",
+    "参議院": "https://www.sangiin.go.jp/",
+    "国立国会図書館": "https://www.ndl.go.jp/",
+}
+
+# 都道府県庁 → 公式サイト（標準パターン＋既知の例外。実フェッチ検証で誤りは弾かれる）
+PREF_SITES: dict[str, str] = {
+    "北海道庁": "https://www.pref.hokkaido.lg.jp/",
+    "青森県庁": "https://www.pref.aomori.lg.jp/",
+    "岩手県庁": "https://www.pref.iwate.jp/",
+    "宮城県庁": "https://www.pref.miyagi.jp/",
+    "秋田県庁": "https://www.pref.akita.lg.jp/",
+    "山形県庁": "https://www.pref.yamagata.jp/",
+    "福島県庁": "https://www.pref.fukushima.lg.jp/",
+    "茨城県庁": "https://www.pref.ibaraki.jp/",
+    "栃木県庁": "https://www.pref.tochigi.lg.jp/",
+    "群馬県庁": "https://www.pref.gunma.jp/",
+    "埼玉県庁": "https://www.pref.saitama.lg.jp/",
+    "千葉県庁": "https://www.pref.chiba.lg.jp/",
+    "東京都庁": "https://www.metro.tokyo.lg.jp/",
+    "神奈川県庁": "https://www.pref.kanagawa.jp/",
+    "新潟県庁": "https://www.pref.niigata.lg.jp/",
+    "富山県庁": "https://www.pref.toyama.jp/",
+    "石川県庁": "https://www.pref.ishikawa.lg.jp/",
+    "福井県庁": "https://www.pref.fukui.lg.jp/",
+    "山梨県庁": "https://www.pref.yamanashi.jp/",
+    "長野県庁": "https://www.pref.nagano.lg.jp/",
+    "岐阜県庁": "https://www.pref.gifu.lg.jp/",
+    "静岡県庁": "https://www.pref.shizuoka.jp/",
+    "愛知県庁": "https://www.pref.aichi.jp/",
+    "三重県庁": "https://www.pref.mie.lg.jp/",
+    "滋賀県庁": "https://www.pref.shiga.lg.jp/",
+    "京都府庁": "https://www.pref.kyoto.jp/",
+    "大阪府庁": "https://www.pref.osaka.lg.jp/",
+    "兵庫県庁": "https://web.pref.hyogo.lg.jp/",
+    "奈良県庁": "https://www.pref.nara.jp/",
+    "和歌山県庁": "https://www.pref.wakayama.lg.jp/",
+    "鳥取県庁": "https://www.pref.tottori.lg.jp/",
+    "島根県庁": "https://www.pref.shimane.lg.jp/",
+    "岡山県庁": "https://www.pref.okayama.jp/",
+    "広島県庁": "https://www.pref.hiroshima.lg.jp/",
+    "山口県庁": "https://www.pref.yamaguchi.lg.jp/",
+    "徳島県庁": "https://www.pref.tokushima.lg.jp/",
+    "香川県庁": "https://www.pref.kagawa.lg.jp/",
+    "愛媛県庁": "https://www.pref.ehime.jp/",
+    "高知県庁": "https://www.pref.kochi.lg.jp/",
+    "福岡県庁": "https://www.pref.fukuoka.lg.jp/",
+    "佐賀県庁": "https://www.pref.saga.lg.jp/",
+    "長崎県庁": "https://www.pref.nagasaki.jp/",
+    "熊本県庁": "https://www.pref.kumamoto.jp/",
+    "大分県庁": "https://www.pref.oita.jp/",
+    "宮崎県庁": "https://www.pref.miyazaki.lg.jp/",
+    "鹿児島県庁": "https://www.pref.kagoshima.jp/",
+    "沖縄県庁": "https://www.pref.okinawa.jp/",
+}
+
+# 国立大学法人・主要公立大学 → 公式サイト（実フェッチ検証で誤りは弾かれる）
+UNIV_SITES: dict[str, str] = {
+    "北海道大学": "https://www.hokudai.ac.jp/", "北海道教育大学": "https://www.hokkyodai.ac.jp/",
+    "室蘭工業大学": "https://muroran-it.ac.jp/", "小樽商科大学": "https://www.otaru-uc.ac.jp/",
+    "帯広畜産大学": "https://www.obihiro.ac.jp/", "旭川医科大学": "https://www.asahikawa-med.ac.jp/",
+    "北見工業大学": "https://www.kitami-it.ac.jp/", "弘前大学": "https://www.hirosaki-u.ac.jp/",
+    "岩手大学": "https://www.iwate-u.ac.jp/", "東北大学": "https://www.tohoku.ac.jp/",
+    "宮城教育大学": "https://www.miyakyo-u.ac.jp/", "秋田大学": "https://www.akita-u.ac.jp/",
+    "山形大学": "https://www.yamagata-u.ac.jp/", "福島大学": "https://www.fukushima-u.ac.jp/",
+    "茨城大学": "https://www.ibaraki.ac.jp/", "筑波大学": "https://www.tsukuba.ac.jp/",
+    "筑波技術大学": "https://www.tsukuba-tech.ac.jp/", "宇都宮大学": "https://www.utsunomiya-u.ac.jp/",
+    "群馬大学": "https://www.gunma-u.ac.jp/", "埼玉大学": "https://www.saitama-u.ac.jp/",
+    "千葉大学": "https://www.chiba-u.ac.jp/", "東京大学": "https://www.u-tokyo.ac.jp/",
+    "東京科学大学": "https://www.isct.ac.jp/", "東京医科歯科大学": "https://www.isct.ac.jp/",
+    "東京工業大学": "https://www.isct.ac.jp/", "東京外国語大学": "https://www.tufs.ac.jp/",
+    "東京学芸大学": "https://www.u-gakugei.ac.jp/", "東京農工大学": "https://www.tuat.ac.jp/",
+    "東京藝術大学": "https://www.geidai.ac.jp/", "東京芸術大学": "https://www.geidai.ac.jp/",
+    "東京海洋大学": "https://www.kaiyodai.ac.jp/", "お茶の水女子大学": "https://www.ocha.ac.jp/",
+    "電気通信大学": "https://www.uec.ac.jp/", "一橋大学": "https://www.hit-u.ac.jp/",
+    "横浜国立大学": "https://www.ynu.ac.jp/", "新潟大学": "https://www.niigata-u.ac.jp/",
+    "長岡技術科学大学": "https://www.nagaokaut.ac.jp/", "上越教育大学": "https://www.juen.ac.jp/",
+    "富山大学": "https://www.u-toyama.ac.jp/", "金沢大学": "https://www.kanazawa-u.ac.jp/",
+    "福井大学": "https://www.u-fukui.ac.jp/", "山梨大学": "https://www.yamanashi.ac.jp/",
+    "信州大学": "https://www.shinshu-u.ac.jp/", "岐阜大学": "https://www.gifu-u.ac.jp/",
+    "静岡大学": "https://www.shizuoka.ac.jp/", "浜松医科大学": "https://www.hama-med.ac.jp/",
+    "名古屋大学": "https://www.nagoya-u.ac.jp/", "愛知教育大学": "https://www.aichi-edu.ac.jp/",
+    "名古屋工業大学": "https://www.nitech.ac.jp/", "豊橋技術科学大学": "https://www.tut.ac.jp/",
+    "三重大学": "https://www.mie-u.ac.jp/", "滋賀大学": "https://www.shiga-u.ac.jp/",
+    "滋賀医科大学": "https://www.shiga-med.ac.jp/", "京都大学": "https://www.kyoto-u.ac.jp/",
+    "京都教育大学": "https://www.kyokyo-u.ac.jp/", "京都工芸繊維大学": "https://www.kit.ac.jp/",
+    "大阪大学": "https://www.osaka-u.ac.jp/", "大阪教育大学": "https://osaka-kyoiku.ac.jp/",
+    "兵庫教育大学": "https://www.hyogo-u.ac.jp/", "神戸大学": "https://www.kobe-u.ac.jp/",
+    "奈良教育大学": "https://www.nara-edu.ac.jp/", "奈良女子大学": "https://www.nara-wu.ac.jp/",
+    "和歌山大学": "https://www.wakayama-u.ac.jp/", "鳥取大学": "https://www.tottori-u.ac.jp/",
+    "島根大学": "https://www.shimane-u.ac.jp/", "岡山大学": "https://www.okayama-u.ac.jp/",
+    "広島大学": "https://www.hiroshima-u.ac.jp/", "山口大学": "https://www.yamaguchi-u.ac.jp/",
+    "徳島大学": "https://www.tokushima-u.ac.jp/", "鳴門教育大学": "https://www.naruto-u.ac.jp/",
+    "香川大学": "https://www.kagawa-u.ac.jp/", "愛媛大学": "https://www.ehime-u.ac.jp/",
+    "高知大学": "https://www.kochi-u.ac.jp/", "福岡教育大学": "https://www.fukuoka-edu.ac.jp/",
+    "九州大学": "https://www.kyushu-u.ac.jp/", "九州工業大学": "https://www.kyutech.ac.jp/",
+    "佐賀大学": "https://www.saga-u.ac.jp/", "長崎大学": "https://www.nagasaki-u.ac.jp/",
+    "熊本大学": "https://www.kumamoto-u.ac.jp/", "大分大学": "https://www.oita-u.ac.jp/",
+    "宮崎大学": "https://www.miyazaki-u.ac.jp/", "鹿児島大学": "https://www.kagoshima-u.ac.jp/",
+    "鹿屋体育大学": "https://www.nifs-k.ac.jp/", "琉球大学": "https://www.u-ryukyu.ac.jp/",
+    "政策研究大学院大学": "https://www.grips.ac.jp/", "総合研究大学院大学": "https://www.soken.ac.jp/",
+    "北陸先端科学技術大学院大学": "https://www.jaist.ac.jp/", "奈良先端科学技術大学院大学": "https://www.naist.jp/",
+    "東海国立大学機構": "https://www.thers.ac.jp/", "奈良国立大学機構": "https://www.nub.ac.jp/",
+    "北海道国立大学機構": "https://www.hokkaido-nuc.ac.jp/",
+    "札幌医科大学": "https://web.sapmed.ac.jp/", "東京都立大学": "https://www.tmu.ac.jp/",
+    "横浜市立大学": "https://www.yokohama-cu.ac.jp/", "名古屋市立大学": "https://www.nagoya-cu.ac.jp/",
+    "大阪公立大学": "https://www.omu.ac.jp/", "兵庫県立大学": "https://www.u-hyogo.ac.jp/",
+    "京都府立大学": "https://www.kpu.ac.jp/", "京都府立医科大学": "https://www.kpu-m.ac.jp/",
+    "北九州市立大学": "https://www.kitakyu-u.ac.jp/", "福島県立医科大学": "https://www.fmu.ac.jp/",
+    "和歌山県立医科大学": "https://www.wakayama-med.ac.jp/", "奈良県立医科大学": "https://www.naramed-u.ac.jp/",
+}
+
+# 民営化法人・特殊法人・認可法人など → 公式サイト
+EXTRA_ORG_SITES: dict[str, str] = {
+    "東日本高速道路": "https://www.e-nexco.co.jp/",
+    "中日本高速道路": "https://www.c-nexco.co.jp/",
+    "西日本高速道路": "https://www.w-nexco.co.jp/",
+    "首都高速道路": "https://www.shutoko.co.jp/",
+    "阪神高速道路": "https://www.hanshin-exp.co.jp/",
+    "本州四国連絡高速道路": "https://www.jb-honshi.co.jp/",
+    "北海道旅客鉄道": "https://www.jrhokkaido.co.jp/",
+    "東日本旅客鉄道": "https://www.jreast.co.jp/",
+    "東海旅客鉄道": "https://jr-central.co.jp/",
+    "西日本旅客鉄道": "https://www.westjr.co.jp/",
+    "四国旅客鉄道": "https://www.jr-shikoku.co.jp/",
+    "九州旅客鉄道": "https://www.jrkyushu.co.jp/",
+    "日本貨物鉄道": "https://www.jrfreight.co.jp/",
+    "日本郵政": "https://www.japanpost.jp/",
+    "日本郵便": "https://www.post.japanpost.jp/",
+    "日本電信電話": "https://group.ntt/",
+    "東日本電信電話": "https://www.ntt-east.co.jp/",
+    "西日本電信電話": "https://www.ntt-west.co.jp/",
+    "日本たばこ産業": "https://www.jti.co.jp/",
+    "成田国際空港": "https://www.naa.jp/",
+    "中部国際空港": "https://www.centrair.jp/",
+    "関西エアポート": "https://www.kansai-airports.co.jp/",
+    "新関西国際空港": "https://www.nkiac.co.jp/",
+    "日本政策金融公庫": "https://www.jfc.go.jp/",
+    "日本政策投資銀行": "https://www.dbj.jp/",
+    "国際協力銀行": "https://www.jbic.go.jp/",
+    "商工組合中央金庫": "https://www.shokochukin.co.jp/",
+    "日本銀行": "https://www.boj.or.jp/",
+    "日本放送協会": "https://www.nhk.or.jp/",
+    "日本年金機構": "https://www.nenkin.go.jp/",
+    "全国健康保険協会": "https://www.kyoukaikenpo.or.jp/",
+    "日本赤十字社": "https://www.jrc.or.jp/",
+    "日本中央競馬会": "https://www.jra.go.jp/",
+    "日本下水道事業団": "https://www.jswa.go.jp/",
+    "預金保険機構": "https://www.dic.go.jp/",
+    "日本司法支援センター": "https://www.houterasu.or.jp/",
+    "警視庁": "https://www.keishicho.metro.tokyo.lg.jp/",
+    "沖縄振興開発金融公庫": "https://www.okinawakouko.go.jp/",
+    "原子力損害賠償・廃炉等支援機構": "https://www.ndf.go.jp/",
+    "使用済燃料再処理": "https://www.nuro.or.jp/",
+    "日本原燃": "https://www.jnfl.co.jp/",
+    "電源開発": "https://www.jpower.co.jp/",
+    "日本アルコール産業": "https://www.j-alco.com/",
+    "沖縄科学技術大学院大学": "https://www.oist.jp/",
+    "放送大学": "https://www.ouj.ac.jp/",
+    "済生会": "https://www.saiseikai.or.jp/",
+    "恩賜財団済生会": "https://www.saiseikai.or.jp/",
+    "地方公共団体情報システム機構": "https://www.j-lis.go.jp/",
+    "東京都公園協会": "https://www.tokyo-park.or.jp/",
+    "東京都都市づくり公社": "https://www.toshizukuri.or.jp/",
+    "東京都道路整備保全公社": "https://www.tmpc.or.jp/",
+    "東京都住宅供給公社": "https://www.to-kousya.or.jp/",
+    "東京都下水道サービス": "https://www.tgs-sw.co.jp/",
+    "東京都立病院機構": "https://www.tmhp.jp/",
+    "大阪府立病院機構": "https://www.opho.jp/",
+    "埼玉県立病院機構": "https://www.saitama-pho.jp/",
+    "神奈川県立病院機構": "https://kanagawa-pho.jp/",
+    "堺市立病院機構": "https://www.sakai-city-hospital.jp/",
+    "埼玉県住宅供給公社": "https://www.saijk.or.jp/",
+    "神奈川県住宅供給公社": "https://www.kanagawa-jk.or.jp/",
+}
+
+LOCALGOV_JSON = "research/localgovjp.json"  # 全国市区町村の公式URL（code4fukui/localgovjp）
+PUBLIC_UNIV_JSON = "research/public_univ_sites.json"  # 公立大学の公式URL（公立大学協会の会員校一覧より）
+
+
+def load_public_univs(path: str = PUBLIC_UNIV_JSON) -> dict[str, str]:
+    import json
+    import os
+    if not os.path.exists(path):
+        return {}
+    return json.load(open(path, encoding="utf-8"))
+
+
+def load_localgov(path: str = LOCALGOV_JSON) -> dict[str, str]:
+    """『都道府県|市区町村名』と『市区町村名』→ 公式URL の辞書。
+
+    同名自治体（府中市=東京都/広島県 等）があるため都道府県付きキーを優先で引く。
+    """
+    import json
+    import os
+    if not os.path.exists(path):
+        return {}
+    data = json.load(open(path, encoding="utf-8"))
+    table: dict[str, str] = {}
+    for x in data:
+        pref = (x.get("pref") or "").strip()
+        city = (x.get("city") or "").strip().replace(" ", "")
+        url = (x.get("url") or "").strip()
+        if city and url:
+            table[f"{pref}|{city}"] = url
+            table.setdefault(city, url)
+    return table
+
+
+def match_localgov(name: str, address: str, lg: dict[str, str]) -> str:
+    """『尼崎市役所』『安芸郡芸西村役場』『大阪市役所 水道局』等 → 自治体公式URL。"""
+    m = re.match(r"(.+?[市町村区])(?:役所|役場)", normalize(name))
+    if not m:
+        return ""
+    base = m.group(1)
+    nogun = re.sub(r"^.+?郡", "", base)  # NJSSは町村に郡名を付ける（台帳は郡なし）
+    nopref = re.sub(r"^.+?[都道府県]", "", base)  # 同名市の区別で県名が付くことがある
+    for key in (f"{address}|{base}", f"{address}|{nogun}", f"{address}|{nopref}",
+                base, nogun, nopref):
+        if lg.get(key):
+            return lg[key]
+    return ""
+
+
 # 自動探索で見つからない/誤りやすい法人の調達ページ（実アクセスで確認済みの確定値）
 KNOWN_BID_PAGES: dict[str, str] = {
     "日本原子力研究開発機構": "https://tenkai.jaea.go.jp/agreement/",
@@ -277,15 +549,20 @@ def _domain(url: str) -> str:
     return m.group(1) if m else ""
 
 
-def _match_longest(name: str, table: dict[str, str]) -> str:
-    """機関名にマッチする最長キーの値を返す（無ければ ''）。"""
+def _match_longest_kv(name: str, table: dict[str, str]) -> tuple[str, str]:
+    """機関名にマッチする最長キーと値を返す（無ければ ('','')）。"""
     n = normalize(name)
-    best, best_len = "", 0
+    best_k, best_v = "", ""
     for key, url in table.items():
         k = normalize(key)
-        if (n.startswith(k) or k in n) and len(k) > best_len:
-            best, best_len = url, len(k)
-    return best
+        if (n.startswith(k) or k in n) and len(k) > len(normalize(best_k)):
+            best_k, best_v = key, url
+    return best_k, best_v
+
+
+def _match_longest(name: str, table: dict[str, str]) -> str:
+    """機関名にマッチする最長キーの値を返す（無ければ ''）。"""
+    return _match_longest_kv(name, table)[1]
 
 
 def match_parent(name: str) -> str:
@@ -298,11 +575,13 @@ def match_known_bid(name: str) -> str:
     return _match_longest(name, KNOWN_BID_PAGES)
 
 
-def resolve(orgs: list[dict], existing: dict[str, dict], workers: int = 8) -> list[dict]:
+def resolve(orgs: list[dict], existing: dict[str, dict], workers: int = 12) -> list[dict]:
     """各機関に top_url/bid_url/status/reason を付ける。
 
     existing: 正規化名 → 既存agencies行（クライアント提供シート由来）
     """
+    _LOCALGOV = load_localgov()
+    _PUBLIC_UNIVS = load_public_univs()
     # 1) 確定リスト → 既存流用 → 親法人マッピング
     for o in orgs:
         n = normalize(o["name"])
@@ -337,10 +616,38 @@ def resolve(orgs: list[dict], existing: dict[str, dict], workers: int = 8) -> li
                 o.update(top_url=base, bid_url=bid, status="検証待ち",
                          reason="", source="既存シート(調達ページ再探索)")
                 continue
-        parent_url = match_parent(o["name"])
-        if parent_url:
-            o.update(top_url=parent_url, bid_url="", status="検証待ち",
-                     reason="", source="親法人マッピング")
+        # 分類ルーティング: 独法親法人 → 都道府県庁 → 市区町村 → 府省庁
+        cand, src, base_key = "", "", ""
+        k, v = _match_longest_kv(o["name"], PARENT_SITES)
+        if v:
+            cand, src, base_key = v, "親法人マッピング", k
+        else:
+            k, v = _match_longest_kv(o["name"], PREF_SITES)
+            if v:
+                cand, src, base_key = v, "都道府県庁マッピング", k
+            else:
+                muni = match_localgov(o["name"], o.get("address", ""), _LOCALGOV)
+                if muni:
+                    m = re.match(r"(.+?[市町村区])(?:役所|役場)", normalize(o["name"]))
+                    cand, src = muni, "自治体オープンデータ"
+                    base_key = (m.group(0) if m else o["name"])
+                else:
+                    k, v = _match_longest_kv(o["name"], MINISTRY_SITES)
+                    if v:
+                        cand, src, base_key = v, "府省庁マッピング", k
+                    else:
+                        k, v = _match_longest_kv(o["name"], {**UNIV_SITES, **_PUBLIC_UNIVS, **EXTRA_ORG_SITES})
+                        if v:
+                            cand, src, base_key = v, "法人マッピング", k
+                        else:
+                            mp = re.match(r"(.+?[都道府県])警察", normalize(o["name"]))
+                            if mp and f"{mp.group(1)}庁" in PREF_SITES:
+                                # 県警の調達は都道府県の電子入札系に載ることが多い
+                                cand, src, base_key = (PREF_SITES[f"{mp.group(1)}庁"],
+                                                       "都道府県庁マッピング(県警)", mp.group(0))
+        if cand:
+            o["_exact"] = normalize(base_key) == n
+            o.update(top_url=cand, bid_url="", status="検証待ち", reason="", source=src)
         else:
             o.update(top_url="", bid_url="", status="追加不可",
                      reason="公式サイトURL不明（自動特定できず・要人力確認）", source="")
@@ -376,8 +683,8 @@ def resolve(orgs: list[dict], existing: dict[str, dict], workers: int = 8) -> li
         elif verdict != "OK":
             o.update(status="追加不可", reason=f"公式サイトに到達できない（{verdict}）")
         elif bid:
-            note = "" if normalize(o["name"]) in {normalize(k) for k in PARENT_SITES} \
-                else "※親法人の調達ページを設定（支部・施設個別ページは要人力確認）"
+            note = "" if o.get("_exact", True) \
+                else "※上位組織（本庁・本省・親法人）のサイトを基準に設定（部署個別ページは要人力確認）"
             o.update(bid_url=bid, status="追加済み",
                      reason=(f"公式サイト・調達ページを自動確認 {note}").strip())
         elif o.get("bid_url"):  # シート由来の公告PDFだけは手掛かりとして残す
@@ -424,13 +731,14 @@ def write_outputs(orgs: list[dict], agencies_out: str, report_out: str) -> tuple
                 "fetched_at": today,
             })
     with open(report_out, "w", newline="", encoding="utf-8-sig") as f:
-        w = csv.DictWriter(f, fieldnames=["機関名", "所在地", "NJSS受付中件数", "NJSS登録案件数",
+        w = csv.DictWriter(f, fieldnames=["機関名", "分類", "所在地", "NJSS受付中件数", "NJSS登録案件数",
                                           "追加可否", "理由・備考", "公式サイトURL",
                                           "調達・入札ページURL", "NJSS機関ページ"])
         w.writeheader()
         for o in orgs:
             w.writerow({
                 "機関名": o["name"],
+                "分類": (o.get("categories") or "").split("|")[-1],
                 "所在地": o.get("address", ""),
                 "NJSS受付中件数": o.get("open_count", 0),
                 "NJSS登録案件数": o.get("total_count", 0),

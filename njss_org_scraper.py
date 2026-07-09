@@ -35,10 +35,12 @@ _EXTRACT_JS = """
 () => [...document.querySelectorAll('.SearchResultList .ListItem__Container')].map(item => {
   const a = item.querySelector("h2 a[href*='/organizations/proc/']");
   const addr = item.querySelector('.SearchItem__Address');
+  const crumbs = [...item.querySelectorAll('.ItemInfoList__Breadcrumb a')].map(e => e.textContent.trim());
   return {
     name: a ? a.textContent.trim() : '',
     href: a ? a.getAttribute('href') : '',
     address: addr ? addr.textContent.trim() : '',
+    categories: crumbs.join('|'),
     text: item.innerText,
   };
 }).filter(r => r.name)
@@ -61,7 +63,7 @@ def _parse_counts(text: str) -> dict:
     }
 
 
-CSV_COLS = ["name", "proc_id", "njss_url", "address",
+CSV_COLS = ["name", "proc_id", "njss_url", "address", "categories",
             "open_count", "total_count", "result_count"]
 
 
@@ -144,7 +146,8 @@ def fetch_organizations(category: str = "114", out: str = "research/njss_orgs_11
         page = ctx.new_page()
         page_no, total, fetched_pages = start_page, None, 0
         while True:
-            url = f"{BASE}?organization_category={category}&sort=-opening_count&page={page_no}&limit={LIMIT}"
+            cat = f"organization_category={category}&" if category else ""
+            url = f"{BASE}?{cat}sort=-opening_count&page={page_no}&limit={LIMIT}"
             page.goto(url, wait_until="networkidle", timeout=timeout_ms)
             # Vue描画待ち: 行が出るか上限表示が出るまで最大15秒
             for _ in range(10):
@@ -173,6 +176,7 @@ def fetch_organizations(category: str = "114", out: str = "research/njss_orgs_11
                     "proc_id": m.group(1),
                     "njss_url": f"https://www2.njss.info/organizations/proc/{m.group(1)}",
                     "address": it["address"],
+                    "categories": it.get("categories", ""),
                     **_parse_counts(it["text"]),
                 })
             print(f"  page {page_no}: +{new} 件（累計 {len(rows)}）")
