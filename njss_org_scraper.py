@@ -24,6 +24,8 @@ import os
 import re
 
 BASE = "https://www2.njss.info/organizations/search"
+LOGIN_URL = "https://www2.njss.info/users/login"
+SESSION_FILE = "njss_session.json"  # ログイン済みセッション（.gitignore済・秘密）
 UA = ("Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 "
       "(KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36")
 LIMIT = 100  # 1ページ最大件数（limit=100 が上限）
@@ -68,6 +70,39 @@ def _is_limited(body_text: str) -> bool:
     return "閲覧できる上限回数に達しました" in body_text
 
 
+def login_and_save_session(timeout_min: int = 10) -> bool:
+    """実ブラウザを開いて人にログインしてもらい、セッションを保存する（半自動方式）。
+
+    完全自動ログイン（ID/PWをスクリプトに持たせる）は規約リスクがあるため行わない。
+    ログイン完了（ログアウト/マイページ表示）を検知したら storage_state を保存する。
+    """
+    from playwright.sync_api import sync_playwright
+
+    with sync_playwright() as p:
+        browser = p.chromium.launch(headless=False)
+        ctx = browser.new_context(user_agent=UA, locale="ja-JP")
+        page = ctx.new_page()
+        page.goto(LOGIN_URL, wait_until="domcontentloaded", timeout=60000)
+        print("ブラウザでNJSSにログインしてください（このまま待機します）…")
+        ok = False
+        for _ in range(timeout_min * 30):  # 2秒間隔
+            try:
+                body = page.inner_text("body")
+            except Exception:  # noqa: BLE001 — 遷移中は読めないことがある
+                body = ""
+            if ("ログアウト" in body or "マイページ" in body) and "ログイン" not in page.url:
+                ok = True
+                break
+            page.wait_for_timeout(2000)
+        if ok:
+            ctx.storage_state(path=SESSION_FILE)
+            print(f"ログインを確認。セッションを {SESSION_FILE} に保存しました")
+        else:
+            print("ログインを確認できませんでした（時間切れ）")
+        browser.close()
+    return ok
+
+
 def load_csv(path: str) -> list[dict]:
     if not os.path.exists(path):
         return []
@@ -101,7 +136,11 @@ def fetch_organizations(category: str = "114", out: str = "research/njss_orgs_11
     completed = False
     with sync_playwright() as p:
         browser = p.chromium.launch(headless=headless)
-        ctx = browser.new_context(user_agent=UA, locale="ja-JP")
+        opts = {"user_agent": UA, "locale": "ja-JP"}
+        if os.path.exists(SESSION_FILE):  # 課金アカウントのログイン済みセッション＝閲覧上限なし
+            opts["storage_state"] = SESSION_FILE
+            print(f"ログイン済みセッション {SESSION_FILE} を使用")
+        ctx = browser.new_context(**opts)
         page = ctx.new_page()
         page_no, total, fetched_pages = start_page, None, 0
         while True:
@@ -158,7 +197,12 @@ if __name__ == "__main__":
     ap.add_argument("--category", default="114", help="organization_category（114=独立行政法人）")
     ap.add_argument("--out", default="research/njss_orgs_114.csv")
     ap.add_argument("--max-pages", type=int, default=None)
+    ap.add_argument("--login", action="store_true",
+                    help="ブラウザを開いて手動ログイン→セッション保存（閲覧上限の解除）")
     args = ap.parse_args()
+
+    if args.login:
+        raise SystemExit(0 if login_and_save_session() else 1)
 
     orgs, done = fetch_organizations(category=args.category, out=args.out,
                                      max_pages=args.max_pages)

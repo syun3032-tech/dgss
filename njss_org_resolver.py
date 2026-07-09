@@ -123,8 +123,16 @@ PARENT_SITES: dict[str, str] = {
     "日本高速道路保有・債務返済機構": "https://www.jehdra.go.jp/",
     "国際交流基金": "https://www.jpf.go.jp/",
     "日本貿易保険": "https://www.nexi.go.jp/",
-    "空港周辺整備機構": "https://www.oeib.go.jp/",
+    "空港周辺整備機構": "https://www.oeia.or.jp/",
     "日本原子力研究開発機構 敦賀廃止措置実証本部": "https://www.jaea.go.jp/",
+    "国立国語研究所": "https://www.ninjal.ac.jp/",
+    "人間文化研究機構": "https://www.nihu.jp/",
+    "国際農林水産業研究センター": "https://www.jircas.go.jp/",
+    "輸出入・港湾関連情報処理センター": "https://www.naccs.jp/",
+    "年金積立金管理運用": "https://www.gpif.go.jp/",
+    "海上災害防止センター": "https://www.mdpc.or.jp/",
+    "国立健康危機管理研究機構": "https://www.jihs.go.jp/",
+    "男女共同参画機構": "https://www.jgepa.go.jp/",
 }
 
 # 自動探索で見つからない/誤りやすい法人の調達ページ（実アクセスで確認済みの確定値）
@@ -134,6 +142,12 @@ KNOWN_BID_PAGES: dict[str, str] = {
     "海洋研究開発機構": "https://www.jamstec.go.jp/j/about/procurement/",
     "自動車事故対策機構": "https://www.nasva.go.jp/tyoutatsu/",
     "水資源機構": "https://www.water.go.jp/honsya/honsya/keiyaku/",
+    "空港周辺整備機構": "https://www.oeia.or.jp/nyusatu/one.cgi",
+    "国立科学博物館": "https://www.kahaku.go.jp/info/chotatsu.html",
+    "国立国語研究所": "https://www.ninjal.ac.jp/info/disclosure/procurement/",
+    "大学入試センター": "https://www.dnc.ac.jp/disclosure/choutatsu_jouhou/index.html",
+    "福祉医療機構": "https://www.wam.go.jp/hp/cat/chotatsujoho/",
+    "国立病院機構": "https://nho.hosp.go.jp/bid/index.html",
 }
 
 # 調達・入札ページらしさのキーワード（リンクテキスト用）
@@ -292,6 +306,11 @@ def resolve(orgs: list[dict], existing: dict[str, dict], workers: int = 8) -> li
     # 1) 確定リスト → 既存流用 → 親法人マッピング
     for o in orgs:
         n = normalize(o["name"])
+        if "閉鎖" in o["name"]:  # NJSSが［閉鎖］と付けた廃止済み機関
+            o.update(top_url="", bid_url="", status="追加不可",
+                     reason="廃止・閉鎖済みの機関（NJSS上の過去データのみ・新規案件なし）",
+                     source="")
+            continue
         known = match_known_bid(o["name"])
         if known:
             note = "" if n in {normalize(k) for k in KNOWN_BID_PAGES} \
@@ -333,6 +352,12 @@ def resolve(orgs: list[dict], existing: dict[str, dict], workers: int = 8) -> li
     def check(url: str) -> None:
         try:
             html = fetch_page(url)
+        except urllib.error.HTTPError as e:
+            if e.code in (403, 406):  # Bot遮断（ブラウザでは閲覧できる）
+                results[url] = ("BLOCKED", "")
+            else:
+                results[url] = (f"到達不可: HTTP {e.code}", "")
+            return
         except Exception as e:  # noqa: BLE001 — 到達不可は理由として記録
             results[url] = (f"到達不可: {type(e).__name__}", "")
             return
@@ -345,7 +370,10 @@ def resolve(orgs: list[dict], existing: dict[str, dict], workers: int = 8) -> li
         if o["status"] != "検証待ち":
             continue
         verdict, bid = results.get(o["top_url"], ("到達不可: 未検証", ""))
-        if verdict != "OK":
+        if verdict == "BLOCKED":
+            o.update(status="追加済み(要確認)",
+                     reason="公式サイトはあるが自動アクセスが遮断される（ブラウザでは閲覧可・調達ページは要人力確認）")
+        elif verdict != "OK":
             o.update(status="追加不可", reason=f"公式サイトに到達できない（{verdict}）")
         elif bid:
             note = "" if normalize(o["name"]) in {normalize(k) for k in PARENT_SITES} \

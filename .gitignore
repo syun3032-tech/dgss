@@ -30,3 +30,6 @@ newscreen/
 
 # クライアント向けExcel（CSVから都度生成する派生物）
 research/*.xlsx
+
+# NJSSログインセッション（秘密・絶対にコミットしない）
+njss_session.json

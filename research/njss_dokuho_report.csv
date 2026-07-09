@@ -34,7 +34,7 @@
 海技教育機構,静岡県,18,2343,追加済み,公式サイト・調達ページを自動確認,https://www.jmets.ac.jp/,https://www.jmets.ac.jp/procurement/index.html,https://www2.njss.info/organizations/proc/447
 国立美術館,東京都,15,2449,追加済み,公式サイト・調達ページを自動確認,https://www.artmuseums.go.jp/,https://www.artmuseums.go.jp/offer,https://www2.njss.info/organizations/proc/217
 自動車事故対策機構(NASVA),東京都,15,3204,追加済み,調達ページを実アクセスで確認済み,https://www.nasva.go.jp/,https://www.nasva.go.jp/tyoutatsu/,https://www2.njss.info/organizations/proc/448
-国立病院機構,東京都,15,4700,追加済み,公式サイト・調達ページを自動確認,https://nho.hosp.go.jp/,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/605
+国立病院機構,東京都,15,4700,追加済み,調達ページを実アクセスで確認済み,https://nho.hosp.go.jp/,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/605
 国際交流基金,東京都,15,4211,追加済み,公式サイト・調達ページを自動確認,https://www.jpf.go.jp/,https://www.jpf.go.jp/j/about/bid/index.html,https://www2.njss.info/organizations/proc/758
 国際観光振興機構〈日本政府観光局〉(JNTO),東京都,14,4357,追加済み,公式サイト・調達ページを自動確認,https://www.jnto.go.jp/,https://www.jnto.go.jp/about-us/procurement/bid-info/,https://www2.njss.info/organizations/proc/442
 港湾空港技術研究所(PARI),神奈川県,14,4938,追加済み,公式サイト・調達ページを自動確認,https://www.pari.go.jp/,https://www.pari.go.jp/about/procurance/,https://www2.njss.info/organizations/proc/454
@@ -50,14 +50,14 @@
 水資源機構 中部支社 木曽川中下流用水総合管理所,愛知県,11,672,追加済み,調達ページを実アクセスで確認済み ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.water.go.jp/,https://www.water.go.jp/honsya/honsya/keiyaku/,https://www2.njss.info/organizations/proc/473
 地域医療機能推進機構(JCHO) 仙台南病院,宮城県,11,436,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.jcho.go.jp/,https://www.jcho.go.jp/disclosure-procurement/,https://www2.njss.info/organizations/proc/7174
 勤労者退職金共済機構,東京都,10,2005,追加済み,公式サイト・調達ページを自動確認,https://www.taisyokukin.go.jp/,https://www.taisyokukin.go.jp/supply/index.html,https://www2.njss.info/organizations/proc/615
-国立病院機構 関東信越グループ 信州上田医療センター,長野県,10,1185,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://nho.hosp.go.jp/,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/834
+国立病院機構 関東信越グループ 信州上田医療センター,長野県,10,1185,追加済み,調達ページを実アクセスで確認済み ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://nho.hosp.go.jp/,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/834
 都市再生機構(UR) 九州支社,福岡県,10,4934,追加済み,既存の監視機関シートに登録あり（URL流用）,https://www.ur-net.go.jp/,https://www.ur-net.go.jp/orders/honsha/order.html,https://www2.njss.info/organizations/proc/5058
 水資源機構 筑後川局 筑後川上流総合管理所,福岡県,10,901,追加済み,調達ページを実アクセスで確認済み ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.water.go.jp/,https://www.water.go.jp/honsya/honsya/keiyaku/,https://www2.njss.info/organizations/proc/7858
 農畜産業振興機構(ALIC),東京都,9,3695,追加済み,公式サイト・調達ページを自動確認,https://www.alic.go.jp/,https://www.alic.go.jp/contract/contract.html,https://www2.njss.info/organizations/proc/283
 森林研究・整備機構 森林総合研究所,茨城県,9,4062,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.ffpri.go.jp/,https://www.ffpri.go.jp/chotatsu.html,https://www2.njss.info/organizations/proc/284
 住宅金融支援機構(JHF),東京都,9,7932,追加済み,公式サイト・調達ページを自動確認,https://www.jhf.go.jp/,https://www.jhf.go.jp/financial_tender/index.html,https://www2.njss.info/organizations/proc/387
 水資源機構 利根導水総合管理所,埼玉県,9,1255,追加済み,調達ページを実アクセスで確認済み ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.water.go.jp/,https://www.water.go.jp/honsya/honsya/keiyaku/,https://www2.njss.info/organizations/proc/465
-国立病院機構 関東信越グループ 東京医療センター,東京都,9,2414,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://nho.hosp.go.jp/,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/860
+国立病院機構 関東信越グループ 東京医療センター,東京都,9,2414,追加済み,調達ページを実アクセスで確認済み ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://nho.hosp.go.jp/,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/860
 労働者健康安全機構 青森労災病院,青森県,9,1536,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.johas.go.jp/,https://www.johas.go.jp/procurement/,https://www2.njss.info/organizations/proc/1463
 日本学生支援機構(JASSO),東京都,8,5693,追加済み,公式サイト・調達ページを自動確認,https://www.jasso.go.jp/,https://www.jasso.go.jp/about/procurement/index.html,https://www2.njss.info/organizations/proc/222
 国立青少年教育振興機構(NIYE),東京都,8,4699,追加済み,公式サイト・調達ページを自動確認,https://www.niye.go.jp/,https://www.niye.go.jp/about/bid.html,https://www2.njss.info/organizations/proc/233
@@ -69,8 +69,8 @@
 水資源機構 中部支社 木曽川上流ダム総合管理所,岐阜県,7,336,追加済み,調達ページを実アクセスで確認済み ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.water.go.jp/,https://www.water.go.jp/honsya/honsya/keiyaku/,https://www2.njss.info/organizations/proc/475
 医薬品医療機器総合機構(PMDA),東京都,7,3245,追加済み,公式サイト・調達ページを自動確認,https://www.pmda.go.jp/,https://www.pmda.go.jp/procurements/public-bidding/general-competition-government/0234.html,https://www2.njss.info/organizations/proc/611
 日本貿易振興機構(JETRO),東京都,7,11784,追加済み,公式サイト・調達ページを自動確認,https://www.jetro.go.jp/,https://www.jetro.go.jp/gov_procurement/,https://www2.njss.info/organizations/proc/722
-国立病院機構 関東信越グループ 相模原病院,神奈川県,7,1312,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://nho.hosp.go.jp/,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/794
-国立病院機構 東海北陸グループ 静岡医療センター,静岡県,7,1419,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://nho.hosp.go.jp/,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/888
+国立病院機構 関東信越グループ 相模原病院,神奈川県,7,1312,追加済み,調達ページを実アクセスで確認済み ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://nho.hosp.go.jp/,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/794
+国立病院機構 東海北陸グループ 静岡医療センター,静岡県,7,1419,追加済み,調達ページを実アクセスで確認済み ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://nho.hosp.go.jp/,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/888
 都市再生機構(UR) 東日本賃貸住宅本部 千葉地域,千葉県,7,4544,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.ur-net.go.jp/,https://www.ur-net.go.jp/order/index.html,https://www2.njss.info/organizations/proc/5061
 高齢・障害・求職者雇用支援機構 東京支部,東京都,7,1264,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.jeed.go.jp/,https://www.jeed.go.jp/jeed/information/index.html,https://www2.njss.info/organizations/proc/7135
 地域医療機能推進機構(JCHO) 群馬中央病院,群馬県,7,734,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.jcho.go.jp/,https://www.jcho.go.jp/disclosure-procurement/,https://www2.njss.info/organizations/proc/7159
@@ -81,9 +81,9 @@
 航空大学校,宮崎県,6,1036,追加済み,公式サイト・調達ページを自動確認,https://www.kouku-dai.ac.jp/,https://www.kouku-dai.ac.jp/cgi-bin/05_supply/view.cgi?print=20&sort=down4%20down5%20down6&keys2=1&word=0&tid=list3,https://www2.njss.info/organizations/proc/445
 水資源機構 利根川下流総合管理所,茨城県,6,545,追加済み,調達ページを実アクセスで確認済み ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.water.go.jp/,https://www.water.go.jp/honsya/honsya/keiyaku/,https://www2.njss.info/organizations/proc/464
 水資源機構 中部支社 揖斐川・長良川総合管理所,三重県,6,417,追加済み,調達ページを実アクセスで確認済み ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.water.go.jp/,https://www.water.go.jp/honsya/honsya/keiyaku/,https://www2.njss.info/organizations/proc/476
-国立病院機構 北海道東北グループ 仙台医療センター,宮城県,6,1628,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://nho.hosp.go.jp/,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/776
-国立病院機構 北海道東北グループ あきた病院,秋田県,6,590,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://nho.hosp.go.jp/,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/779
-国立病院機構 近畿グループ 大阪医療センター,大阪府,6,2404,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://osaka.hosp.go.jp/,https://osaka.hosp.go.jp/nyusatsu/index.html,https://www2.njss.info/organizations/proc/858
+国立病院機構 北海道東北グループ 仙台医療センター,宮城県,6,1628,追加済み,調達ページを実アクセスで確認済み ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://nho.hosp.go.jp/,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/776
+国立病院機構 北海道東北グループ あきた病院,秋田県,6,590,追加済み,調達ページを実アクセスで確認済み ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://nho.hosp.go.jp/,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/779
+国立病院機構 近畿グループ 大阪医療センター,大阪府,6,2404,追加済み,調達ページを実アクセスで確認済み ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://nho.hosp.go.jp/,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/858
 国立文化財機構(NICH) 東京国立博物館(TNM),東京都,6,916,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.nich.go.jp/,https://www.nich.go.jp/information/nyusatsu/,https://www2.njss.info/organizations/proc/1097
 国立文化財機構(NICH) 奈良文化財研究所,奈良県,6,872,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.nich.go.jp/,https://www.nich.go.jp/information/nyusatsu/,https://www2.njss.info/organizations/proc/1100
 労働者健康安全機構 千葉労災病院,千葉県,6,1582,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.johas.go.jp/,https://www.johas.go.jp/procurement/,https://www2.njss.info/organizations/proc/1468
@@ -99,3 +99,754 @@
 地域医療機能推進機構(JCHO) 人吉医療センター,熊本県,6,511,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.jcho.go.jp/,https://www.jcho.go.jp/disclosure-procurement/,https://www2.njss.info/organizations/proc/7202
 海上技術安全研究所(NMRI),東京都,5,7265,追加済み,公式サイト・調達ページを自動確認,https://www.nmri.go.jp/,https://www.nmri.go.jp/bid/,https://www2.njss.info/organizations/proc/450
 水資源機構 関西・吉野川支社淀川本部 木津川ダム総合管理所,三重県,5,686,追加済み,調達ページを実アクセスで確認済み ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.water.go.jp/,https://www.water.go.jp/honsya/honsya/keiyaku/,https://www2.njss.info/organizations/proc/483
+水資源機構 関西・吉野川支社吉野川本部 吉野川上流総合管理所,徳島県,5,486,追加済み,調達ページを実アクセスで確認済み ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.water.go.jp/,https://www.water.go.jp/honsya/honsya/keiyaku/,https://www2.njss.info/organizations/proc/488
+労働者健康安全機構 労働安全衛生総合研究所(JNIOSH),東京都,5,2230,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.johas.go.jp/,https://www.johas.go.jp/procurement/,https://www2.njss.info/organizations/proc/608
+医薬基盤・健康・栄養研究所(NIBN),大阪府,5,4710,追加済み,公式サイト・調達ページを自動確認,https://www.nibiohn.go.jp/,https://www.nibiohn.go.jp/procurement/index.html,https://www2.njss.info/organizations/proc/609
+国立病院機構 関東信越グループ 高崎総合医療センター,群馬県,5,1543,追加済み,調達ページを実アクセスで確認済み ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://nho.hosp.go.jp/,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/816
+国立病院機構 九州グループ 福岡病院,福岡県,5,686,追加済み,調達ページを実アクセスで確認済み ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://nho.hosp.go.jp/,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/822
+国立病院機構 中国四国グループ 岡山医療センター,岡山県,5,2126,追加済み,調達ページを実アクセスで確認済み ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://nho.hosp.go.jp/,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/823
+国立病院機構 中国四国グループ 呉医療センター・中国がんセンター,広島県,5,2921,追加済み,調達ページを実アクセスで確認済み ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://nho.hosp.go.jp/,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/831
+国立病院機構 関東信越グループ 小諸高原病院,長野県,5,654,追加済み,調達ページを実アクセスで確認済み ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://nho.hosp.go.jp/,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/842
+国立病院機構 九州グループ 別府医療センター,大分県,5,1678,追加済み,調達ページを実アクセスで確認済み ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://nho.hosp.go.jp/,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/898
+家畜改良センター(NLBC) 十勝牧場,北海道,5,990,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.nlbc.go.jp/,https://www.nlbc.go.jp/chotatsujoho/index.html,https://www2.njss.info/organizations/proc/1434
+労働者健康安全機構 東北労災病院,宮城県,5,1406,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.johas.go.jp/,https://www.johas.go.jp/procurement/,https://www2.njss.info/organizations/proc/1464
+労働者健康安全機構 浜松労災病院,静岡県,5,1014,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.johas.go.jp/,https://www.johas.go.jp/procurement/,https://www2.njss.info/organizations/proc/1475
+日本学術振興会(JSPS),東京都,5,7089,追加済み,既存の監視機関シートに登録あり（URL流用）,https://www.jsps.go.jp/,https://www.jsps.go.jp/j-choutatsu/index.html,https://www2.njss.info/organizations/proc/1659
+国立文化財機構(NICH) 奈良国立博物館,奈良県,5,475,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.nich.go.jp/,https://www.nich.go.jp/information/nyusatsu/,https://www2.njss.info/organizations/proc/4508
+高齢・障害・求職者雇用支援機構 石川支部,石川県,5,964,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.jeed.go.jp/,https://www.jeed.go.jp/jeed/information/index.html,https://www2.njss.info/organizations/proc/5808
+高齢・障害・求職者雇用支援機構 岐阜支部,岐阜県,5,929,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.jeed.go.jp/,https://www.jeed.go.jp/jeed/information/index.html,https://www2.njss.info/organizations/proc/5812
+高齢・障害・求職者雇用支援機構 広島支部,広島県,5,610,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.jeed.go.jp/,https://www.jeed.go.jp/jeed/information/index.html,https://www2.njss.info/organizations/proc/5860
+高齢・障害・求職者雇用支援機構 大分支部,大分県,5,729,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.jeed.go.jp/,https://www.jeed.go.jp/jeed/information/index.html,https://www2.njss.info/organizations/proc/5872
+地域医療機能推進機構(JCHO) 千葉病院,千葉県,5,646,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.jcho.go.jp/,https://www.jcho.go.jp/disclosure-procurement/,https://www2.njss.info/organizations/proc/7162
+地域医療機能推進機構(JCHO) 横浜保土ケ谷中央病院,神奈川県,5,516,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.jcho.go.jp/,https://www.jcho.go.jp/disclosure-procurement/,https://www2.njss.info/organizations/proc/7170
+地域医療機能推進機構(JCHO) 三島総合病院,静岡県,5,465,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.jcho.go.jp/,https://www.jcho.go.jp/disclosure-procurement/,https://www2.njss.info/organizations/proc/7180
+地域医療機能推進機構(JCHO) 北海道病院,北海道,5,771,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.jcho.go.jp/,https://www.jcho.go.jp/disclosure-procurement/,https://www2.njss.info/organizations/proc/7187
+地域医療機能推進機構(JCHO) 熊本総合病院,熊本県,5,654,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.jcho.go.jp/,https://www.jcho.go.jp/disclosure-procurement/,https://www2.njss.info/organizations/proc/7201
+地域医療機能推進機構(JCHO) 天草中央総合病院,熊本県,5,333,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.jcho.go.jp/,https://www.jcho.go.jp/disclosure-procurement/,https://www2.njss.info/organizations/proc/7203
+教職員支援機構(NITS),茨城県,4,822,追加済み,公式サイト・調達ページを自動確認,https://www.nits.go.jp/,https://www.nits.go.jp/nyusatsu/general.html,https://www2.njss.info/organizations/proc/227
+家畜改良センター(NLBC),福島県,4,3042,追加済み,公式サイト・調達ページを自動確認,https://www.nlbc.go.jp/,https://www.nlbc.go.jp/chotatsujoho/index.html,https://www2.njss.info/organizations/proc/294
+日本高速道路保有・債務返済機構,神奈川県,4,2211,追加済み,公式サイト・調達ページを自動確認,https://www.jehdra.go.jp/,https://www.jehdra.go.jp/kiko/nyusatsu.html,https://www2.njss.info/organizations/proc/441
+水資源機構 渡良瀬川ダム総合管理所,群馬県,4,427,追加済み,調達ページを実アクセスで確認済み ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.water.go.jp/,https://www.water.go.jp/honsya/honsya/keiyaku/,https://www2.njss.info/organizations/proc/467
+水資源機構 関西・吉野川支社淀川本部 琵琶湖総合管理所,滋賀県,4,404,追加済み,調達ページを実アクセスで確認済み ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.water.go.jp/,https://www.water.go.jp/honsya/honsya/keiyaku/,https://www2.njss.info/organizations/proc/482
+地域医療機能推進機構(JCHO),東京都,4,1019,追加済み,公式サイト・調達ページを自動確認,https://www.jcho.go.jp/,https://www.jcho.go.jp/disclosure-procurement/,https://www2.njss.info/organizations/proc/612
+国立成育医療研究センター,東京都,4,5638,追加済み,公式サイト・調達ページを自動確認,https://www.ncchd.go.jp/,https://www.ncchd.go.jp/purchase/index.html,https://www2.njss.info/organizations/proc/690
+国立病院機構 北海道東北グループ 弘前総合医療センター,青森県,4,1111,追加済み,調達ページを実アクセスで確認済み ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://nho.hosp.go.jp/,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/769
+国立病院機構 北海道東北グループ 岩手病院,岩手県,4,537,追加済み,調達ページを実アクセスで確認済み ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://nho.hosp.go.jp/,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/774
+国立病院機構 関東信越グループ 久里浜医療センター,神奈川県,4,1005,追加済み,調達ページを実アクセスで確認済み ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://nho.hosp.go.jp/,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/782
+国立病院機構 近畿グループ 和歌山病院,和歌山県,4,748,追加済み,調達ページを実アクセスで確認済み ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://nho.hosp.go.jp/,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/791
+国立病院機構 関東信越グループ 水戸医療センター,茨城県,4,1508,追加済み,調達ページを実アクセスで確認済み ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://nho.hosp.go.jp/,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/796
+国立病院機構 九州グループ 九州がんセンター,福岡県,4,1083,追加済み,調達ページを実アクセスで確認済み ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://nho.hosp.go.jp/,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/801
+国立病院機構 近畿グループ 敦賀医療センター,福井県,4,786,追加済み,調達ページを実アクセスで確認済み ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://nho.hosp.go.jp/,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/815
+国立病院機構 近畿グループ あわら病院,福井県,4,525,追加済み,調達ページを実アクセスで確認済み ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://nho.hosp.go.jp/,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/819
+国立病院機構 九州グループ 佐賀病院,佐賀県,4,1258,追加済み,調達ページを実アクセスで確認済み ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://nho.hosp.go.jp/,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/839
+国立病院機構 中国四国グループ 広島西医療センター,広島県,4,1221,追加済み,調達ページを実アクセスで確認済み ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://nho.hosp.go.jp/,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/840
+国立病院機構 近畿グループ 舞鶴医療センター,京都府,4,1190,追加済み,調達ページを実アクセスで確認済み ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://nho.hosp.go.jp/,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/845
+国立病院機構 関東信越グループ 横浜医療センター,神奈川県,4,1957,追加済み,調達ページを実アクセスで確認済み ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://nho.hosp.go.jp/,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/875
+国立病院機構 九州グループ 熊本医療センター,熊本県,4,1726,追加済み,調達ページを実アクセスで確認済み ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://nho.hosp.go.jp/,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/882
+国立病院機構 中国四国グループ 岩国医療センター,山口県,4,1803,追加済み,調達ページを実アクセスで確認済み ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://nho.hosp.go.jp/,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/903
+労働者健康安全機構 北海道せき損センター,北海道,4,1031,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.johas.go.jp/,https://www.johas.go.jp/procurement/,https://www2.njss.info/organizations/proc/1460
+労働者健康安全機構 富山労災病院,富山県,4,1059,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.johas.go.jp/,https://www.johas.go.jp/procurement/,https://www2.njss.info/organizations/proc/1474
+労働者健康安全機構 関西労災病院,兵庫県,4,2480,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.johas.go.jp/,https://www.johas.go.jp/procurement/,https://www2.njss.info/organizations/proc/1479
+労働者健康安全機構 熊本労災病院,熊本県,4,1266,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.johas.go.jp/,https://www.johas.go.jp/procurement/,https://www2.njss.info/organizations/proc/1490
+高齢・障害・求職者雇用支援機構 長野支部,長野県,4,832,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.jeed.go.jp/,https://www.jeed.go.jp/jeed/information/index.html,https://www2.njss.info/organizations/proc/4411
+高齢・障害・求職者雇用支援機構 長崎支部,長崎県,4,1196,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.jeed.go.jp/,https://www.jeed.go.jp/jeed/information/index.html,https://www2.njss.info/organizations/proc/4415
+高齢・障害・求職者雇用支援機構 栃木支部,栃木県,4,2251,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.jeed.go.jp/,https://www.jeed.go.jp/jeed/information/index.html,https://www2.njss.info/organizations/proc/5652
+高齢・障害・求職者雇用支援機構 富山支部,富山県,4,1622,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.jeed.go.jp/,https://www.jeed.go.jp/jeed/information/index.html,https://www2.njss.info/organizations/proc/5807
+高齢・障害・求職者雇用支援機構 山梨支部,山梨県,4,622,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.jeed.go.jp/,https://www.jeed.go.jp/jeed/information/index.html,https://www2.njss.info/organizations/proc/5810
+高齢・障害・求職者雇用支援機構 岡山支部,岡山県,4,1352,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.kibireha.jeed.go.jp/,https://www.kibireha.jeed.go.jp/tender/tender.html,https://www2.njss.info/organizations/proc/5859
+高齢・障害・求職者雇用支援機構 福岡支部,福岡県,4,1036,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.jeed.go.jp/,https://www.jeed.go.jp/jeed/information/index.html,https://www2.njss.info/organizations/proc/5866
+地域医療機能推進機構(JCHO) 埼玉メディカルセンター,埼玉県,4,935,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.jcho.go.jp/,https://www.jcho.go.jp/disclosure-procurement/,https://www2.njss.info/organizations/proc/7161
+地域医療機能推進機構(JCHO) 横浜中央病院,神奈川県,4,409,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.jcho.go.jp/,https://www.jcho.go.jp/disclosure-procurement/,https://www2.njss.info/organizations/proc/7169
+地域医療機能推進機構(JCHO) 札幌北辰病院,北海道,4,634,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.jcho.go.jp/,https://www.jcho.go.jp/disclosure-procurement/,https://www2.njss.info/organizations/proc/7188
+地域医療機能推進機構(JCHO) 徳山中央病院,山口県,4,945,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.jcho.go.jp/,https://www.jcho.go.jp/disclosure-procurement/,https://www2.njss.info/organizations/proc/7194
+地域医療機能推進機構(JCHO) 九州病院,福岡県,4,1420,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.jcho.go.jp/,https://www.jcho.go.jp/disclosure-procurement/,https://www2.njss.info/organizations/proc/7195
+地域医療機能推進機構(JCHO) 諫早総合病院,長崎県,4,468,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.jcho.go.jp/,https://www.jcho.go.jp/disclosure-procurement/,https://www2.njss.info/organizations/proc/7200
+都市再生機構(UR) 東北震災復興支援本部,福島県,4,325,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.ur-net.go.jp/,https://www.ur-net.go.jp/order/index.html,https://www2.njss.info/organizations/proc/7723
+国立高等専門学校機構 福島工業高等専門学校,福島県,3,469,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.kosen-k.go.jp/,https://www.kosen-k.go.jp/wp/wp-content/uploads/2025/04/chotatsuhoushin.pdf,https://www2.njss.info/organizations/proc/202
+国立高等専門学校機構 小山工業高等専門学校,栃木県,3,286,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.kosen-k.go.jp/,https://www.kosen-k.go.jp/wp/wp-content/uploads/2025/04/chotatsuhoushin.pdf,https://www2.njss.info/organizations/proc/211
+国立科学博物館,東京都,3,1437,追加済み,調達ページを実アクセスで確認済み,https://www.kahaku.go.jp/,https://www.kahaku.go.jp/info/chotatsu.html,https://www2.njss.info/organizations/proc/224
+人間文化研究機構 国立国語研究所(NINJAL),東京都,3,183,追加済み,調達ページを実アクセスで確認済み ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.nihu.jp/,https://www.ninjal.ac.jp/info/disclosure/procurement/,https://www2.njss.info/organizations/proc/225
+国立特別支援教育総合研究所(NISE),神奈川県,3,530,追加済み,公式サイト・調達ページを自動確認,https://www.nise.go.jp/,https://www.nise.go.jp/about_nise/information/bid/,https://www2.njss.info/organizations/proc/232
+国際農林水産業研究センター(JIRCAS),茨城県,3,1648,追加済み,公式サイト・調達ページを自動確認,https://www.jircas.go.jp/,https://www.jircas.go.jp/ja/procurement,https://www2.njss.info/organizations/proc/285
+農業者年金基金,東京都,3,702,追加済み,既存の監視機関シートに登録あり（URL流用）,https://www.nounen.go.jp/,https://www.nounen.go.jp/disclosure/data/r08/3-4_zuii_r0804.xlsx,https://www2.njss.info/organizations/proc/296
+電子航法研究所(ENRI),東京都,3,1894,追加済み,公式サイト・調達ページを自動確認,https://www.enri.go.jp/,https://www.enri.go.jp/jp/procrm.html,https://www2.njss.info/organizations/proc/440
+水資源機構 中部支社,愛知県,3,88,追加済み,調達ページを実アクセスで確認済み ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.water.go.jp/,https://www.water.go.jp/honsya/honsya/keiyaku/,https://www2.njss.info/organizations/proc/469
+水資源機構 中部支社 揖斐川・長良川総合管理所 徳山ダム管理所,岐阜県,3,214,追加済み,調達ページを実アクセスで確認済み ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.water.go.jp/,https://www.water.go.jp/honsya/honsya/keiyaku/,https://www2.njss.info/organizations/proc/472
+水資源機構 筑後川局 筑後川下流総合管理所 筑後川下流用水管理所,福岡県,3,299,追加済み,調達ページを実アクセスで確認済み ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.water.go.jp/,https://www.water.go.jp/honsya/honsya/keiyaku/,https://www2.njss.info/organizations/proc/494
+工業所有権情報・研修館(INPIT),東京都,3,1414,追加済み,公式サイト・調達ページを自動確認,https://www.inpit.go.jp/,https://www.inpit.go.jp/kobo/anken/r08/0630.html,https://www2.njss.info/organizations/proc/720
+環境再生保全機構(ERCA),神奈川県,3,1264,追加済み,公式サイト・調達ページを自動確認,https://www.erca.go.jp/,https://www.erca.go.jp/erca/chotatsu/index.html,https://www2.njss.info/organizations/proc/742
+国立病院機構 北海道東北グループ 北海道がんセンター,北海道,3,1593,追加済み,調達ページを実アクセスで確認済み ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://nho.hosp.go.jp/,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/762
+国立病院機構 北海道東北グループ 山形病院,山形県,3,531,追加済み,調達ページを実アクセスで確認済み ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://nho.hosp.go.jp/,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/780
+国立病院機構 九州グループ 小倉医療センター,福岡県,3,1290,追加済み,調達ページを実アクセスで確認済み ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://nho.hosp.go.jp/,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/795
+国立病院機構 東海北陸グループ 鈴鹿病院,三重県,3,756,追加済み,調達ページを実アクセスで確認済み ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://nho.hosp.go.jp/,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/798
+国立病院機構 関東信越グループ 神奈川病院,神奈川県,3,811,追加済み,調達ページを実アクセスで確認済み ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://nho.hosp.go.jp/,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/799
+国立病院機構 東海北陸グループ 三重中央医療センター,三重県,3,1312,追加済み,調達ページを実アクセスで確認済み ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://nho.hosp.go.jp/,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/800
+国立病院機構 関東信越グループ 茨城東病院 胸部疾患・療育医療センター,茨城県,3,991,追加済み,調達ページを実アクセスで確認済み ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://nho.hosp.go.jp/,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/805
+国立病院機構 近畿グループ 京都医療センター,京都府,3,2198,追加済み,調達ページを実アクセスで確認済み ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://nho.hosp.go.jp/,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/837
+国立病院機構 中国四国グループ 東広島医療センター,広島県,3,1644,追加済み,調達ページを実アクセスで確認済み ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://nho.hosp.go.jp/,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/846
+国立病院機構 九州グループ 東佐賀病院,佐賀県,3,998,追加済み,調達ページを実アクセスで確認済み ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://nho.hosp.go.jp/,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/857
+国立病院機構 東海北陸グループ 金沢医療センター,石川県,3,1995,追加済み,調達ページを実アクセスで確認済み ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://nho.hosp.go.jp/,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/859
+国立病院機構 九州グループ 嬉野医療センター,佐賀県,3,1499,追加済み,調達ページを実アクセスで確認済み ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://nho.hosp.go.jp/,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/864
+国立病院機構 関東信越グループ 東京病院,東京都,3,1540,追加済み,調達ページを実アクセスで確認済み ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://nho.hosp.go.jp/,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/867
+国立病院機構 九州グループ 熊本南病院,熊本県,3,515,追加済み,調達ページを実アクセスで確認済み ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://nho.hosp.go.jp/,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/889
+国立病院機構 東海北陸グループ 名古屋医療センター,愛知県,3,2847,追加済み,調達ページを実アクセスで確認済み ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://nho.hosp.go.jp/,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/891
+国立病院機構 中国四国グループ 山口宇部医療センター,山口県,3,1075,追加済み,調達ページを実アクセスで確認済み ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://nho.hosp.go.jp/,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/902
+国立病院機構 近畿グループ 神戸医療センター,兵庫県,3,1222,追加済み,調達ページを実アクセスで確認済み ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://nho.hosp.go.jp/,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/913
+労働者健康安全機構 秋田労災病院,秋田県,3,764,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.johas.go.jp/,https://www.johas.go.jp/procurement/,https://www2.njss.info/organizations/proc/1465
+労働者健康安全機構 関東労災病院,神奈川県,3,1851,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.johas.go.jp/,https://www.johas.go.jp/procurement/,https://www2.njss.info/organizations/proc/1470
+労働者健康安全機構 和歌山労災病院,和歌山県,3,1671,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.johas.go.jp/,https://www.johas.go.jp/procurement/,https://www2.njss.info/organizations/proc/1480
+高齢・障害・求職者雇用支援機構 宮城支部,宮城県,3,1926,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.jeed.go.jp/,https://www.jeed.go.jp/jeed/information/index.html,https://www2.njss.info/organizations/proc/4410
+高齢・障害・求職者雇用支援機構 宮崎支部,宮崎県,3,1479,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.jeed.go.jp/,https://www.jeed.go.jp/jeed/information/index.html,https://www2.njss.info/organizations/proc/4416
+高齢・障害・求職者雇用支援機構 福島支部,福島県,3,732,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.jeed.go.jp/,https://www.jeed.go.jp/jeed/information/index.html,https://www2.njss.info/organizations/proc/5796
+高齢・障害・求職者雇用支援機構 奈良支部,奈良県,3,580,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.jeed.go.jp/,https://www.jeed.go.jp/jeed/information/index.html,https://www2.njss.info/organizations/proc/5854
+高齢・障害・求職者雇用支援機構 山口支部,山口県,3,589,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.jeed.go.jp/,https://www.jeed.go.jp/jeed/information/index.html,https://www2.njss.info/organizations/proc/5861
+高齢・障害・求職者雇用支援機構 熊本支部,熊本県,3,774,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.jeed.go.jp/,https://www.jeed.go.jp/jeed/information/index.html,https://www2.njss.info/organizations/proc/5870
+高齢・障害・求職者雇用支援機構 沖縄支部,沖縄県,3,756,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.jeed.go.jp/,https://www.jeed.go.jp/jeed/information/index.html,https://www2.njss.info/organizations/proc/5875
+地域医療機能推進機構(JCHO) 南海医療センター,大分県,3,562,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.jcho.go.jp/,https://www.jcho.go.jp/disclosure-procurement/,https://www2.njss.info/organizations/proc/7141
+地域医療機能推進機構(JCHO) さいたま北部医療センター,埼玉県,3,485,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.jcho.go.jp/,https://www.jcho.go.jp/disclosure-procurement/,https://www2.njss.info/organizations/proc/7160
+地域医療機能推進機構(JCHO) 東京新宿メディカルセンター,東京都,3,834,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://shinjuku.jcho.go.jp/,https://shinjuku.jcho.go.jp/introduction/various/調達情報/,https://www2.njss.info/organizations/proc/7165
+地域医療機能推進機構(JCHO) 仙台病院,宮城県,3,675,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.jcho.go.jp/,https://www.jcho.go.jp/disclosure-procurement/,https://www2.njss.info/organizations/proc/7173
+地域医療機能推進機構(JCHO) 高知西病院,高知県,3,263,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.jcho.go.jp/,https://www.jcho.go.jp/disclosure-procurement/,https://www2.njss.info/organizations/proc/7192
+地域医療機能推進機構(JCHO) 下関医療センター,山口県,3,584,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.jcho.go.jp/,https://www.jcho.go.jp/disclosure-procurement/,https://www2.njss.info/organizations/proc/7193
+水資源機構 関西・吉野川支社吉野川本部 吉野川下流総合管理所,徳島県,3,57,追加済み,調達ページを実アクセスで確認済み ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.water.go.jp/,https://www.water.go.jp/honsya/honsya/keiyaku/,https://www2.njss.info/organizations/proc/9783
+国立高等専門学校機構 有明工業高等専門学校,福岡県,2,275,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.kosen-k.go.jp/,https://www.kosen-k.go.jp/wp/wp-content/uploads/2025/04/chotatsuhoushin.pdf,https://www2.njss.info/organizations/proc/201
+国立高等専門学校機構 岐阜工業高等専門学校,岐阜県,2,406,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.kosen-k.go.jp/,https://www.kosen-k.go.jp/wp/wp-content/uploads/2025/04/chotatsuhoushin.pdf,https://www2.njss.info/organizations/proc/203
+国立高等専門学校機構 長岡工業高等専門学校,新潟県,2,429,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.kosen-k.go.jp/,https://www.kosen-k.go.jp/wp/wp-content/uploads/2025/04/chotatsuhoushin.pdf,https://www2.njss.info/organizations/proc/210
+国立高等専門学校機構 鶴岡工業高等専門学校,山形県,2,418,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.kosen-k.go.jp/,https://www.kosen-k.go.jp/wp/wp-content/uploads/2025/04/chotatsuhoushin.pdf,https://www2.njss.info/organizations/proc/214
+国立高等専門学校機構 大分工業高等専門学校,大分県,2,358,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.kosen-k.go.jp/,https://www.kosen-k.go.jp/wp/wp-content/uploads/2025/04/chotatsuhoushin.pdf,https://www2.njss.info/organizations/proc/215
+大学入試センター(DNC),東京都,2,749,追加済み,調達ページを実アクセスで確認済み,https://www.dnc.ac.jp/,https://www.dnc.ac.jp/disclosure/choutatsu_jouhou/index.html,https://www2.njss.info/organizations/proc/219
+国立公文書館,東京都,2,1060,追加済み,公式サイト・調達ページを自動確認,https://www.archives.go.jp/,https://www.archives.go.jp/chotatsu/index.html,https://www2.njss.info/organizations/proc/301
+輸出入・港湾関連情報処理センター(NACCS),東京都,2,332,追加済み,公式サイト・調達ページを自動確認,https://www.naccs.jp/,https://www.naccs.jp/archives/cyoutatsu_index.html,https://www2.njss.info/organizations/proc/399
+水資源機構 千葉用水総合管理所,千葉県,2,1762,追加済み,調達ページを実アクセスで確認済み ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.water.go.jp/,https://www.water.go.jp/honsya/honsya/keiyaku/,https://www2.njss.info/organizations/proc/460
+水資源機構 利根川上流総合管理所,群馬県,2,400,追加済み,調達ページを実アクセスで確認済み ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.water.go.jp/,https://www.water.go.jp/honsya/honsya/keiyaku/,https://www2.njss.info/organizations/proc/463
+水資源機構 中部支社 愛知用水総合管理所,愛知県,2,585,追加済み,調達ページを実アクセスで確認済み ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.water.go.jp/,https://www.water.go.jp/honsya/honsya/keiyaku/,https://www2.njss.info/organizations/proc/470
+水資源機構 中部支社 木曽川上流ダム総合管理所 味噌川ダム管理所,長野県,2,256,追加済み,調達ページを実アクセスで確認済み ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.water.go.jp/,https://www.water.go.jp/honsya/honsya/keiyaku/,https://www2.njss.info/organizations/proc/477
+水資源機構 関西・吉野川支社淀川本部 桂川・猪名川ダム総合管理所 一庫ダム管理所,兵庫県,2,235,追加済み,調達ページを実アクセスで確認済み ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.water.go.jp/,https://www.water.go.jp/honsya/honsya/keiyaku/,https://www2.njss.info/organizations/proc/484
+水資源機構 筑後川局,福岡県,2,390,追加済み,調達ページを実アクセスで確認済み ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.water.go.jp/,https://www.water.go.jp/honsya/honsya/keiyaku/,https://www2.njss.info/organizations/proc/490
+年金積立金管理運用(GPIF),東京都,2,1208,追加済み,公式サイト・調達ページを自動確認,https://www.gpif.go.jp/,https://www.gpif.go.jp/info/procurement/,https://www2.njss.info/organizations/proc/604
+福祉医療機構(WAM),東京都,2,1196,追加済み,調達ページを実アクセスで確認済み,https://www.wam.go.jp/,https://www.wam.go.jp/hp/cat/chotatsujoho/,https://www2.njss.info/organizations/proc/614
+国立病院機構 北海道東北グループ 宮城病院,宮城県,2,833,追加済み,調達ページを実アクセスで確認済み ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://nho.hosp.go.jp/,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/778
+国立病院機構 東海北陸グループ 東尾張病院,愛知県,2,471,追加済み,調達ページを実アクセスで確認済み ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://nho.hosp.go.jp/,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/787
+国立病院機構 近畿グループ 南和歌山医療センター,和歌山県,2,1064,追加済み,調達ページを実アクセスで確認済み ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://nho.hosp.go.jp/,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/788
+国立病院機構 関東信越グループ 西新潟中央病院,新潟県,2,1115,追加済み,調達ページを実アクセスで確認済み ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://nho.hosp.go.jp/,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/806
+国立病院機構 九州グループ 九州医療センター,福岡県,2,1819,追加済み,調達ページを実アクセスで確認済み ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://nho.hosp.go.jp/,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/807
+国立病院機構 関東信越グループ 東長野病院,長野県,2,506,追加済み,調達ページを実アクセスで確認済み ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://nho.hosp.go.jp/,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/821
+国立病院機構 関東信越グループ 渋川医療センター,群馬県,2,974,追加済み,調達ページを実アクセスで確認済み ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://nho.hosp.go.jp/,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/825
+国立病院機構 関東信越グループ 埼玉病院,埼玉県,2,1402,追加済み,調達ページを実アクセスで確認済み ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://nho.hosp.go.jp/,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/835
+国立病院機構 中国四国グループ 福山医療センター,広島県,2,1695,追加済み,調達ページを実アクセスで確認済み ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://nho.hosp.go.jp/,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/836
+国立病院機構 東海北陸グループ 北陸病院,富山県,2,601,追加済み,調達ページを実アクセスで確認済み ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://nho.hosp.go.jp/,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/854
+国立病院機構 近畿グループ 大阪刀根山医療センター,大阪府,2,1238,追加済み,調達ページを実アクセスで確認済み ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://nho.hosp.go.jp/,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/865
+国立病院機構 九州グループ 長崎病院,長崎県,2,660,追加済み,調達ページを実アクセスで確認済み ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://nho.hosp.go.jp/,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/869
+国立病院機構 東海北陸グループ 石川病院,石川県,2,666,追加済み,調達ページを実アクセスで確認済み ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://nho.hosp.go.jp/,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/870
+国立病院機構 近畿グループ 姫路医療センター,兵庫県,2,1270,追加済み,調達ページを実アクセスで確認済み ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://nho.hosp.go.jp/,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/872
+国立病院機構 東海北陸グループ 長良医療センター,岐阜県,2,1354,追加済み,調達ページを実アクセスで確認済み ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://nho.hosp.go.jp/,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/874
+国立病院機構 東海北陸グループ 静岡てんかん・神経医療センター,静岡県,2,834,追加済み,調達ページを実アクセスで確認済み ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://nho.hosp.go.jp/,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/877
+国立病院機構 近畿グループ 兵庫中央病院,兵庫県,2,1067,追加済み,調達ページを実アクセスで確認済み ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://nho.hosp.go.jp/,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/879
+国立病院機構 九州グループ 南九州病院,鹿児島県,2,927,追加済み,調達ページを実アクセスで確認済み ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://nho.hosp.go.jp/,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/890
+国立病院機構 九州グループ 菊池病院,熊本県,2,521,追加済み,調達ページを実アクセスで確認済み ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://nho.hosp.go.jp/,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/892
+国立病院機構 九州グループ 指宿医療センター,鹿児島県,2,843,追加済み,調達ページを実アクセスで確認済み ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://nho.hosp.go.jp/,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/893
+国立病院機構 九州グループ 西別府病院,大分県,2,839,追加済み,調達ページを実アクセスで確認済み ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://nho.hosp.go.jp/,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/900
+国立病院機構 中国四国グループ とくしま医療センター東病院,徳島県,2,743,追加済み,調達ページを実アクセスで確認済み ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://nho.hosp.go.jp/,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/905
+国立文化財機構(NICH) 東京文化財研究所,東京都,2,249,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.nich.go.jp/,https://www.nich.go.jp/information/nyusatsu/,https://www2.njss.info/organizations/proc/1099
+家畜改良センター(NLBC) 茨城牧場,茨城県,2,350,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.nlbc.go.jp/,https://www.nlbc.go.jp/chotatsujoho/index.html,https://www2.njss.info/organizations/proc/1437
+労働者健康安全機構 大阪ろうさい病院,大阪府,2,2067,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.johas.go.jp/,https://www.johas.go.jp/procurement/,https://www2.njss.info/organizations/proc/1478
+労働者健康安全機構 岡山労災病院,岡山県,2,1090,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.johas.go.jp/,https://www.johas.go.jp/procurement/,https://www2.njss.info/organizations/proc/1482
+労働者健康安全機構 香川労災病院,香川県,2,1723,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.kagawah.johas.go.jp/,https://www.kagawah.johas.go.jp/info/procurement/,https://www2.njss.info/organizations/proc/1485
+労働者健康安全機構 九州労災病院,福岡県,2,1358,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.johas.go.jp/,https://www.johas.go.jp/procurement/,https://www2.njss.info/organizations/proc/1487
+高齢・障害・求職者雇用支援機構 愛知支部,愛知県,2,1724,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.jeed.go.jp/,https://www.jeed.go.jp/jeed/information/index.html,https://www2.njss.info/organizations/proc/4432
+日本貿易保険(NEXI),東京都,2,632,追加済み,公式サイト・調達ページを自動確認,https://www.nexi.go.jp/,https://www.nexi.go.jp/supply/,https://www2.njss.info/organizations/proc/5649
+高齢・障害・求職者雇用支援機構 秋田支部,秋田県,2,971,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.jeed.go.jp/,https://www.jeed.go.jp/jeed/information/index.html,https://www2.njss.info/organizations/proc/5794
+高齢・障害・求職者雇用支援機構 茨城支部,茨城県,2,530,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.jeed.go.jp/,https://www.jeed.go.jp/jeed/information/index.html,https://www2.njss.info/organizations/proc/5799
+高齢・障害・求職者雇用支援機構 千葉支部,千葉県,2,1323,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.jeed.go.jp/,https://www.jeed.go.jp/jeed/information/index.html,https://www2.njss.info/organizations/proc/5802
+高齢・障害・求職者雇用支援機構 福井支部,福井県,2,944,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.jeed.go.jp/,https://www.jeed.go.jp/jeed/information/index.html,https://www2.njss.info/organizations/proc/5809
+高齢・障害・求職者雇用支援機構 兵庫支部,兵庫県,2,1061,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.jeed.go.jp/,https://www.jeed.go.jp/jeed/information/index.html,https://www2.njss.info/organizations/proc/5852
+高齢・障害・求職者雇用支援機構 和歌山支部,和歌山県,2,614,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.jeed.go.jp/,https://www.jeed.go.jp/jeed/information/index.html,https://www2.njss.info/organizations/proc/5855
+高齢・障害・求職者雇用支援機構 高知支部,高知県,2,1126,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.jeed.go.jp/,https://www.jeed.go.jp/jeed/information/index.html,https://www2.njss.info/organizations/proc/5865
+高齢・障害・求職者雇用支援機構 鹿児島支部,鹿児島県,2,648,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.jeed.go.jp/,https://www.jeed.go.jp/jeed/information/index.html,https://www2.njss.info/organizations/proc/5874
+地域医療機能推進機構(JCHO) 東京山手メディカルセンター,東京都,2,868,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.jcho.go.jp/,https://www.jcho.go.jp/disclosure-procurement/,https://www2.njss.info/organizations/proc/7166
+地域医療機能推進機構(JCHO) 秋田病院,秋田県,2,447,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.jcho.go.jp/,https://www.jcho.go.jp/disclosure-procurement/,https://www2.njss.info/organizations/proc/7175
+地域医療機能推進機構(JCHO) 二本松病院,福島県,2,324,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.jcho.go.jp/,https://www.jcho.go.jp/disclosure-procurement/,https://www2.njss.info/organizations/proc/7176
+地域医療機能推進機構(JCHO) 可児とうのう病院,岐阜県,2,484,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.jcho.go.jp/,https://www.jcho.go.jp/disclosure-procurement/,https://www2.njss.info/organizations/proc/7178
+地域医療機能推進機構(JCHO) 高岡ふしき病院,富山県,2,318,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.jcho.go.jp/,https://www.jcho.go.jp/disclosure-procurement/,https://www2.njss.info/organizations/proc/7183
+地域医療機能推進機構(JCHO) 若狭高浜病院,福井県,2,219,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.jcho.go.jp/,https://www.jcho.go.jp/disclosure-procurement/,https://www2.njss.info/organizations/proc/7186
+地域医療機能推進機構(JCHO) 久留米総合病院,福岡県,2,511,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.jcho.go.jp/,https://www.jcho.go.jp/disclosure-procurement/,https://www2.njss.info/organizations/proc/7196
+地域医療機能推進機構(JCHO) 佐賀中部病院,佐賀県,2,445,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.jcho.go.jp/,https://www.jcho.go.jp/disclosure-procurement/,https://www2.njss.info/organizations/proc/7198
+水資源機構 総合技術センター,埼玉県,2,138,追加済み,調達ページを実アクセスで確認済み ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.water.go.jp/,https://www.water.go.jp/honsya/honsya/keiyaku/,https://www2.njss.info/organizations/proc/9230
+国立高等専門学校機構 秋田工業高等専門学校,秋田県,2,31,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.kosen-k.go.jp/,https://www.kosen-k.go.jp/wp/wp-content/uploads/2025/04/chotatsuhoushin.pdf,https://www2.njss.info/organizations/proc/9239
+国立高等専門学校機構 松江工業高等専門学校,島根県,2,9,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.kosen-k.go.jp/,https://www.kosen-k.go.jp/wp/wp-content/uploads/2025/04/chotatsuhoushin.pdf,https://www2.njss.info/organizations/proc/9240
+駐留軍等労働者労務管理機構(LMO),東京都,1,1031,追加済み,公式サイト・調達ページを自動確認,https://www.lmo.go.jp/,https://www.lmo.go.jp/procurement/index.html,https://www2.njss.info/organizations/proc/52
+国立高等専門学校機構 函館工業高等専門学校,北海道,1,400,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.kosen-k.go.jp/,https://www.kosen-k.go.jp/wp/wp-content/uploads/2025/04/chotatsuhoushin.pdf,https://www2.njss.info/organizations/proc/204
+国立高等専門学校機構 北九州工業高等専門学校,福岡県,1,402,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.kosen-k.go.jp/,https://www.kosen-k.go.jp/wp/wp-content/uploads/2025/04/chotatsuhoushin.pdf,https://www2.njss.info/organizations/proc/207
+国立高等専門学校機構 木更津工業高等専門学校,千葉県,1,400,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.kosen-k.go.jp/,https://www.kosen-k.go.jp/wp/wp-content/uploads/2025/04/chotatsuhoushin.pdf,https://www2.njss.info/organizations/proc/208
+国立高等専門学校機構 都城工業高等専門学校,宮崎県,1,367,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.kosen-k.go.jp/,https://www.kosen-k.go.jp/wp/wp-content/uploads/2025/04/chotatsuhoushin.pdf,https://www2.njss.info/organizations/proc/209
+北方領土問題対策協会,東京都,1,284,追加済み,公式サイト・調達ページを自動確認,https://www.hoppou.go.jp/,https://www.hoppou.go.jp/organization/procurement/index.html,https://www2.njss.info/organizations/proc/302
+国民生活センター,神奈川県,1,896,追加済み,公式サイト・調達ページを自動確認,https://www.kokusen.go.jp/,https://www.kokusen.go.jp/compe/index.html,https://www2.njss.info/organizations/proc/303
+住宅金融支援機構(JHF) 東北支店,宮城県,1,54,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.jhf.go.jp/,https://www.jhf.go.jp/financial_tender/index.html,https://www2.njss.info/organizations/proc/389
+住宅金融支援機構(JHF) 九州支店,福岡県,1,89,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.jhf.go.jp/,https://www.jhf.go.jp/financial_tender/index.html,https://www2.njss.info/organizations/proc/396
+酒類総合研究所,広島県,1,787,追加済み,公式サイト・調達ページを自動確認,https://www.nrib.go.jp/,https://www.nrib.go.jp/gui/bid/bid01.html,https://www2.njss.info/organizations/proc/401
+空港周辺整備機構,福岡県,1,314,追加済み,調達ページを実アクセスで確認済み,https://www.oeia.or.jp/,https://www.oeia.or.jp/nyusatu/one.cgi,https://www2.njss.info/organizations/proc/453
+水資源機構 荒川ダム総合管理所,埼玉県,1,359,追加済み,調達ページを実アクセスで確認済み ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.water.go.jp/,https://www.water.go.jp/honsya/honsya/keiyaku/,https://www2.njss.info/organizations/proc/458
+水資源機構 利根川上流総合管理所 群馬用水管理所,群馬県,1,215,追加済み,調達ページを実アクセスで確認済み ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.water.go.jp/,https://www.water.go.jp/honsya/honsya/keiyaku/,https://www2.njss.info/organizations/proc/459
+水資源機構 関西・吉野川支社淀川本部,大阪府,1,376,追加済み,調達ページを実アクセスで確認済み ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.water.go.jp/,https://www.water.go.jp/honsya/honsya/keiyaku/,https://www2.njss.info/organizations/proc/479
+水資源機構 関西・吉野川支社淀川本部 丹生事務所,滋賀県,1,104,追加済み,調達ページを実アクセスで確認済み ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.water.go.jp/,https://www.water.go.jp/honsya/honsya/keiyaku/,https://www2.njss.info/organizations/proc/481
+水資源機構 筑後川局 筑後川上流総合管理所 寺内ダム管理所,福岡県,1,49,追加済み,調達ページを実アクセスで確認済み ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.water.go.jp/,https://www.water.go.jp/honsya/honsya/keiyaku/,https://www2.njss.info/organizations/proc/495
+労働政策研究・研修機構(JILPT),東京都,1,1394,追加済み,公式サイト・調達ページを自動確認,https://www.jil.go.jp/,https://www.jil.go.jp/information/nyusatsu/index.html,https://www2.njss.info/organizations/proc/607
+経済産業研究所(RIETI),東京都,1,762,追加済み,公式サイト・調達ページを自動確認,https://www.rieti.go.jp/,https://www.rieti.go.jp/jp/public-offer.html,https://www2.njss.info/organizations/proc/726
+国立病院機構 北海道東北グループ 盛岡医療センター,岩手県,1,457,追加済み,調達ページを実アクセスで確認済み ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://nho.hosp.go.jp/,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/772
+国立病院機構 北海道東北グループ 釜石病院,岩手県,1,352,追加済み,調達ページを実アクセスで確認済み ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://nho.hosp.go.jp/,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/775
+国立病院機構 東海北陸グループ 東名古屋病院,愛知県,1,1077,追加済み,調達ページを実アクセスで確認済み ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://nho.hosp.go.jp/,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/783
+国立病院機構 北海道東北グループ いわき病院,福島県,1,608,追加済み,調達ページを実アクセスで確認済み ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://nho.hosp.go.jp/,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/789
+国立病院機構 東海北陸グループ 三重病院,三重県,1,905,追加済み,調達ページを実アクセスで確認済み ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://nho.hosp.go.jp/,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/793
+国立病院機構 関東信越グループ 霞ヶ浦医療センター,茨城県,1,1025,追加済み,調達ページを実アクセスで確認済み ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://nho.hosp.go.jp/,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/802
+国立病院機構 中国四国グループ 米子医療センター,鳥取県,1,832,追加済み,調達ページを実アクセスで確認済み ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://nho.hosp.go.jp/,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/808
+国立病院機構 関東信越グループ 新潟病院,新潟県,1,1201,追加済み,調達ページを実アクセスで確認済み ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://nho.hosp.go.jp/,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/809
+国立病院機構 関東信越グループ 栃木医療センター,栃木県,1,1172,追加済み,調達ページを実アクセスで確認済み ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://nho.hosp.go.jp/,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/810
+国立病院機構 中国四国グループ 松江医療センター,島根県,1,970,追加済み,調達ページを実アクセスで確認済み ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://nho.hosp.go.jp/,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/812
+国立病院機構 関東信越グループ 宇都宮病院,栃木県,1,751,追加済み,調達ページを実アクセスで確認済み ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://nho.hosp.go.jp/,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/813
+国立病院機構 関東信越グループ さいがた医療センター,新潟県,1,888,追加済み,調達ページを実アクセスで確認済み ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://nho.hosp.go.jp/,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/814
+国立病院機構 関東信越グループ 甲府病院,山梨県,1,912,追加済み,調達ページを実アクセスで確認済み ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://nho.hosp.go.jp/,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/817
+国立病院機構 九州グループ 大牟田病院,福岡県,1,1021,追加済み,調達ページを実アクセスで確認済み ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://nho.hosp.go.jp/,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/827
+国立病院機構 近畿グループ 東近江総合医療センター,滋賀県,1,962,追加済み,調達ページを実アクセスで確認済み ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://nho.hosp.go.jp/,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/828
+国立病院機構 関東信越グループ 西埼玉中央病院,埼玉県,1,1021,追加済み,調達ページを実アクセスで確認済み ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://nho.hosp.go.jp/,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/830
+国立病院機構 九州グループ 福岡東医療センター,福岡県,1,1504,追加済み,調達ページを実アクセスで確認済み ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://nho.hosp.go.jp/,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/833
+国立病院機構 関東信越グループ 東埼玉病院,埼玉県,1,977,追加済み,調達ページを実アクセスで確認済み ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://nho.hosp.go.jp/,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/838
+国立病院機構 九州グループ 肥前精神医療センター,佐賀県,1,963,追加済み,調達ページを実アクセスで確認済み ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://nho.hosp.go.jp/,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/844
+国立病院機構 近畿グループ 南京都病院,京都府,1,818,追加済み,調達ページを実アクセスで確認済み ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://nho.hosp.go.jp/,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/848
+国立病院機構 関東信越グループ 千葉東病院,千葉県,1,936,追加済み,調達ページを実アクセスで確認済み ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://nho.hosp.go.jp/,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/849
+国立病院機構 関東信越グループ 下志津病院,千葉県,1,1055,追加済み,調達ページを実アクセスで確認済み ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://nho.hosp.go.jp/,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/855
+国立病院機構 中国四国グループ 関門医療センター,山口県,1,1124,追加済み,調達ページを実アクセスで確認済み ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://nho.hosp.go.jp/,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/856
+国立病院機構 近畿グループ 近畿中央呼吸器センター,大阪府,1,1042,追加済み,調達ページを実アクセスで確認済み ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://nho.hosp.go.jp/,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/861
+国立病院機構 東海北陸グループ 医王病院,石川県,1,917,追加済み,調達ページを実アクセスで確認済み ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://nho.hosp.go.jp/,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/862
+国立病院機構 関東信越グループ 災害医療センター,東京都,1,1870,追加済み,調達ページを実アクセスで確認済み ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://nho.hosp.go.jp/,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/863
+国立病院機構 近畿グループ 大阪南医療センター,大阪府,1,1463,追加済み,調達ページを実アクセスで確認済み ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://nho.hosp.go.jp/,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/868
+国立病院機構 九州グループ 長崎医療センター,長崎県,1,1958,追加済み,調達ページを実アクセスで確認済み ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://nho.hosp.go.jp/,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/873
+国立病院機構 近畿グループ 兵庫あおの病院,兵庫県,1,727,追加済み,調達ページを実アクセスで確認済み ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://nho.hosp.go.jp/,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/876
+国立病院機構 九州グループ 長崎川棚医療センター,長崎県,1,1029,追加済み,調達ページを実アクセスで確認済み ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://nho.hosp.go.jp/,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/878
+国立病院機構 九州グループ 琉球病院,沖縄県,1,584,追加済み,調達ページを実アクセスで確認済み ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://nho.hosp.go.jp/,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/883
+国立病院機構 近畿グループ やまと精神医療センター,奈良県,1,495,追加済み,調達ページを実アクセスで確認済み ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://nho.hosp.go.jp/,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/887
+国立病院機構 九州グループ 熊本再春医療センター,熊本県,1,1117,追加済み,調達ページを実アクセスで確認済み ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://nho.hosp.go.jp/,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/895
+国立病院機構 九州グループ 宮崎病院,宮崎県,1,595,追加済み,調達ページを実アクセスで確認済み ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://nho.hosp.go.jp/,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/897
+国立病院機構 九州グループ 宮崎東病院,宮崎県,1,680,追加済み,調達ページを実アクセスで確認済み ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://nho.hosp.go.jp/,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/901
+国立病院機構 中国四国グループ とくしま医療センター西病院,徳島県,1,739,追加済み,調達ページを実アクセスで確認済み ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://nho.hosp.go.jp/,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/906
+国立病院機構 中国四国グループ 四国こどもとおとなの医療センター,香川県,1,1381,追加済み,調達ページを実アクセスで確認済み ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://nho.hosp.go.jp/,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/909
+国立病院機構 中国四国グループ 四国がんセンター,愛媛県,1,1673,追加済み,調達ページを実アクセスで確認済み ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://nho.hosp.go.jp/,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/910
+家畜改良センター(NLBC) 奥羽牧場,青森県,1,617,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.nlbc.go.jp/,https://www.nlbc.go.jp/chotatsujoho/index.html,https://www2.njss.info/organizations/proc/1435
+家畜改良センター(NLBC) 茨城牧場 長野支場,長野県,1,194,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.nlbc.go.jp/,https://www.nlbc.go.jp/chotatsujoho/index.html,https://www2.njss.info/organizations/proc/1438
+家畜改良センター(NLBC) 岡崎牧場,愛知県,1,222,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.nlbc.go.jp/,https://www.nlbc.go.jp/chotatsujoho/index.html,https://www2.njss.info/organizations/proc/1439
+家畜改良センター(NLBC) 兵庫牧場,兵庫県,1,359,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.nlbc.go.jp/,https://www.nlbc.go.jp/chotatsujoho/index.html,https://www2.njss.info/organizations/proc/1440
+家畜改良センター(NLBC) 宮崎牧場,宮崎県,1,809,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.nlbc.go.jp/,https://www.nlbc.go.jp/chotatsujoho/index.html,https://www2.njss.info/organizations/proc/1443
+労働者健康安全機構 福島労災病院,福島県,1,1123,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.johas.go.jp/,https://www.johas.go.jp/procurement/,https://www2.njss.info/organizations/proc/1466
+労働者健康安全機構 中部労災病院,愛知県,1,1445,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.johas.go.jp/,https://www.johas.go.jp/procurement/,https://www2.njss.info/organizations/proc/1476
+労働者健康安全機構 長崎労災病院,長崎県,1,703,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.johas.go.jp/,https://www.johas.go.jp/procurement/,https://www2.njss.info/organizations/proc/1489
+労働者健康安全機構 千葉労災看護専門学校,千葉県,1,26,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.johas.go.jp/,https://www.johas.go.jp/procurement/,https://www2.njss.info/organizations/proc/1556
+労働者健康安全機構 横浜労災看護専門学校,神奈川県,1,75,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.johas.go.jp/,https://www.johas.go.jp/procurement/,https://www2.njss.info/organizations/proc/1557
+宇宙航空研究開発機構(JAXA) 筑波宇宙センター,茨城県,1,55,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.jaxa.jp/,https://stage.tksc.jaxa.jp/compe/index_j.html,https://www2.njss.info/organizations/proc/2489
+国立病院機構 北海道東北グループ 北海道医療センター,北海道,1,880,追加済み,調達ページを実アクセスで確認済み ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://nho.hosp.go.jp/,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/4203
+高齢・障害・求職者雇用支援機構 静岡支部,静岡県,1,2579,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.jeed.go.jp/,https://www.jeed.go.jp/jeed/information/index.html,https://www2.njss.info/organizations/proc/4412
+高齢・障害・求職者雇用支援機構 三重支部,三重県,1,797,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.jeed.go.jp/,https://www.jeed.go.jp/jeed/information/index.html,https://www2.njss.info/organizations/proc/4414
+国立文化財機構(NICH) 京都国立博物館,京都府,1,427,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.nich.go.jp/,https://www.nich.go.jp/information/nyusatsu/,https://www2.njss.info/organizations/proc/4507
+高齢・障害・求職者雇用支援機構 青森支部,青森県,1,938,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.jeed.go.jp/,https://www.jeed.go.jp/jeed/information/index.html,https://www2.njss.info/organizations/proc/5792
+高齢・障害・求職者雇用支援機構 群馬支部,群馬県,1,1022,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.jeed.go.jp/,https://www.jeed.go.jp/jeed/information/index.html,https://www2.njss.info/organizations/proc/5800
+高齢・障害・求職者雇用支援機構 滋賀支部,滋賀県,1,789,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.jeed.go.jp/,https://www.jeed.go.jp/jeed/information/index.html,https://www2.njss.info/organizations/proc/5849
+高齢・障害・求職者雇用支援機構 京都支部,京都府,1,1307,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.jeed.go.jp/,https://www.jeed.go.jp/jeed/information/index.html,https://www2.njss.info/organizations/proc/5850
+高齢・障害・求職者雇用支援機構 鳥取支部,鳥取県,1,740,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.jeed.go.jp/,https://www.jeed.go.jp/jeed/information/index.html,https://www2.njss.info/organizations/proc/5856
+高齢・障害・求職者雇用支援機構 香川支部,香川県,1,603,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.jeed.go.jp/,https://www.jeed.go.jp/jeed/information/index.html,https://www2.njss.info/organizations/proc/5863
+国立美術館 京都国立近代美術館,京都府,1,159,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.artmuseums.go.jp/,https://www.artmuseums.go.jp/offer,https://www2.njss.info/organizations/proc/6293
+地域医療機能推進機構(JCHO) 滋賀病院,滋賀県,1,513,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.jcho.go.jp/,https://www.jcho.go.jp/disclosure-procurement/,https://www2.njss.info/organizations/proc/7142
+地域医療機能推進機構(JCHO) 京都鞍馬口医療センター,京都府,1,512,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.jcho.go.jp/,https://www.jcho.go.jp/disclosure-procurement/,https://www2.njss.info/organizations/proc/7143
+地域医療機能推進機構(JCHO) 大阪病院,大阪府,1,868,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.jcho.go.jp/,https://www.jcho.go.jp/disclosure-procurement/,https://www2.njss.info/organizations/proc/7144
+地域医療機能推進機構(JCHO) 大阪みなと中央病院,大阪府,1,369,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.jcho.go.jp/,https://www.jcho.go.jp/disclosure-procurement/,https://www2.njss.info/organizations/proc/7145
+地域医療機能推進機構(JCHO) 大和郡山病院,奈良県,1,301,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.jcho.go.jp/,https://www.jcho.go.jp/disclosure-procurement/,https://www2.njss.info/organizations/proc/7148
+地域医療機能推進機構(JCHO) 玉造病院,島根県,1,355,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.jcho.go.jp/,https://www.jcho.go.jp/disclosure-procurement/,https://www2.njss.info/organizations/proc/7149
+地域医療機能推進機構(JCHO) 東京高輪病院,東京都,1,529,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.jcho.go.jp/,https://www.jcho.go.jp/disclosure-procurement/,https://www2.njss.info/organizations/proc/7164
+地域医療機能推進機構(JCHO) 東京城東病院,東京都,1,391,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.jcho.go.jp/,https://www.jcho.go.jp/disclosure-procurement/,https://www2.njss.info/organizations/proc/7167
+地域医療機能推進機構(JCHO) 東京蒲田医療センター,東京都,1,363,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.jcho.go.jp/,https://www.jcho.go.jp/disclosure-procurement/,https://www2.njss.info/organizations/proc/7168
+地域医療機能推進機構(JCHO) 相模野病院,神奈川県,1,461,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.jcho.go.jp/,https://www.jcho.go.jp/disclosure-procurement/,https://www2.njss.info/organizations/proc/7171
+地域医療機能推進機構(JCHO) 湯河原病院,神奈川県,1,366,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.jcho.go.jp/,https://www.jcho.go.jp/disclosure-procurement/,https://www2.njss.info/organizations/proc/7172
+地域医療機能推進機構(JCHO) 山梨病院,山梨県,1,616,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.jcho.go.jp/,https://www.jcho.go.jp/disclosure-procurement/,https://www2.njss.info/organizations/proc/7177
+地域医療機能推進機構(JCHO) 中京病院,愛知県,1,1127,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.jcho.go.jp/,https://www.jcho.go.jp/disclosure-procurement/,https://www2.njss.info/organizations/proc/7181
+地域医療機能推進機構(JCHO) 金沢病院,石川県,1,589,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.jcho.go.jp/,https://www.jcho.go.jp/disclosure-procurement/,https://www2.njss.info/organizations/proc/7184
+地域医療機能推進機構(JCHO) 登別病院,北海道,1,205,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.jcho.go.jp/,https://www.jcho.go.jp/disclosure-procurement/,https://www2.njss.info/organizations/proc/7189
+地域医療機能推進機構(JCHO) 湯布院病院,大分県,1,255,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.jcho.go.jp/,https://www.jcho.go.jp/disclosure-procurement/,https://www2.njss.info/organizations/proc/7204
+労働者健康安全機構 神戸労災病院,兵庫県,1,117,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.johas.go.jp/,https://www.johas.go.jp/procurement/,https://www2.njss.info/organizations/proc/9142
+国立美術館 国立映画アーカイブ,東京都,1,15,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.artmuseums.go.jp/,https://www.artmuseums.go.jp/offer,https://www2.njss.info/organizations/proc/9280
+国立高等専門学校機構 茨城工業高等専門学校,茨城県,0,349,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.kosen-k.go.jp/,https://www.kosen-k.go.jp/wp/wp-content/uploads/2025/04/chotatsuhoushin.pdf,https://www2.njss.info/organizations/proc/205
+国立高等専門学校機構 一関工業高等専門学校,岩手県,0,415,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.kosen-k.go.jp/,https://www.kosen-k.go.jp/wp/wp-content/uploads/2025/04/chotatsuhoushin.pdf,https://www2.njss.info/organizations/proc/206
+国立高等専門学校機構 佐世保工業高等専門学校,長崎県,0,317,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.kosen-k.go.jp/,https://www.kosen-k.go.jp/wp/wp-content/uploads/2025/04/chotatsuhoushin.pdf,https://www2.njss.info/organizations/proc/212
+国立高等専門学校機構 【［閉鎖］詫間電波工業高等専門学校】,香川県,0,29,追加不可,廃止・閉鎖済みの機関（NJSS上の過去データのみ・新規案件なし）,,,https://www2.njss.info/organizations/proc/213
+国立文化財機構(NICH),東京都,0,3046,追加済み,公式サイト・調達ページを自動確認,https://www.nich.go.jp/,https://www.nich.go.jp/information/nyusatsu/,https://www2.njss.info/organizations/proc/228
+放送大学学園 放送大学 【［閉鎖］メディア教育開発センター(NIME)】,千葉県,0,12,追加不可,廃止・閉鎖済みの機関（NJSS上の過去データのみ・新規案件なし）,,,https://www2.njss.info/organizations/proc/229
+［閉鎖］国立女性教育会館(NWEC),埼玉県,0,335,追加不可,廃止・閉鎖済みの機関（NJSS上の過去データのみ・新規案件なし）,,,https://www2.njss.info/organizations/proc/235
+理化学研究所 筑波事業所,茨城県,0,3148,追加済み,既存の監視機関シートに登録あり（URL流用）,https://choutatsu.riken.jp/,https://choutatsu.riken.jp/r-world/info/procurement/index/index/,https://www2.njss.info/organizations/proc/237
+理化学研究所 播磨事業所,兵庫県,0,9637,追加済み,既存の監視機関シートに登録あり（URL流用）,https://choutatsu.riken.jp/,https://choutatsu.riken.jp/r-world/info/procurement/index/index/,https://www2.njss.info/organizations/proc/238
+理化学研究所 横浜事業所,神奈川県,0,7924,追加済み,既存の監視機関シートに登録あり（URL流用）,https://choutatsu.riken.jp/,https://choutatsu.riken.jp/r-world/info/procurement/index/index/,https://www2.njss.info/organizations/proc/239
+理化学研究所 神戸事業所,兵庫県,0,5301,追加済み,既存の監視機関シートに登録あり（URL流用）,https://choutatsu.riken.jp/,https://choutatsu.riken.jp/r-world/info/procurement/index/index/,https://www2.njss.info/organizations/proc/240
+農業・食品産業技術総合研究機構(NARO) 【［閉鎖］種苗管理センター(NCSS)】,茨城県,0,413,追加不可,廃止・閉鎖済みの機関（NJSS上の過去データのみ・新規案件なし）,,,https://www2.njss.info/organizations/proc/291
+農業・食品産業技術総合研究機構(NARO) 【［閉鎖］農業環境技術研究所】,茨城県,0,1004,追加不可,廃止・閉鎖済みの機関（NJSS上の過去データのみ・新規案件なし）,,,https://www2.njss.info/organizations/proc/292
+農業・食品産業技術総合研究機構(NARO) 【［閉鎖］農業生物資源研究所(NIAS)】,茨城県,0,2345,追加不可,廃止・閉鎖済みの機関（NJSS上の過去データのみ・新規案件なし）,,,https://www2.njss.info/organizations/proc/293
+水産研究・教育機構 水産大学校,山口県,0,435,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.fra.go.jp/,https://www.fra.go.jp/home/keiyaku/,https://www2.njss.info/organizations/proc/295
+［閉鎖］平和祈念事業特別基金,東京都,0,176,追加不可,廃止・閉鎖済みの機関（NJSS上の過去データのみ・新規案件なし）,,,https://www2.njss.info/organizations/proc/359
+統計センター(NSTAC),東京都,0,841,追加済み,公式サイト・調達ページを自動確認,https://www.nstac.go.jp/,https://www.nstac.go.jp/about/supply/koukoku/,https://www2.njss.info/organizations/proc/360
+［閉鎖］日本万国博覧会記念機構,大阪府,0,496,追加不可,廃止・閉鎖済みの機関（NJSS上の過去データのみ・新規案件なし）,,,https://www2.njss.info/organizations/proc/386
+住宅金融支援機構(JHF) 北海道支店,北海道,0,44,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.jhf.go.jp/,https://www.jhf.go.jp/financial_tender/index.html,https://www2.njss.info/organizations/proc/388
+住宅金融支援機構(JHF) 首都圏支店,東京都,0,3,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.jhf.go.jp/,https://www.jhf.go.jp/financial_tender/index.html,https://www2.njss.info/organizations/proc/390
+住宅金融支援機構(JHF) 東海支店,愛知県,0,71,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.jhf.go.jp/,https://www.jhf.go.jp/financial_tender/index.html,https://www2.njss.info/organizations/proc/391
+住宅金融支援機構(JHF) 近畿支店,大阪府,0,115,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.jhf.go.jp/,https://www.jhf.go.jp/financial_tender/index.html,https://www2.njss.info/organizations/proc/392
+住宅金融支援機構(JHF) 北陸支店,石川県,0,18,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.jhf.go.jp/,https://www.jhf.go.jp/financial_tender/index.html,https://www2.njss.info/organizations/proc/393
+住宅金融支援機構(JHF) 四国支店,香川県,0,26,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.jhf.go.jp/,https://www.jhf.go.jp/financial_tender/index.html,https://www2.njss.info/organizations/proc/394
+住宅金融支援機構(JHF) 中国支店,広島県,0,47,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.jhf.go.jp/,https://www.jhf.go.jp/financial_tender/index.html,https://www2.njss.info/organizations/proc/395
+住宅金融支援機構(JHF) 南九州支店,熊本県,0,25,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.jhf.go.jp/,https://www.jhf.go.jp/financial_tender/index.html,https://www2.njss.info/organizations/proc/397
+海技教育機構 【［閉鎖］航海訓練所(NIST)】,神奈川県,0,926,追加不可,廃止・閉鎖済みの機関（NJSS上の過去データのみ・新規案件なし）,,,https://www2.njss.info/organizations/proc/444
+海上災害防止センター(MDPC),神奈川県,0,624,追加済み,公式サイト・調達ページを自動確認,https://www.mdpc.or.jp/,https://www.mdpc.or.jp/tender/index.html,https://www2.njss.info/organizations/proc/446
+空港周辺整備機構 【［閉鎖］大阪国際空港事業本部】,大阪府,0,84,追加不可,廃止・閉鎖済みの機関（NJSS上の過去データのみ・新規案件なし）,,,https://www2.njss.info/organizations/proc/452
+水資源機構 渡良瀬川ダム総合管理所 思川開発建設所,栃木県,0,400,追加済み,調達ページを実アクセスで確認済み ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.water.go.jp/,https://www.water.go.jp/honsya/honsya/keiyaku/,https://www2.njss.info/organizations/proc/461
+水資源機構 【［閉鎖］武蔵水路改築建設所】,埼玉県,0,85,追加不可,廃止・閉鎖済みの機関（NJSS上の過去データのみ・新規案件なし）,,,https://www2.njss.info/organizations/proc/462
+水資源機構 利根川上流総合管理所 下久保ダム管理所,埼玉県,0,110,追加済み,調達ページを実アクセスで確認済み ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.water.go.jp/,https://www.water.go.jp/honsya/honsya/keiyaku/,https://www2.njss.info/organizations/proc/466
+水資源機構 利根川下流総合管理所 霞ヶ浦用水管理所,茨城県,0,61,追加済み,調達ページを実アクセスで確認済み ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.water.go.jp/,https://www.water.go.jp/honsya/honsya/keiyaku/,https://www2.njss.info/organizations/proc/468
+水資源機構 中部支社 木曽川上流ダム総合管理所 岩屋ダム管理所,岐阜県,0,181,追加済み,調達ページを実アクセスで確認済み ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.water.go.jp/,https://www.water.go.jp/honsya/honsya/keiyaku/,https://www2.njss.info/organizations/proc/474
+水資源機構 中部支社 木曽川中下流用水総合管理所 三重用水管理所,三重県,0,522,追加済み,調達ページを実アクセスで確認済み ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.water.go.jp/,https://www.water.go.jp/honsya/honsya/keiyaku/,https://www2.njss.info/organizations/proc/478
+水資源機構 関西・吉野川支社淀川本部 木津川ダム総合管理所 川上ダム管理所,三重県,0,425,追加済み,調達ページを実アクセスで確認済み ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.water.go.jp/,https://www.water.go.jp/honsya/honsya/keiyaku/,https://www2.njss.info/organizations/proc/480
+水資源機構 関西・吉野川支社淀川本部 桂川・猪名川ダム総合管理所,京都府,0,194,追加済み,調達ページを実アクセスで確認済み ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.water.go.jp/,https://www.water.go.jp/honsya/honsya/keiyaku/,https://www2.njss.info/organizations/proc/485
+水資源機構 関西・吉野川支社吉野川本部,香川県,0,83,追加済み,調達ページを実アクセスで確認済み ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.water.go.jp/,https://www.water.go.jp/honsya/honsya/keiyaku/,https://www2.njss.info/organizations/proc/486
+水資源機構 関西・吉野川支社吉野川本部 吉野川上流総合管理所 香川用水管理所,香川県,0,149,追加済み,調達ページを実アクセスで確認済み ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.water.go.jp/,https://www.water.go.jp/honsya/honsya/keiyaku/,https://www2.njss.info/organizations/proc/487
+水資源機構 関西・吉野川支社吉野川本部 吉野川下流総合管理所 旧吉野川河口堰管理所,徳島県,0,262,追加済み,調達ページを実アクセスで確認済み ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.water.go.jp/,https://www.water.go.jp/honsya/honsya/keiyaku/,https://www2.njss.info/organizations/proc/489
+水資源機構 筑後川局 筑後川上流総合管理所 両筑平野用水管理所,福岡県,0,62,追加済み,調達ページを実アクセスで確認済み ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.water.go.jp/,https://www.water.go.jp/honsya/honsya/keiyaku/,https://www2.njss.info/organizations/proc/491
+水資源機構 筑後川局 筑後川上流総合管理所 大山ダム管理所,大分県,0,35,追加済み,調達ページを実アクセスで確認済み ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.water.go.jp/,https://www.water.go.jp/honsya/honsya/keiyaku/,https://www2.njss.info/organizations/proc/492
+水資源機構 筑後川局 筑後川上流総合管理所 小石原川ダム管理所,福岡県,0,246,追加済み,調達ページを実アクセスで確認済み ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.water.go.jp/,https://www.water.go.jp/honsya/honsya/keiyaku/,https://www2.njss.info/organizations/proc/493
+水資源機構 筑後川局 筑後川下流総合管理所 筑後大堰管理室,福岡県,0,147,追加済み,調達ページを実アクセスで確認済み ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.water.go.jp/,https://www.water.go.jp/honsya/honsya/keiyaku/,https://www2.njss.info/organizations/proc/496
+［閉鎖］雇用・能力開発機構,神奈川県,0,3440,追加不可,廃止・閉鎖済みの機関（NJSS上の過去データのみ・新規案件なし）,,,https://www2.njss.info/organizations/proc/603
+医薬基盤・健康・栄養研究所(NIBIOHN) 【［閉鎖］国立健康・栄養研究所】,東京都,0,63,追加不可,廃止・閉鎖済みの機関（NJSS上の過去データのみ・新規案件なし）,,,https://www2.njss.info/organizations/proc/610
+国立健康危機管理研究機構(JIHS) 国立国際医療センター,東京都,0,7538,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.jihs.go.jp/,https://www.jihs.go.jp/content12/20250327173843.html,https://www2.njss.info/organizations/proc/687
+環境省(MOE) 原子力規制委員会 【［閉鎖］原子力安全基盤機構(JNES)】,東京都,0,2860,追加不可,廃止・閉鎖済みの機関（NJSS上の過去データのみ・新規案件なし）,,,https://www2.njss.info/organizations/proc/723
+国立病院機構 北海道東北グループ,宮城県,0,191,追加済み,調達ページを実アクセスで確認済み ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://nho.hosp.go.jp/,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/761
+国立病院機構 北海道東北グループ 札幌南病院,北海道,0,31,追加済み,調達ページを実アクセスで確認済み ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://nho.hosp.go.jp/,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/763
+国立病院機構 北海道東北グループ 西札幌病院,北海道,0,144,追加済み,調達ページを実アクセスで確認済み ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://nho.hosp.go.jp/,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/764
+国立病院機構 北海道東北グループ 函館医療センター,北海道,0,717,追加済み,調達ページを実アクセスで確認済み ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://nho.hosp.go.jp/,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/765
+国立病院機構 北海道東北グループ 旭川医療センター,北海道,0,891,追加済み,調達ページを実アクセスで確認済み ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://nho.hosp.go.jp/,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/766
+国立病院機構 北海道東北グループ 帯広病院,北海道,0,768,追加済み,調達ページを実アクセスで確認済み ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://nho.hosp.go.jp/,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/767
+国立病院機構 北海道東北グループ 【［閉鎖］八雲病院】,北海道,0,327,追加不可,廃止・閉鎖済みの機関（NJSS上の過去データのみ・新規案件なし）,,,https://www2.njss.info/organizations/proc/768
+国立病院機構 北海道東北グループ 八戸病院,青森県,0,324,追加済み,調達ページを実アクセスで確認済み ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://nho.hosp.go.jp/,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/770
+国立病院機構 北海道東北グループ 青森病院,青森県,0,590,追加済み,調達ページを実アクセスで確認済み ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://nho.hosp.go.jp/,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/771
+国立病院機構 北海道東北グループ 花巻病院,岩手県,0,439,追加済み,調達ページを実アクセスで確認済み ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://nho.hosp.go.jp/,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/773
+国立病院機構 北海道東北グループ 仙台西多賀病院,宮城県,0,872,追加済み,調達ページを実アクセスで確認済み ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://nho.hosp.go.jp/,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/777
+国立病院機構 北海道東北グループ 米沢病院,山形県,0,477,追加済み,調達ページを実アクセスで確認済み ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://nho.hosp.go.jp/,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/781
+国立病院機構 北海道東北グループ 福島病院,福島県,0,570,追加済み,調達ページを実アクセスで確認済み ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://nho.hosp.go.jp/,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/784
+国立病院機構 関東信越グループ 箱根病院,神奈川県,0,567,追加済み,調達ページを実アクセスで確認済み ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://nho.hosp.go.jp/,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/785
+国立病院機構 九州グループ,福岡県,0,434,追加済み,調達ページを実アクセスで確認済み ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://nho.hosp.go.jp/,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/786
+国立病院機構 東海北陸グループ 豊橋医療センター,愛知県,0,1103,追加済み,調達ページを実アクセスで確認済み ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://nho.hosp.go.jp/,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/790
+国立病院機構 関東信越グループ,東京都,0,193,追加済み,調達ページを実アクセスで確認済み ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://nho.hosp.go.jp/,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/792
+国立病院機構 中国四国グループ,広島県,0,313,追加済み,調達ページを実アクセスで確認済み ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://nho.hosp.go.jp/,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/797
+国立病院機構 中国四国グループ 鳥取医療センター,鳥取県,0,778,追加済み,調達ページを実アクセスで確認済み ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://nho.hosp.go.jp/,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/803
+国立病院機構 東海北陸グループ 榊原病院,三重県,0,289,追加済み,調達ページを実アクセスで確認済み ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://nho.hosp.go.jp/,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/804
+国立病院機構 近畿グループ,大阪府,0,256,追加済み,調達ページを実アクセスで確認済み ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://nho.hosp.go.jp/,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/811
+国立病院機構 中国四国グループ 浜田医療センター,島根県,0,1096,追加済み,調達ページを実アクセスで確認済み ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://nho.hosp.go.jp/,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/818
+国立病院機構 関東信越グループ  【［閉鎖］沼田病院】,群馬県,0,572,追加不可,廃止・閉鎖済みの機関（NJSS上の過去データのみ・新規案件なし）,,,https://www2.njss.info/organizations/proc/820
+国立病院機構 関東信越グループ まつもと医療センター,長野県,0,1193,追加済み,調達ページを実アクセスで確認済み ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://nho.hosp.go.jp/,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/824
+国立病院機構 中国四国グループ 南岡山医療センター,岡山県,0,778,追加済み,調達ページを実アクセスで確認済み ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://nho.hosp.go.jp/,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/826
+国立病院機構 関東信越グループ まつもと医療センター 【［閉鎖］松本病院・中信松本病院】,長野県,0,5,追加不可,廃止・閉鎖済みの機関（NJSS上の過去データのみ・新規案件なし）,,,https://www2.njss.info/organizations/proc/829
+国立病院機構 近畿グループ 紫香楽病院,滋賀県,0,442,追加済み,調達ページを実アクセスで確認済み ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://nho.hosp.go.jp/,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/832
+国立病院機構 近畿グループ 宇多野病院,京都府,0,1070,追加済み,調達ページを実アクセスで確認済み ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://nho.hosp.go.jp/,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/841
+国立病院機構 関東信越グループ 千葉医療センター,千葉県,0,1012,追加済み,調達ページを実アクセスで確認済み ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://nho.hosp.go.jp/,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/843
+国立病院機構 東海北陸グループ,愛知県,0,364,追加済み,調達ページを実アクセスで確認済み ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://nho.hosp.go.jp/,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/847
+国立病院機構 中国四国グループ 賀茂精神医療センター,広島県,0,497,追加済み,調達ページを実アクセスで確認済み ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://nho.hosp.go.jp/,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/850
+国立病院機構 東海北陸グループ 富山病院,富山県,0,836,追加済み,調達ページを実アクセスで確認済み ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://nho.hosp.go.jp/,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/851
+国立病院機構 関東信越グループ 下総精神医療センター,千葉県,0,569,追加済み,調達ページを実アクセスで確認済み ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://nho.hosp.go.jp/,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/853
+国立病院機構 東海北陸グループ 七尾病院,石川県,0,667,追加済み,調達ページを実アクセスで確認済み ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://nho.hosp.go.jp/,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/866
+国立病院機構 関東信越グループ 村山医療センター,東京都,0,957,追加済み,調達ページを実アクセスで確認済み ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://nho.hosp.go.jp/,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/871
+国立病院機構 関東信越グループ 【［閉鎖］南横浜病院】,神奈川県,0,0,追加不可,廃止・閉鎖済みの機関（NJSS上の過去データのみ・新規案件なし）,,,https://www2.njss.info/organizations/proc/880
+国立病院機構 東海北陸グループ 【［閉鎖］ 静岡富士病院】,静岡県,0,254,追加不可,廃止・閉鎖済みの機関（NJSS上の過去データのみ・新規案件なし）,,,https://www2.njss.info/organizations/proc/881
+国立病院機構 近畿グループ 奈良医療センター,奈良県,0,782,追加済み,調達ページを実アクセスで確認済み ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://nho.hosp.go.jp/,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/884
+国立病院機構 東海北陸グループ 天竜病院,静岡県,0,1034,追加済み,調達ページを実アクセスで確認済み ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://nho.hosp.go.jp/,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/885
+国立病院機構 九州グループ 沖縄病院,沖縄県,0,710,追加済み,調達ページを実アクセスで確認済み ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://nho.hosp.go.jp/,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/886
+国立病院機構 九州グループ 鹿児島医療センター,鹿児島県,0,1419,追加済み,調達ページを実アクセスで確認済み ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://nho.hosp.go.jp/,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/894
+国立病院機構 九州グループ 大分医療センター,大分県,0,1050,追加済み,調達ページを実アクセスで確認済み ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://nho.hosp.go.jp/,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/896
+国立病院機構 九州グループ 都城医療センター,宮崎県,0,1292,追加済み,調達ページを実アクセスで確認済み ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://nho.hosp.go.jp/,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/899
+国立病院機構 中国四国グループ 柳井医療センター,山口県,0,676,追加済み,調達ページを実アクセスで確認済み ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://nho.hosp.go.jp/,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/904
+国立病院機構 中国四国グループ 高松医療センター,香川県,0,533,追加済み,調達ページを実アクセスで確認済み ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://nho.hosp.go.jp/,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/907
+国立病院機構 中国四国グループ 【［閉鎖］善通寺病院】,香川県,0,378,追加不可,廃止・閉鎖済みの機関（NJSS上の過去データのみ・新規案件なし）,,,https://www2.njss.info/organizations/proc/908
+国立病院機構 中国四国グループ 愛媛医療センター,愛媛県,0,844,追加済み,調達ページを実アクセスで確認済み ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://nho.hosp.go.jp/,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/911
+国立病院機構 中国四国グループ 高知病院,高知県,0,1269,追加済み,調達ページを実アクセスで確認済み ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://nho.hosp.go.jp/,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/912
+国立文化財機構(NICH) 九州国立博物館,福岡県,0,716,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.nich.go.jp/,https://www.nich.go.jp/information/nyusatsu/,https://www2.njss.info/organizations/proc/1098
+国立美術館 国立新美術館(NACT),東京都,0,425,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.artmuseums.go.jp/,https://www.artmuseums.go.jp/offer,https://www2.njss.info/organizations/proc/1101
+国立美術館 東京国立近代美術館,東京都,0,500,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.artmuseums.go.jp/,https://www.artmuseums.go.jp/offer,https://www2.njss.info/organizations/proc/1102
+国立美術館 国立西洋美術館,東京都,0,386,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.artmuseums.go.jp/,https://www.artmuseums.go.jp/offer,https://www2.njss.info/organizations/proc/1103
+森林研究・整備機構 森林総合研究所 林木育種センター,茨城県,0,557,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.ffpri.go.jp/,https://www.ffpri.go.jp/chotatsu.html,https://www2.njss.info/organizations/proc/1378
+森林研究・整備機構 森林総合研究所 北海道支所,北海道,0,451,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.ffpri.go.jp/,https://www.ffpri.go.jp/chotatsu.html,https://www2.njss.info/organizations/proc/1379
+森林研究・整備機構 森林総合研究所 東北支所,岩手県,0,88,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.ffpri.go.jp/,https://www.ffpri.go.jp/chotatsu.html,https://www2.njss.info/organizations/proc/1380
+森林研究・整備機構 森林総合研究所 関西支所,京都府,0,178,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.ffpri.go.jp/,https://www.ffpri.go.jp/chotatsu.html,https://www2.njss.info/organizations/proc/1381
+森林研究・整備機構 森林総合研究所 四国支所,高知県,0,55,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.ffpri.go.jp/,https://www.ffpri.go.jp/chotatsu.html,https://www2.njss.info/organizations/proc/1382
+森林研究・整備機構 森林総合研究所 九州支所,熊本県,0,102,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.ffpri.go.jp/,https://www.ffpri.go.jp/chotatsu.html,https://www2.njss.info/organizations/proc/1383
+森林研究・整備機構 森林総合研究所 多摩森林科学園,東京都,0,103,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.ffpri.go.jp/,https://www.ffpri.go.jp/chotatsu.html,https://www2.njss.info/organizations/proc/1384
+森林研究・整備機構 森林総合研究所 林木育種センター 北海道育種場,北海道,0,78,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.ffpri.go.jp/,https://www.ffpri.go.jp/chotatsu.html,https://www2.njss.info/organizations/proc/1385
+森林研究・整備機構 森林総合研究所 林木育種センター 東北育種場,岩手県,0,90,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.ffpri.go.jp/,https://www.ffpri.go.jp/chotatsu.html,https://www2.njss.info/organizations/proc/1386
+森林研究・整備機構 森林総合研究所 林木育種センター 関西育種場,岡山県,0,121,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.ffpri.go.jp/,https://www.ffpri.go.jp/chotatsu.html,https://www2.njss.info/organizations/proc/1387
+森林研究・整備機構 森林総合研究所 林木育種センター 九州育種場,熊本県,0,71,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.ffpri.go.jp/,https://www.ffpri.go.jp/chotatsu.html,https://www2.njss.info/organizations/proc/1389
+森林研究・整備機構 森林整備センター 東北北海道整備局,宮城県,0,463,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.ffpri.go.jp/,https://www.ffpri.go.jp/chotatsu.html,https://www2.njss.info/organizations/proc/1390
+森林研究・整備機構 森林整備センター 関東整備局,神奈川県,0,280,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.green.go.jp/,https://www.green.go.jp/keiyaku/buppin/index.html,https://www2.njss.info/organizations/proc/1391
+森林研究・整備機構 森林整備センター 中部整備局,愛知県,0,278,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.green.go.jp/,https://www.green.go.jp/keiyaku/buppin/index.html,https://www2.njss.info/organizations/proc/1392
+森林研究・整備機構 森林整備センター 近畿北陸整備局,京都府,0,194,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.ffpri.go.jp/,https://www.ffpri.go.jp/chotatsu.html,https://www2.njss.info/organizations/proc/1393
+森林研究・整備機構 森林整備センター 中国四国整備局,岡山県,0,281,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.ffpri.go.jp/,https://www.ffpri.go.jp/chotatsu.html,https://www2.njss.info/organizations/proc/1394
+森林研究・整備機構 森林整備センター 九州整備局,福岡県,0,224,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.green.go.jp/,https://www.green.go.jp/keiyaku/buppin/index.html,https://www2.njss.info/organizations/proc/1395
+家畜改良センター(NLBC) 新冠牧場,北海道,0,952,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.nlbc.go.jp/,https://www.nlbc.go.jp/chotatsujoho/index.html,https://www2.njss.info/organizations/proc/1433
+家畜改良センター(NLBC) 岩手牧場,岩手県,0,751,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.nlbc.go.jp/,https://www.nlbc.go.jp/chotatsujoho/index.html,https://www2.njss.info/organizations/proc/1436
+家畜改良センター(NLBC) 鳥取牧場,鳥取県,0,183,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.nlbc.go.jp/,https://www.nlbc.go.jp/chotatsujoho/index.html,https://www2.njss.info/organizations/proc/1441
+家畜改良センター(NLBC) 熊本牧場,熊本県,0,57,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.nlbc.go.jp/,https://www.nlbc.go.jp/chotatsujoho/index.html,https://www2.njss.info/organizations/proc/1442
+労働者健康安全機構 【［閉鎖］北海道中央労災病院】,北海道,0,1044,追加不可,廃止・閉鎖済みの機関（NJSS上の過去データのみ・新規案件なし）,,,https://www2.njss.info/organizations/proc/1461
+労働者健康安全機構 釧路労災病院,北海道,0,1811,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.johas.go.jp/,https://www.johas.go.jp/procurement/,https://www2.njss.info/organizations/proc/1462
+労働者健康安全機構 【［閉鎖］鹿島労災病院】,茨城県,0,529,追加不可,廃止・閉鎖済みの機関（NJSS上の過去データのみ・新規案件なし）,,,https://www2.njss.info/organizations/proc/1467
+労働者健康安全機構 【［閉鎖］新潟労災病院】,新潟県,0,622,追加不可,廃止・閉鎖済みの機関（NJSS上の過去データのみ・新規案件なし）,,,https://www2.njss.info/organizations/proc/1473
+労働者健康安全機構 旭労災病院,愛知県,0,877,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.johas.go.jp/,https://www.johas.go.jp/procurement/,https://www2.njss.info/organizations/proc/1477
+労働者健康安全機構 山口労災病院,山口県,0,988,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.johas.go.jp/,https://www.johas.go.jp/procurement/,https://www2.njss.info/organizations/proc/1484
+労働者健康安全機構 愛媛労災病院,愛媛県,0,733,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.johas.go.jp/,https://www.johas.go.jp/procurement/,https://www2.njss.info/organizations/proc/1486
+労働者健康安全機構 九州労災病院門司メディカルセンター,福岡県,0,595,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.johas.go.jp/,https://www.johas.go.jp/procurement/,https://www2.njss.info/organizations/proc/1488
+労働者健康安全機構 吉備高原医療リハビリテーションセンター,岡山県,0,617,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.johas.go.jp/,https://www.johas.go.jp/procurement/,https://www2.njss.info/organizations/proc/1491
+労働者健康安全機構 総合せき損センター,福岡県,0,699,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.johas.go.jp/,https://www.johas.go.jp/procurement/,https://www2.njss.info/organizations/proc/1492
+労働者健康安全機構 北海道産業保健総合支援センター,北海道,0,16,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.johas.go.jp/,https://www.johas.go.jp/procurement/,https://www2.njss.info/organizations/proc/1494
+労働者健康安全機構 青森産業保健総合支援センター,青森県,0,0,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.johas.go.jp/,https://www.johas.go.jp/procurement/,https://www2.njss.info/organizations/proc/1495
+労働者健康安全機構 岩手産業保健総合支援センター,岩手県,0,1,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.johas.go.jp/,https://www.johas.go.jp/procurement/,https://www2.njss.info/organizations/proc/1496
+労働者健康安全機構 宮城産業保健総合支援センター,宮城県,0,96,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.johas.go.jp/,https://www.johas.go.jp/procurement/,https://www2.njss.info/organizations/proc/1497
+労働者健康安全機構 秋田産業保健総合支援センター,秋田県,0,3,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.johas.go.jp/,https://www.johas.go.jp/procurement/,https://www2.njss.info/organizations/proc/1498
+労働者健康安全機構 山形産業保健総合支援センター,山形県,0,2,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.johas.go.jp/,https://www.johas.go.jp/procurement/,https://www2.njss.info/organizations/proc/1499
+労働者健康安全機構 福島産業保健総合支援センター,福島県,0,1,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.johas.go.jp/,https://www.johas.go.jp/procurement/,https://www2.njss.info/organizations/proc/1500
+労働者健康安全機構 茨城産業保健総合支援センター,茨城県,0,5,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.johas.go.jp/,https://www.johas.go.jp/procurement/,https://www2.njss.info/organizations/proc/1501
+労働者健康安全機構 栃木産業保健総合支援センター,栃木県,0,3,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.johas.go.jp/,https://www.johas.go.jp/procurement/,https://www2.njss.info/organizations/proc/1502
+労働者健康安全機構 群馬産業保健総合支援センター,群馬県,0,1,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.johas.go.jp/,https://www.johas.go.jp/procurement/,https://www2.njss.info/organizations/proc/1503
+労働者健康安全機構 埼玉産業保健総合支援センター,埼玉県,0,0,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.johas.go.jp/,https://www.johas.go.jp/procurement/,https://www2.njss.info/organizations/proc/1504
+労働者健康安全機構 千葉産業保健総合支援センター,千葉県,0,3,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.johas.go.jp/,https://www.johas.go.jp/procurement/,https://www2.njss.info/organizations/proc/1505
+労働者健康安全機構 東京産業保健総合支援センター,東京都,0,128,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.johas.go.jp/,https://www.johas.go.jp/procurement/,https://www2.njss.info/organizations/proc/1506
+労働者健康安全機構 神奈川産業保健総合支援センター,神奈川県,0,0,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.johas.go.jp/,https://www.johas.go.jp/procurement/,https://www2.njss.info/organizations/proc/1507
+労働者健康安全機構 富山産業保健総合支援センター,富山県,0,1,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.johas.go.jp/,https://www.johas.go.jp/procurement/,https://www2.njss.info/organizations/proc/1508
+労働者健康安全機構 石川産業保健総合支援センター,石川県,0,3,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.johas.go.jp/,https://www.johas.go.jp/procurement/,https://www2.njss.info/organizations/proc/1509
+労働者健康安全機構 福井産業保健総合支援センター,福井県,0,4,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.johas.go.jp/,https://www.johas.go.jp/procurement/,https://www2.njss.info/organizations/proc/1510
+労働者健康安全機構 山梨産業保健総合支援センター,山梨県,0,3,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.johas.go.jp/,https://www.johas.go.jp/procurement/,https://www2.njss.info/organizations/proc/1511
+労働者健康安全機構 長野産業保健総合支援センター,長野県,0,2,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.johas.go.jp/,https://www.johas.go.jp/procurement/,https://www2.njss.info/organizations/proc/1512
+労働者健康安全機構 岐阜産業保健総合支援センター,岐阜県,0,0,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.johas.go.jp/,https://www.johas.go.jp/procurement/,https://www2.njss.info/organizations/proc/1513
+労働者健康安全機構 静岡産業保健総合支援センター,静岡県,0,3,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.johas.go.jp/,https://www.johas.go.jp/procurement/,https://www2.njss.info/organizations/proc/1514
+労働者健康安全機構 愛知産業保健総合支援センター,愛知県,0,57,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.johas.go.jp/,https://www.johas.go.jp/procurement/,https://www2.njss.info/organizations/proc/1515
+労働者健康安全機構 三重産業保健総合支援センター,三重県,0,5,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.johas.go.jp/,https://www.johas.go.jp/procurement/,https://www2.njss.info/organizations/proc/1516
+労働者健康安全機構 滋賀産業保健総合支援センター,滋賀県,0,3,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.johas.go.jp/,https://www.johas.go.jp/procurement/,https://www2.njss.info/organizations/proc/1517
+労働者健康安全機構 京都産業保健総合支援センター,京都府,0,2,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.johas.go.jp/,https://www.johas.go.jp/procurement/,https://www2.njss.info/organizations/proc/1518
+労働者健康安全機構 大阪産業保健総合支援センター,大阪府,0,163,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.johas.go.jp/,https://www.johas.go.jp/procurement/,https://www2.njss.info/organizations/proc/1519
+労働者健康安全機構 兵庫産業保健総合支援センター,兵庫県,0,2,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.johas.go.jp/,https://www.johas.go.jp/procurement/,https://www2.njss.info/organizations/proc/1520
+労働者健康安全機構 奈良産業保健総合支援センター,奈良県,0,4,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.johas.go.jp/,https://www.johas.go.jp/procurement/,https://www2.njss.info/organizations/proc/1521
+労働者健康安全機構 和歌山産業保健総合支援センター,和歌山県,0,1,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.johas.go.jp/,https://www.johas.go.jp/procurement/,https://www2.njss.info/organizations/proc/1522
+労働者健康安全機構 鳥取産業保健総合支援センター,鳥取県,0,3,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.johas.go.jp/,https://www.johas.go.jp/procurement/,https://www2.njss.info/organizations/proc/1523
+労働者健康安全機構 島根産業保健総合支援センター,島根県,0,0,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.johas.go.jp/,https://www.johas.go.jp/procurement/,https://www2.njss.info/organizations/proc/1524
+労働者健康安全機構 岡山産業保健総合支援センター,岡山県,0,7,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.johas.go.jp/,https://www.johas.go.jp/procurement/,https://www2.njss.info/organizations/proc/1525
+労働者健康安全機構 広島産業保健総合支援センター,広島県,0,93,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.johas.go.jp/,https://www.johas.go.jp/procurement/,https://www2.njss.info/organizations/proc/1526
+労働者健康安全機構 山口産業保健総合支援センター,山口県,0,65,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.johas.go.jp/,https://www.johas.go.jp/procurement/,https://www2.njss.info/organizations/proc/1527
+労働者健康安全機構 徳島産業保健総合支援センター,徳島県,0,3,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.johas.go.jp/,https://www.johas.go.jp/procurement/,https://www2.njss.info/organizations/proc/1528
+労働者健康安全機構 香川産業保健総合支援センター,香川県,0,90,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.johas.go.jp/,https://www.johas.go.jp/procurement/,https://www2.njss.info/organizations/proc/1529
+労働者健康安全機構 愛媛産業保健推進連絡事務所,愛媛県,0,3,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.johas.go.jp/,https://www.johas.go.jp/procurement/,https://www2.njss.info/organizations/proc/1530
+労働者健康安全機構 高知産業保健総合支援センター,高知県,0,2,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.johas.go.jp/,https://www.johas.go.jp/procurement/,https://www2.njss.info/organizations/proc/1531
+労働者健康安全機構 福岡産業保健総合支援センター,福岡県,0,118,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.johas.go.jp/,https://www.johas.go.jp/procurement/,https://www2.njss.info/organizations/proc/1532
+労働者健康安全機構 佐賀産業保健総合支援センター,佐賀県,0,0,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.johas.go.jp/,https://www.johas.go.jp/procurement/,https://www2.njss.info/organizations/proc/1533
+労働者健康安全機構 長崎産業保健総合支援センター,長崎県,0,1,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.johas.go.jp/,https://www.johas.go.jp/procurement/,https://www2.njss.info/organizations/proc/1534
+労働者健康安全機構 熊本産業保健総合支援センター,熊本県,0,0,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.johas.go.jp/,https://www.johas.go.jp/procurement/,https://www2.njss.info/organizations/proc/1535
+労働者健康安全機構 大分産業保健総合支援センター,大分県,0,3,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.johas.go.jp/,https://www.johas.go.jp/procurement/,https://www2.njss.info/organizations/proc/1536
+労働者健康安全機構 宮崎産業保健総合支援センター,宮崎県,0,3,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.johas.go.jp/,https://www.johas.go.jp/procurement/,https://www2.njss.info/organizations/proc/1537
+労働者健康安全機構 鹿児島産業保健総合支援センター,鹿児島県,0,5,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.johas.go.jp/,https://www.johas.go.jp/procurement/,https://www2.njss.info/organizations/proc/1538
+労働者健康安全機構 沖縄産業保健総合支援センター,沖縄県,0,1,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.johas.go.jp/,https://www.johas.go.jp/procurement/,https://www2.njss.info/organizations/proc/1539
+労働者健康安全機構 【［閉鎖］北海道中央労災病院】【［閉鎖］治療就労両立支援センター】,北海道,0,10,追加不可,廃止・閉鎖済みの機関（NJSS上の過去データのみ・新規案件なし）,,,https://www2.njss.info/organizations/proc/1540
+労働者健康安全機構 東北労災病院 治療就労両立支援センター,宮城県,0,39,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.johas.go.jp/,https://www.johas.go.jp/procurement/,https://www2.njss.info/organizations/proc/1541
+労働者健康安全機構 東京労災病院 治療就労両立支援センター,東京都,0,17,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.johas.go.jp/,https://www.johas.go.jp/procurement/,https://www2.njss.info/organizations/proc/1542
+労働者健康安全機構 関東労災病院 治療就労両立支援センター,神奈川県,0,10,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.johas.go.jp/,https://www.johas.go.jp/procurement/,https://www2.njss.info/organizations/proc/1543
+労働者健康安全機構 中部労災病院 治療就労両立支援センター,愛知県,0,73,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.johas.go.jp/,https://www.johas.go.jp/procurement/,https://www2.njss.info/organizations/proc/1544
+労働者健康安全機構 大阪ろうさい病院 治療就労両立支援センター,大阪府,0,18,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.johas.go.jp/,https://www.johas.go.jp/procurement/,https://www2.njss.info/organizations/proc/1545
+労働者健康安全機構 関西労災病院 治療就労両立支援センター,兵庫県,0,13,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.johas.go.jp/,https://www.johas.go.jp/procurement/,https://www2.njss.info/organizations/proc/1546
+労働者健康安全機構 九州労災病院 治療就労両立支援センター,福岡県,0,26,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.johas.go.jp/,https://www.johas.go.jp/procurement/,https://www2.njss.info/organizations/proc/1547
+労働者健康安全機構 【［閉鎖］労災リハビリテーションセンター工学センター】,愛知県,0,1,追加不可,廃止・閉鎖済みの機関（NJSS上の過去データのみ・新規案件なし）,,,https://www2.njss.info/organizations/proc/1548
+労働者健康安全機構 【［閉鎖］海外勤務健康管理センター(JOHAC)】,神奈川県,0,1,追加不可,廃止・閉鎖済みの機関（NJSS上の過去データのみ・新規案件なし）,,,https://www2.njss.info/organizations/proc/1549
+労働者健康安全機構 労災リハビリテーションセンター宮城作業所,宮城県,0,10,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.johas.go.jp/,https://www.johas.go.jp/procurement/,https://www2.njss.info/organizations/proc/1550
+労働者健康安全機構 労災リハビリテーションセンター千葉作業所,千葉県,0,4,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.johas.go.jp/,https://www.johas.go.jp/procurement/,https://www2.njss.info/organizations/proc/1551
+労働者健康安全機構 労災リハビリテーションセンター福井作業所,福井県,0,10,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.johas.go.jp/,https://www.johas.go.jp/procurement/,https://www2.njss.info/organizations/proc/1552
+労働者健康安全機構 労災リハビリテーションセンター長野作業所,長野県,0,7,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.johas.go.jp/,https://www.johas.go.jp/procurement/,https://www2.njss.info/organizations/proc/1553
+労働者健康安全機構 労災リハビリテーションセンター愛知作業所,愛知県,0,4,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.johas.go.jp/,https://www.johas.go.jp/procurement/,https://www2.njss.info/organizations/proc/1554
+労働者健康安全機構 釧路労災看護専門学校,北海道,0,35,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.johas.go.jp/,https://www.johas.go.jp/procurement/,https://www2.njss.info/organizations/proc/1555
+労働者健康安全機構 中部労災看護専門学校,愛知県,0,26,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.johas.go.jp/,https://www.johas.go.jp/procurement/,https://www2.njss.info/organizations/proc/1558
+労働者健康安全機構 大阪労災看護専門学校,大阪府,0,32,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.johas.go.jp/,https://www.johas.go.jp/procurement/,https://www2.njss.info/organizations/proc/1559
+労働者健康安全機構 関西労災看護専門学校,兵庫県,0,29,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.johas.go.jp/,https://www.johas.go.jp/procurement/,https://www2.njss.info/organizations/proc/1560
+労働者健康安全機構 岡山労災看護専門学校,岡山県,0,26,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.johas.go.jp/,https://www.johas.go.jp/procurement/,https://www2.njss.info/organizations/proc/1561
+労働者健康安全機構 熊本労災看護専門学校,熊本県,0,76,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.johas.go.jp/,https://www.johas.go.jp/procurement/,https://www2.njss.info/organizations/proc/1562
+労働者健康安全機構 中国労災病院治療就労両立支援センター,広島県,0,52,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.johas.go.jp/,https://www.johas.go.jp/procurement/,https://www2.njss.info/organizations/proc/1563
+森林研究・整備機構 【［閉鎖］森林総合研究所 森林農地整備センター 安房南部建設事業所】,千葉県,0,2,追加不可,廃止・閉鎖済みの機関（NJSS上の過去データのみ・新規案件なし）,,,https://www2.njss.info/organizations/proc/1685
+労働者健康安全機構 労災リハビリテーション福岡作業所,福岡県,0,0,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.johas.go.jp/,https://www.johas.go.jp/procurement/,https://www2.njss.info/organizations/proc/1883
+製品評価技術基盤機構(NITE) 東北支所,宮城県,0,0,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.nite.go.jp/,https://www.nite.go.jp/nite/chotatsu/index.html,https://www2.njss.info/organizations/proc/1891
+製品評価技術基盤機構(NITE) 北関東支所,群馬県,0,0,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.nite.go.jp/,https://www.nite.go.jp/nite/chotatsu/index.html,https://www2.njss.info/organizations/proc/1892
+製品評価技術基盤機構(NITE) 中部支所,愛知県,0,0,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.nite.go.jp/,https://www.nite.go.jp/nite/chotatsu/index.html,https://www2.njss.info/organizations/proc/1893
+製品評価技術基盤機構(NITE) 北陸支所,石川県,0,0,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.nite.go.jp/,https://www.nite.go.jp/nite/chotatsu/index.html,https://www2.njss.info/organizations/proc/1894
+製品評価技術基盤機構(NITE) 中国支所,広島県,0,0,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.nite.go.jp/,https://www.nite.go.jp/nite/chotatsu/index.html,https://www2.njss.info/organizations/proc/1895
+製品評価技術基盤機構(NITE) 九州支所,福岡県,0,0,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.nite.go.jp/,https://www.nite.go.jp/nite/chotatsu/index.html,https://www2.njss.info/organizations/proc/1896
+労働者健康安全機構 労働安全衛生総合研究所登戸地区,神奈川県,0,0,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.johas.go.jp/,https://www.johas.go.jp/procurement/,https://www2.njss.info/organizations/proc/1897
+［閉鎖］雇用・能力開発機構 【［閉鎖］東北職業能力開発大学校】,宮城県,0,0,追加不可,廃止・閉鎖済みの機関（NJSS上の過去データのみ・新規案件なし）,,,https://www2.njss.info/organizations/proc/1898
+［閉鎖］雇用・能力開発機構 【［閉鎖］長野センター松本職業能力開発促進センター】,長野県,0,0,追加不可,廃止・閉鎖済みの機関（NJSS上の過去データのみ・新規案件なし）,,,https://www2.njss.info/organizations/proc/1899
+［閉鎖］雇用・能力開発機構 【［閉鎖］三重センター南伊勢職業能力開発促進センター】,三重県,0,0,追加不可,廃止・閉鎖済みの機関（NJSS上の過去データのみ・新規案件なし）,,,https://www2.njss.info/organizations/proc/1900
+［閉鎖］雇用・能力開発機構 【［閉鎖］長崎センター佐世保職業能力開発促進センター】,長崎県,0,0,追加不可,廃止・閉鎖済みの機関（NJSS上の過去データのみ・新規案件なし）,,,https://www2.njss.info/organizations/proc/1901
+［閉鎖］雇用・能力開発機構 【［閉鎖］宮崎センター延岡職業能力開発促進センター】,宮崎県,0,0,追加不可,廃止・閉鎖済みの機関（NJSS上の過去データのみ・新規案件なし）,,,https://www2.njss.info/organizations/proc/1902
+航空大学校 帯広分校,北海道,0,2,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.kouku-dai.ac.jp/,https://www.kouku-dai.ac.jp/cgi-bin/05_supply/view.cgi?print=20&sort=down4%20down5%20down6&keys2=1&word=0&tid=list3,https://www2.njss.info/organizations/proc/2081
+航空大学校 仙台分校,宮城県,0,1,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.kouku-dai.ac.jp/,https://www.kouku-dai.ac.jp/cgi-bin/05_supply/view.cgi?print=20&sort=down4%20down5%20down6&keys2=1&word=0&tid=list3,https://www2.njss.info/organizations/proc/2082
+造幣局(MINT) 東京支局,東京都,0,0,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.mint.go.jp/,https://www.mint.go.jp/about/bid,https://www2.njss.info/organizations/proc/2111
+造幣局(MINT) 広島支局,広島県,0,0,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.mint.go.jp/,https://www.mint.go.jp/about/bid,https://www2.njss.info/organizations/proc/2112
+国立印刷局 研究所,神奈川県,0,0,追加済み,既存の監視機関シートに登録あり（URL流用）,https://www.npb.go.jp/,https://www.npb.go.jp/zyohoteikyo/finance/nyusatu/koubo.html,https://www2.njss.info/organizations/proc/2113
+国立印刷局 王子工場,東京都,0,0,追加済み,既存の監視機関シートに登録あり（URL流用）,https://www.npb.go.jp/,https://www.npb.go.jp/zyohoteikyo/finance/nyusatu/koubo.html,https://www2.njss.info/organizations/proc/2114
+国立印刷局 東京工場,東京都,0,0,追加済み,既存の監視機関シートに登録あり（URL流用）,https://www.npb.go.jp/,https://www.npb.go.jp/zyohoteikyo/finance/nyusatu/koubo.html,https://www2.njss.info/organizations/proc/2115
+国立印刷局 【［閉鎖］虎の門工場】,東京都,0,0,追加不可,廃止・閉鎖済みの機関（NJSS上の過去データのみ・新規案件なし）,,,https://www2.njss.info/organizations/proc/2116
+国立印刷局 小田原工場,神奈川県,0,0,追加済み,既存の監視機関シートに登録あり（URL流用）,https://www.npb.go.jp/,https://www.npb.go.jp/zyohoteikyo/finance/nyusatu/koubo.html,https://www2.njss.info/organizations/proc/2117
+国立印刷局 静岡工場,静岡県,0,0,追加済み,既存の監視機関シートに登録あり（URL流用）,https://www.npb.go.jp/,https://www.npb.go.jp/zyohoteikyo/finance/nyusatu/koubo.html,https://www2.njss.info/organizations/proc/2118
+国立印刷局 彦根工場,滋賀県,0,0,追加済み,既存の監視機関シートに登録あり（URL流用）,https://www.npb.go.jp/,https://www.npb.go.jp/zyohoteikyo/finance/nyusatu/koubo.html,https://www2.njss.info/organizations/proc/2119
+国立印刷局 岡山工場,岡山県,0,0,追加済み,既存の監視機関シートに登録あり（URL流用）,https://www.npb.go.jp/,https://www.npb.go.jp/zyohoteikyo/finance/nyusatu/koubo.html,https://www2.njss.info/organizations/proc/2120
+国民生活センター 東京事務所,東京都,0,0,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.kokusen.go.jp/,https://www.kokusen.go.jp/compe/index.html,https://www2.njss.info/organizations/proc/2122
+北方領土問題対策協会 札幌事務所,北海道,0,0,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.hoppou.go.jp/,https://www.hoppou.go.jp/organization/procurement/index.html,https://www2.njss.info/organizations/proc/2123
+農業・食品産業技術総合研究機構(NARO) 果樹研究所 盛岡拠点,岩手県,0,0,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.naro.go.jp/,https://www.naro.go.jp/supply/index.html,https://www2.njss.info/organizations/proc/2407
+農業・食品産業技術総合研究機構(NARO) 果樹研究所 興津拠点,静岡県,0,0,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.naro.go.jp/,https://www.naro.go.jp/supply/index.html,https://www2.njss.info/organizations/proc/2408
+農業・食品産業技術総合研究機構(NARO) 果樹研究所 安芸津拠点,広島県,0,0,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.naro.go.jp/,https://www.naro.go.jp/supply/index.html,https://www2.njss.info/organizations/proc/2409
+農業・食品産業技術総合研究機構(NARO) 果樹研究所 口之津拠点,長崎県,0,0,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.naro.go.jp/,https://www.naro.go.jp/supply/index.html,https://www2.njss.info/organizations/proc/2410
+農業・食品産業技術総合研究機構(NARO) 【［閉鎖］野菜茶業研究所】,三重県,0,1196,追加不可,廃止・閉鎖済みの機関（NJSS上の過去データのみ・新規案件なし）,,,https://www2.njss.info/organizations/proc/2411
+農業・食品産業技術総合研究機構(NARO) 畜産草地研究所 那須拠点,栃木県,0,0,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.naro.go.jp/,https://www.naro.go.jp/supply/index.html,https://www2.njss.info/organizations/proc/2413
+農業・食品産業技術総合研究機構(NARO) 畜産草地研究所 御代田各拠点,長野県,0,0,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.naro.go.jp/,https://www.naro.go.jp/supply/index.html,https://www2.njss.info/organizations/proc/2414
+農業・食品産業技術総合研究機構(NARO) 動物衛生研究所 北海道支所,北海道,0,0,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.naro.go.jp/,https://www.naro.go.jp/supply/index.html,https://www2.njss.info/organizations/proc/2415
+農業・食品産業技術総合研究機構(NARO) 動物衛生研究所 海外病研究施設,東京都,0,0,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.naro.go.jp/,https://www.naro.go.jp/supply/index.html,https://www2.njss.info/organizations/proc/2416
+農業・食品産業技術総合研究機構(NARO) 北海道農業研究センター 紋別拠点,北海道,0,0,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.naro.go.jp/,https://www.naro.go.jp/supply/index.html,https://www2.njss.info/organizations/proc/2417
+農業・食品産業技術総合研究機構(NARO) 北海道農業研究センター 美唄拠点,北海道,0,0,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.naro.go.jp/,https://www.naro.go.jp/supply/index.html,https://www2.njss.info/organizations/proc/2418
+農業・食品産業技術総合研究機構(NARO) 東北農業研究センター 大仙拠点,秋田県,0,0,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.naro.go.jp/,https://www.naro.go.jp/supply/index.html,https://www2.njss.info/organizations/proc/2419
+農業・食品産業技術総合研究機構(NARO) 東北農業研究センター 福島拠点,福島県,0,0,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.naro.go.jp/,https://www.naro.go.jp/supply/index.html,https://www2.njss.info/organizations/proc/2420
+農業・食品産業技術総合研究機構(NARO) 近畿中国四国農業研究センター 綾部拠点,京都府,0,0,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.naro.go.jp/,https://www.naro.go.jp/supply/index.html,https://www2.njss.info/organizations/proc/2421
+農業・食品産業技術総合研究機構(NARO) 近畿中国四国農業研究センター 大田拠点,島根県,0,0,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.naro.go.jp/,https://www.naro.go.jp/supply/index.html,https://www2.njss.info/organizations/proc/2422
+農業・食品産業技術総合研究機構(NARO) 近畿中国四国農業研究センター 善通寺拠点,香川県,0,0,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.naro.go.jp/,https://www.naro.go.jp/supply/index.html,https://www2.njss.info/organizations/proc/2423
+農業・食品産業技術総合研究機構(NARO) 九州沖縄農業研究センター 久留米拠点,福岡県,0,0,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.naro.go.jp/,https://www.naro.go.jp/supply/index.html,https://www2.njss.info/organizations/proc/2424
+農業・食品産業技術総合研究機構(NARO) 九州沖縄農業研究センター 筑後拠点,福岡県,0,0,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.naro.go.jp/,https://www.naro.go.jp/supply/index.html,https://www2.njss.info/organizations/proc/2425
+農業・食品産業技術総合研究機構(NARO) 九州沖縄農業研究センター 都城拠点,宮崎県,0,0,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.naro.go.jp/,https://www.naro.go.jp/supply/index.html,https://www2.njss.info/organizations/proc/2426
+農業・食品産業技術総合研究機構(NARO) 九州沖縄農業研究センター 種子島拠点,鹿児島県,0,0,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.naro.go.jp/,https://www.naro.go.jp/supply/index.html,https://www2.njss.info/organizations/proc/2427
+森林研究・整備機構 森林整備センター 東北北海道整備局 札幌水源林整備事務所,北海道,0,0,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.ffpri.go.jp/,https://www.ffpri.go.jp/chotatsu.html,https://www2.njss.info/organizations/proc/2428
+森林研究・整備機構 森林整備センター 東北北海道整備局 青森水源林整備事務所,青森県,0,0,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.ffpri.go.jp/,https://www.ffpri.go.jp/chotatsu.html,https://www2.njss.info/organizations/proc/2429
+森林研究・整備機構 森林整備センター 東北北海道整備局 盛岡水源林整備事務所,岩手県,0,0,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.ffpri.go.jp/,https://www.ffpri.go.jp/chotatsu.html,https://www2.njss.info/organizations/proc/2430
+森林研究・整備機構 森林整備センター 東北北海道整備局 秋田水源林整備事務所,秋田県,0,0,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.ffpri.go.jp/,https://www.ffpri.go.jp/chotatsu.html,https://www2.njss.info/organizations/proc/2431
+森林研究・整備機構 森林整備センター 東北北海道整備局 山形水源林整備事務所,山形県,0,0,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.ffpri.go.jp/,https://www.ffpri.go.jp/chotatsu.html,https://www2.njss.info/organizations/proc/2432
+森林研究・整備機構 森林整備センター 関東整備局 福島水源林整備事務所,福島県,0,0,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.ffpri.go.jp/,https://www.ffpri.go.jp/chotatsu.html,https://www2.njss.info/organizations/proc/2433
+森林研究・整備機構 森林整備センター 関東整備局 宇都宮水源林整備事務所,栃木県,0,0,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.ffpri.go.jp/,https://www.ffpri.go.jp/chotatsu.html,https://www2.njss.info/organizations/proc/2434
+森林研究・整備機構 森林整備センター 関東整備局 前橋水源林整備事務所,群馬県,0,0,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.ffpri.go.jp/,https://www.ffpri.go.jp/chotatsu.html,https://www2.njss.info/organizations/proc/2435
+森林研究・整備機構 森林整備センター 関東整備局 新潟水源林整備事務所,新潟県,0,0,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.ffpri.go.jp/,https://www.ffpri.go.jp/chotatsu.html,https://www2.njss.info/organizations/proc/2436
+森林研究・整備機構 森林整備センター 関東整備局 甲府水源林整備事務所,山梨県,0,0,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.ffpri.go.jp/,https://www.ffpri.go.jp/chotatsu.html,https://www2.njss.info/organizations/proc/2437
+森林研究・整備機構 森林整備センター 関東整備局 静岡水源林整備事務所,静岡県,0,0,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.ffpri.go.jp/,https://www.ffpri.go.jp/chotatsu.html,https://www2.njss.info/organizations/proc/2438
+森林研究・整備機構 森林整備センター 中部整備局 富山水源林整備事務所,富山県,0,0,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.ffpri.go.jp/,https://www.ffpri.go.jp/chotatsu.html,https://www2.njss.info/organizations/proc/2439
+森林研究・整備機構 森林整備センター 中部整備局 長野水源林整備事務所,長野県,0,0,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.ffpri.go.jp/,https://www.ffpri.go.jp/chotatsu.html,https://www2.njss.info/organizations/proc/2440
+森林研究・整備機構 森林整備センター 中部整備局 岐阜水源林整備事務所,岐阜県,0,0,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.ffpri.go.jp/,https://www.ffpri.go.jp/chotatsu.html,https://www2.njss.info/organizations/proc/2441
+森林研究・整備機構 森林整備センター 中部整備局 津水源林整備事務所,三重県,0,0,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.ffpri.go.jp/,https://www.ffpri.go.jp/chotatsu.html,https://www2.njss.info/organizations/proc/2442
+森林研究・整備機構 森林整備センター 近畿北陸整備局 金沢水源林整備事務所,石川県,0,0,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.ffpri.go.jp/,https://www.ffpri.go.jp/chotatsu.html,https://www2.njss.info/organizations/proc/2443
+森林研究・整備機構 森林整備センター 近畿北陸整備局 福井水源林整備事務所,福井県,0,0,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.ffpri.go.jp/,https://www.ffpri.go.jp/chotatsu.html,https://www2.njss.info/organizations/proc/2444
+森林研究・整備機構 森林整備センター 近畿北陸整備局 京都水源林整備事務所,京都府,0,0,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.ffpri.go.jp/,https://www.ffpri.go.jp/chotatsu.html,https://www2.njss.info/organizations/proc/2445
+森林研究・整備機構 森林整備センター 近畿北陸整備局 神戸水源林整備事務所,兵庫県,0,0,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.ffpri.go.jp/,https://www.ffpri.go.jp/chotatsu.html,https://www2.njss.info/organizations/proc/2446
+森林研究・整備機構 森林整備センター 近畿北陸整備局 奈良水源林整備事務所,奈良県,0,0,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.ffpri.go.jp/,https://www.ffpri.go.jp/chotatsu.html,https://www2.njss.info/organizations/proc/2447
+森林研究・整備機構 森林整備センター 近畿北陸整備局 和歌山水源林整備事務所,和歌山県,0,0,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.ffpri.go.jp/,https://www.ffpri.go.jp/chotatsu.html,https://www2.njss.info/organizations/proc/2448
+森林研究・整備機構 森林整備センター 中国四国整備局 鳥取水源林整備事務所,鳥取県,0,0,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.ffpri.go.jp/,https://www.ffpri.go.jp/chotatsu.html,https://www2.njss.info/organizations/proc/2449
+森林研究・整備機構 森林整備センター 中国四国整備局 松江水源林整備事務所,島根県,0,0,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.ffpri.go.jp/,https://www.ffpri.go.jp/chotatsu.html,https://www2.njss.info/organizations/proc/2450
+森林研究・整備機構 森林整備センター 中国四国整備局 広島水源林整備事務所,広島県,0,0,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.ffpri.go.jp/,https://www.ffpri.go.jp/chotatsu.html,https://www2.njss.info/organizations/proc/2451
+森林研究・整備機構 森林整備センター 中国四国整備局 山口水源林整備事務所,山口県,0,0,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.ffpri.go.jp/,https://www.ffpri.go.jp/chotatsu.html,https://www2.njss.info/organizations/proc/2452
+森林研究・整備機構 森林整備センター 中国四国整備局 徳島水源林整備事務所,徳島県,0,0,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.ffpri.go.jp/,https://www.ffpri.go.jp/chotatsu.html,https://www2.njss.info/organizations/proc/2453
+森林研究・整備機構 森林整備センター 中国四国整備局 松山水源林整備事務所,愛媛県,0,0,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.ffpri.go.jp/,https://www.ffpri.go.jp/chotatsu.html,https://www2.njss.info/organizations/proc/2454
+森林研究・整備機構 森林整備センター 中国四国整備局 高知水源林整備事務所,高知県,0,0,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.ffpri.go.jp/,https://www.ffpri.go.jp/chotatsu.html,https://www2.njss.info/organizations/proc/2455
+森林研究・整備機構 森林整備センター 九州整備局 佐賀水源林整備事務所,佐賀県,0,0,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.ffpri.go.jp/,https://www.ffpri.go.jp/chotatsu.html,https://www2.njss.info/organizations/proc/2456
+森林研究・整備機構 森林整備センター 九州整備局 熊本水源林整備事務所,熊本県,0,0,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.ffpri.go.jp/,https://www.ffpri.go.jp/chotatsu.html,https://www2.njss.info/organizations/proc/2457
+森林研究・整備機構 森林整備センター 九州整備局 大分水源林整備事務所,大分県,0,0,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.ffpri.go.jp/,https://www.ffpri.go.jp/chotatsu.html,https://www2.njss.info/organizations/proc/2458
+森林研究・整備機構 森林整備センター 九州整備局 宮崎水源林整備事務所,宮崎県,0,0,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.ffpri.go.jp/,https://www.ffpri.go.jp/chotatsu.html,https://www2.njss.info/organizations/proc/2459
+森林研究・整備機構 森林整備センター 九州整備局 鹿児島水源林整備事務所,鹿児島県,0,0,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.ffpri.go.jp/,https://www.ffpri.go.jp/chotatsu.html,https://www2.njss.info/organizations/proc/2460
+農林水産消費安全技術センター(FAMIC) 横浜事務所,神奈川県,0,0,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.famic.go.jp/,https://www.famic.go.jp/public_information/supply_information/nyuusatsu/,https://www2.njss.info/organizations/proc/2461
+農林水産消費安全技術センター(FAMIC) 札幌センター,北海道,0,0,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.famic.go.jp/,https://www.famic.go.jp/public_information/supply_information/nyuusatsu/,https://www2.njss.info/organizations/proc/2462
+農林水産消費安全技術センター(FAMIC) 仙台センター,宮城県,0,0,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.famic.go.jp/,https://www.famic.go.jp/public_information/supply_information/nyuusatsu/,https://www2.njss.info/organizations/proc/2463
+農林水産消費安全技術センター(FAMIC) 名古屋センター,愛知県,0,0,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.famic.go.jp/,https://www.famic.go.jp/public_information/supply_information/nyuusatsu/,https://www2.njss.info/organizations/proc/2464
+農林水産消費安全技術センター(FAMIC) 神戸センター,兵庫県,0,0,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.famic.go.jp/,https://www.famic.go.jp/public_information/supply_information/nyuusatsu/,https://www2.njss.info/organizations/proc/2465
+農林水産消費安全技術センター(FAMIC) 福岡センター,福岡県,0,0,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.famic.go.jp/,https://www.famic.go.jp/public_information/supply_information/nyuusatsu/,https://www2.njss.info/organizations/proc/2466
+農業・食品産業技術総合研究機構(NARO) 【［閉鎖］種苗管理センター(NCSS)】 【［閉鎖］十勝農場】,北海道,0,0,追加不可,廃止・閉鎖済みの機関（NJSS上の過去データのみ・新規案件なし）,,,https://www2.njss.info/organizations/proc/2467
+農業・食品産業技術総合研究機構(NARO) 【［閉鎖］種苗管理センター(NCSS)】 【［閉鎖］上北農場】,青森県,0,0,追加不可,廃止・閉鎖済みの機関（NJSS上の過去データのみ・新規案件なし）,,,https://www2.njss.info/organizations/proc/2468
+農業・食品産業技術総合研究機構(NARO) 【［閉鎖］種苗管理センター(NCSS)】 【［閉鎖］嬬恋農場】,群馬県,0,0,追加不可,廃止・閉鎖済みの機関（NJSS上の過去データのみ・新規案件なし）,,,https://www2.njss.info/organizations/proc/2469
+農業・食品産業技術総合研究機構(NARO) 【［閉鎖］種苗管理センター(NCSS)】 【［閉鎖］八岳農場】,長野県,0,0,追加不可,廃止・閉鎖済みの機関（NJSS上の過去データのみ・新規案件なし）,,,https://www2.njss.info/organizations/proc/2470
+農業・食品産業技術総合研究機構(NARO) 【［閉鎖］種苗管理センター(NCSS)】 【［閉鎖］西日本農場】,岡山県,0,0,追加不可,廃止・閉鎖済みの機関（NJSS上の過去データのみ・新規案件なし）,,,https://www2.njss.info/organizations/proc/2471
+農業・食品産業技術総合研究機構(NARO) 【［閉鎖］種苗管理センター(NCSS)】 【［閉鎖］雲仙農場】,長崎県,0,0,追加不可,廃止・閉鎖済みの機関（NJSS上の過去データのみ・新規案件なし）,,,https://www2.njss.info/organizations/proc/2472
+農業・食品産業技術総合研究機構(NARO) 【［閉鎖］種苗管理センター(NCSS)】 【［閉鎖］鹿児島農場】,鹿児島県,0,0,追加不可,廃止・閉鎖済みの機関（NJSS上の過去データのみ・新規案件なし）,,,https://www2.njss.info/organizations/proc/2473
+農業・食品産業技術総合研究機構(NARO) 【［閉鎖］種苗管理センター(NCSS)】 【［閉鎖］沖縄農場】,沖縄県,0,0,追加不可,廃止・閉鎖済みの機関（NJSS上の過去データのみ・新規案件なし）,,,https://www2.njss.info/organizations/proc/2474
+農業・食品産業技術総合研究機構(NARO) 【［閉鎖］農業生物資源研究所(NIAS)】 【［閉鎖］北杜地区】,山梨県,0,0,追加不可,廃止・閉鎖済みの機関（NJSS上の過去データのみ・新規案件なし）,,,https://www2.njss.info/organizations/proc/2475
+国際農林水産業研究センター(JIRCAS) 熱帯・島嶼研究拠点,沖縄県,0,0,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.jircas.go.jp/,https://www.jircas.go.jp/ja/procurement,https://www2.njss.info/organizations/proc/2476
+水産研究・教育機構 【［閉鎖］水産総合研究センター 西海区水産研究所石垣支所】,沖縄県,0,0,追加不可,廃止・閉鎖済みの機関（NJSS上の過去データのみ・新規案件なし）,,,https://www2.njss.info/organizations/proc/2477
+駐留軍等労働者労務管理機構(LMO) 本部横浜事務所,神奈川県,0,0,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.lmo.go.jp/,https://www.lmo.go.jp/procurement/index.html,https://www2.njss.info/organizations/proc/2478
+駐留軍等労働者労務管理機構(LMO) 三沢支部,青森県,0,0,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.lmo.go.jp/,https://www.lmo.go.jp/procurement/index.html,https://www2.njss.info/organizations/proc/2479
+駐留軍等労働者労務管理機構(LMO) 横田支部,東京都,0,0,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.lmo.go.jp/,https://www.lmo.go.jp/procurement/index.html,https://www2.njss.info/organizations/proc/2480
+駐留軍等労働者労務管理機構(LMO) 横須賀支部,神奈川県,0,0,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.lmo.go.jp/,https://www.lmo.go.jp/procurement/index.html,https://www2.njss.info/organizations/proc/2481
+駐留軍等労働者労務管理機構(LMO) 座間支部,神奈川県,0,0,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.lmo.go.jp/,https://www.lmo.go.jp/procurement/index.html,https://www2.njss.info/organizations/proc/2482
+駐留軍等労働者労務管理機構(LMO) 岩国支部,山口県,0,0,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.lmo.go.jp/,https://www.lmo.go.jp/procurement/index.html,https://www2.njss.info/organizations/proc/2483
+駐留軍等労働者労務管理機構(LMO) 佐世保支部,長崎県,0,0,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.lmo.go.jp/,https://www.lmo.go.jp/procurement/index.html,https://www2.njss.info/organizations/proc/2484
+駐留軍等労働者労務管理機構(LMO) 沖縄支部,沖縄県,0,0,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.lmo.go.jp/,https://www.lmo.go.jp/procurement/index.html,https://www2.njss.info/organizations/proc/2485
+量子科学技術研究開発機構(QST) 放射線医学総合研究所 那珂湊支所,茨城県,0,0,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.qst.go.jp/,https://www.qst.go.jp/site/procurement/,https://www2.njss.info/organizations/proc/2486
+教職員支援機構(NITS) 教員研修センター 東京事務所,東京都,0,0,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.nits.go.jp/,https://www.nits.go.jp/nyusatsu/general.html,https://www2.njss.info/organizations/proc/2487
+宇宙航空研究開発機構(JAXA) 調布航空宇宙センター,東京都,0,0,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.jaxa.jp/,https://stage.tksc.jaxa.jp/compe/index_j.html,https://www2.njss.info/organizations/proc/2488
+宇宙航空研究開発機構(JAXA) 相模原キャンパス,神奈川県,0,0,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.jaxa.jp/,https://stage.tksc.jaxa.jp/compe/index_j.html,https://www2.njss.info/organizations/proc/2490
+国立高等専門学校機構 香川高等専門学校,香川県,0,574,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.kosen-k.go.jp/,https://www.kosen-k.go.jp/wp/wp-content/uploads/2025/04/chotatsuhoushin.pdf,https://www2.njss.info/organizations/proc/4202
+高齢・障害・求職者雇用支援機構 静岡支部 東海職業能力開発大学校附属浜松職業能力開発短期大学校,静岡県,0,237,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.jeed.go.jp/,https://www.jeed.go.jp/jeed/information/index.html,https://www2.njss.info/organizations/proc/4413
+高齢・障害・求職者雇用支援機構 近畿職業能力開発大学校,大阪府,0,672,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.jeed.go.jp/,https://www.jeed.go.jp/jeed/information/index.html,https://www2.njss.info/organizations/proc/4434
+都市再生機構(UR) 東日本賃貸住宅本部 東日本公園事務所,東京都,0,34,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.ur-net.go.jp/,https://www.ur-net.go.jp/order/index.html,https://www2.njss.info/organizations/proc/4518
+都市再生機構(UR) 東日本賃貸住宅本部 東京東住宅管理センター,東京都,0,112,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.ur-net.go.jp/,https://www.ur-net.go.jp/order/index.html,https://www2.njss.info/organizations/proc/4519
+都市再生機構(UR) 東日本賃貸住宅本部 北多摩住宅管理センター,東京都,0,118,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.ur-net.go.jp/,https://www.ur-net.go.jp/order/index.html,https://www2.njss.info/organizations/proc/4520
+都市再生機構(UR) 東日本賃貸住宅本部 東京北住宅管理センター,東京都,0,97,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.ur-net.go.jp/,https://www.ur-net.go.jp/order/index.html,https://www2.njss.info/organizations/proc/4521
+都市再生機構(UR) 東日本賃貸住宅本部 南多摩住宅管理センター,東京都,0,103,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.ur-net.go.jp/,https://www.ur-net.go.jp/order/index.html,https://www2.njss.info/organizations/proc/4522
+都市再生機構(UR) 東日本賃貸住宅本部 東京南住宅管理センター,東京都,0,112,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.ur-net.go.jp/,https://www.ur-net.go.jp/order/index.html,https://www2.njss.info/organizations/proc/4523
+都市再生機構(UR) 東日本賃貸住宅本部 城北住宅管理センター,東京都,0,65,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.ur-net.go.jp/,https://www.ur-net.go.jp/order/index.html,https://www2.njss.info/organizations/proc/4524
+都市再生機構(UR) 東日本賃貸住宅本部 北海道住宅管理センター,北海道,0,63,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.ur-net.go.jp/,https://www.ur-net.go.jp/order/index.html,https://www2.njss.info/organizations/proc/4525
+都市再生機構(UR) 東日本賃貸住宅本部 赤羽台団地再生業務事務所,東京都,0,0,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.ur-net.go.jp/,https://www.ur-net.go.jp/order/index.html,https://www2.njss.info/organizations/proc/4526
+都市再生機構(UR) 東日本賃貸住宅本部 東京団地再生業務事務所,東京都,0,0,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.ur-net.go.jp/,https://www.ur-net.go.jp/order/index.html,https://www2.njss.info/organizations/proc/4527
+都市再生機構(UR) 東日本賃貸住宅本部 武蔵野団地再生業務事務所,東京都,0,2,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.ur-net.go.jp/,https://www.ur-net.go.jp/order/index.html,https://www2.njss.info/organizations/proc/4528
+都市再生機構(UR) 東日本賃貸住宅本部 多摩団地再生業務事務所,東京都,0,0,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.ur-net.go.jp/,https://www.ur-net.go.jp/order/index.html,https://www2.njss.info/organizations/proc/4529
+都市再生機構(UR) 東日本賃貸住宅本部 東日本工事事務所,東京都,0,0,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.ur-net.go.jp/,https://www.ur-net.go.jp/order/index.html,https://www2.njss.info/organizations/proc/4530
+都市再生機構(UR) 東日本都市再生本部 北海道再開発事務所,東京都,0,0,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.ur-net.go.jp/,https://www.ur-net.go.jp/order/index.html,https://www2.njss.info/organizations/proc/4532
+都市再生機構(UR) 東日本都市再生本部 仙台都市再生事務所,宮城県,0,50,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.ur-net.go.jp/,https://www.ur-net.go.jp/order/index.html,https://www2.njss.info/organizations/proc/4533
+都市再生機構(UR) 東日本都市再生本部 勝田駅東口再開発事務所,茨城県,0,17,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.ur-net.go.jp/,https://www.ur-net.go.jp/order/index.html,https://www2.njss.info/organizations/proc/4534
+都市再生機構(UR) 東日本都市再生本部 武蔵浦和再開発事務所,埼玉県,0,16,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.ur-net.go.jp/,https://www.ur-net.go.jp/order/index.html,https://www2.njss.info/organizations/proc/4535
+都市再生機構(UR) 東日本都市再生本部 狭山再開発事務所,埼玉県,0,3,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.ur-net.go.jp/,https://www.ur-net.go.jp/order/index.html,https://www2.njss.info/organizations/proc/4536
+都市再生機構(UR) 東日本都市再生本部 湊都市再生事務所,東京都,0,15,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.ur-net.go.jp/,https://www.ur-net.go.jp/order/index.html,https://www2.njss.info/organizations/proc/4537
+都市再生機構(UR) 東日本都市再生本部 晴海・勝どき都市再生事務所,東京都,0,15,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.ur-net.go.jp/,https://www.ur-net.go.jp/order/index.html,https://www2.njss.info/organizations/proc/4538
+都市再生機構(UR) 東日本都市再生本部 四谷駅前再開発事務所,東京都,0,4,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.ur-net.go.jp/,https://www.ur-net.go.jp/order/index.html,https://www2.njss.info/organizations/proc/4539
+都市再生機構(UR) 東日本都市再生本部 墨田市街地整備事務所,東京都,0,9,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.ur-net.go.jp/,https://www.ur-net.go.jp/order/index.html,https://www2.njss.info/organizations/proc/4540
+都市再生機構(UR) 東日本都市再生本部 三鷹再開発事務所,東京都,0,13,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.ur-net.go.jp/,https://www.ur-net.go.jp/order/index.html,https://www2.njss.info/organizations/proc/4541
+都市再生機構(UR) 東日本都市再生本部 武蔵小金井駅南口再開発事務所,東京都,0,9,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.ur-net.go.jp/,https://www.ur-net.go.jp/order/index.html,https://www2.njss.info/organizations/proc/4542
+都市再生機構(UR) 東日本都市再生本部 柏崎都市再生事務所,新潟県,0,7,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.ur-net.go.jp/,https://www.ur-net.go.jp/order/index.html,https://www2.njss.info/organizations/proc/4543
+都市再生機構(UR) 東日本都市再生本部 静岡東部都市再生事務所,静岡県,0,12,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.ur-net.go.jp/,https://www.ur-net.go.jp/order/index.html,https://www2.njss.info/organizations/proc/4544
+都市再生機構(UR) 【［閉鎖］首都圏ニュータウン本部】,東京都,0,3620,追加不可,廃止・閉鎖済みの機関（NJSS上の過去データのみ・新規案件なし）,,,https://www2.njss.info/organizations/proc/4545
+都市再生機構(UR) 【［閉鎖］首都圏ニュータウン本部】 【［閉鎖］千葉常磐開発事務所】,千葉県,0,70,追加不可,廃止・閉鎖済みの機関（NJSS上の過去データのみ・新規案件なし）,,,https://www2.njss.info/organizations/proc/4546
+都市再生機構(UR) 【［閉鎖］首都圏ニュータウン本部】 【［閉鎖］千葉中部開発事務所】,千葉県,0,21,追加不可,廃止・閉鎖済みの機関（NJSS上の過去データのみ・新規案件なし）,,,https://www2.njss.info/organizations/proc/4547
+都市再生機構(UR) 【［閉鎖］首都圏ニュータウン本部】 【［閉鎖］千葉東部開発事務所】,千葉県,0,31,追加不可,廃止・閉鎖済みの機関（NJSS上の過去データのみ・新規案件なし）,,,https://www2.njss.info/organizations/proc/4548
+都市再生機構(UR) 【［閉鎖］首都圏ニュータウン本部】 【［閉鎖］木更津開発事務所】,千葉県,0,33,追加不可,廃止・閉鎖済みの機関（NJSS上の過去データのみ・新規案件なし）,,,https://www2.njss.info/organizations/proc/4549
+都市再生機構(UR) 【［閉鎖］首都圏ニュータウン本部】 【［閉鎖］神奈川中部開発事務所】,神奈川県,0,31,追加不可,廃止・閉鎖済みの機関（NJSS上の過去データのみ・新規案件なし）,,,https://www2.njss.info/organizations/proc/4550
+都市再生機構(UR) 【［閉鎖］首都圏ニュータウン本部】 【［閉鎖］埼玉中央開発事務所】,埼玉県,0,60,追加不可,廃止・閉鎖済みの機関（NJSS上の過去データのみ・新規案件なし）,,,https://www2.njss.info/organizations/proc/4551
+都市再生機構(UR) 【［閉鎖］首都圏ニュータウン本部】 【［閉鎖］埼玉常磐開発事務所】,埼玉県,0,40,追加不可,廃止・閉鎖済みの機関（NJSS上の過去データのみ・新規案件なし）,,,https://www2.njss.info/organizations/proc/4552
+都市再生機構(UR) 【［閉鎖］首都圏ニュータウン本部】 【［閉鎖］埼玉西部開発事務所】,埼玉県,0,34,追加不可,廃止・閉鎖済みの機関（NJSS上の過去データのみ・新規案件なし）,,,https://www2.njss.info/organizations/proc/4553
+都市再生機構(UR) 【［閉鎖］首都圏ニュータウン本部】 【［閉鎖］埼玉東部開発事務所】,埼玉県,0,42,追加不可,廃止・閉鎖済みの機関（NJSS上の過去データのみ・新規案件なし）,,,https://www2.njss.info/organizations/proc/4554
+都市再生機構(UR) 【［閉鎖］首都圏ニュータウン本部】 【［閉鎖］栃木開発事務所】,栃木県,0,24,追加不可,廃止・閉鎖済みの機関（NJSS上の過去データのみ・新規案件なし）,,,https://www2.njss.info/organizations/proc/4555
+都市再生機構(UR) 【［閉鎖］首都圏ニュータウン本部】 【［閉鎖］大宮西部開発事務所】,埼玉県,0,28,追加不可,廃止・閉鎖済みの機関（NJSS上の過去データのみ・新規案件なし）,,,https://www2.njss.info/organizations/proc/4556
+都市再生機構(UR) 【［閉鎖］首都圏ニュータウン本部】 【［閉鎖］千葉業務部】,千葉県,0,67,追加不可,廃止・閉鎖済みの機関（NJSS上の過去データのみ・新規案件なし）,,,https://www2.njss.info/organizations/proc/4557
+都市再生機構(UR) 【［閉鎖］首都圏ニュータウン本部】 【［閉鎖］茨城事業部】,茨城県,0,157,追加不可,廃止・閉鎖済みの機関（NJSS上の過去データのみ・新規案件なし）,,,https://www2.njss.info/organizations/proc/4558
+都市再生機構(UR) 【［閉鎖］首都圏ニュータウン本部】 【［閉鎖］つくば開発事務所】,茨城県,0,0,追加不可,廃止・閉鎖済みの機関（NJSS上の過去データのみ・新規案件なし）,,,https://www2.njss.info/organizations/proc/4559
+都市再生機構(UR) 【［閉鎖］首都圏ニュータウン本部】 【［閉鎖］つくば開発事務所】 【［閉鎖］葛城事務所】,茨城県,0,0,追加不可,廃止・閉鎖済みの機関（NJSS上の過去データのみ・新規案件なし）,,,https://www2.njss.info/organizations/proc/4560
+都市再生機構(UR) 【［閉鎖］首都圏ニュータウン本部】 【［閉鎖］ゆめみ野開発事務所】,茨城県,0,0,追加不可,廃止・閉鎖済みの機関（NJSS上の過去データのみ・新規案件なし）,,,https://www2.njss.info/organizations/proc/4561
+都市再生機構(UR) 【［閉鎖］首都圏ニュータウン本部】 【［閉鎖］中根・金田台開発事務所】,茨城県,0,0,追加不可,廃止・閉鎖済みの機関（NJSS上の過去データのみ・新規案件なし）,,,https://www2.njss.info/organizations/proc/4562
+都市再生機構(UR) 【［閉鎖］集合住宅歴史館】,東京都,0,0,追加不可,廃止・閉鎖済みの機関（NJSS上の過去データのみ・新規案件なし）,,,https://www2.njss.info/organizations/proc/4563
+理化学研究所 計算科学研究センター,兵庫県,0,1535,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.riken.jp/,https://choutatsu.riken.jp/r-world/info/procurement/,https://www2.njss.info/organizations/proc/4694
+高齢・障害・求職者雇用支援機構 関東職業能力開発大学校,栃木県,0,328,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.jeed.go.jp/,https://www.jeed.go.jp/jeed/information/index.html,https://www2.njss.info/organizations/proc/4937
+水資源機構 中部支社 揖斐川・長良川総合管理所 木曽川水系連絡導水路建設所,岐阜県,0,45,追加済み,調達ページを実アクセスで確認済み ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.water.go.jp/,https://www.water.go.jp/honsya/honsya/keiyaku/,https://www2.njss.info/organizations/proc/4983
+都市再生機構(UR) 西日本支社 【［閉鎖］関西文化学術研究都市事業本部】,京都府,0,78,追加不可,廃止・閉鎖済みの機関（NJSS上の過去データのみ・新規案件なし）,,,https://www2.njss.info/organizations/proc/5056
+都市再生機構(UR) 【［閉鎖］宮城震災復興支援本部】,宮城県,0,1239,追加不可,廃止・閉鎖済みの機関（NJSS上の過去データのみ・新規案件なし）,,,https://www2.njss.info/organizations/proc/5059
+都市再生機構(UR) 【［閉鎖］岩手震災復興支援本部】,岩手県,0,1029,追加不可,廃止・閉鎖済みの機関（NJSS上の過去データのみ・新規案件なし）,,,https://www2.njss.info/organizations/proc/5060
+高齢・障害・求職者雇用支援機構 職業能力開発総合大学校,東京都,0,547,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.jeed.go.jp/,https://www.jeed.go.jp/jeed/information/index.html,https://www2.njss.info/organizations/proc/5065
+都市再生機構(UR) 中部支社 北勢・尾張都市再生事務所,三重県,0,0,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.ur-net.go.jp/,https://www.ur-net.go.jp/order/index.html,https://www2.njss.info/organizations/proc/5068
+都市再生機構(UR) 中部支社 名古屋住宅管理センター,愛知県,0,0,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.ur-net.go.jp/,https://www.ur-net.go.jp/order/index.html,https://www2.njss.info/organizations/proc/5069
+都市再生機構(UR) 中部支社 大曽根住宅管理センター,愛知県,0,0,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.ur-net.go.jp/,https://www.ur-net.go.jp/order/index.html,https://www2.njss.info/organizations/proc/5070
+都市再生機構(UR) 中部支社 名古屋団地再生業務事務所,愛知県,0,0,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.ur-net.go.jp/,https://www.ur-net.go.jp/order/index.html,https://www2.njss.info/organizations/proc/5071
+都市再生機構(UR) 中部支社 名古屋工事事務所,愛知県,0,0,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.ur-net.go.jp/,https://www.ur-net.go.jp/order/index.html,https://www2.njss.info/organizations/proc/5072
+都市再生機構(UR) 中部支社 中部公園事務所,愛知県,0,0,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.ur-net.go.jp/,https://www.ur-net.go.jp/order/index.html,https://www2.njss.info/organizations/proc/5073
+都市再生機構(UR) 西日本支社 募集販売センター,大阪府,0,0,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.ur-net.go.jp/,https://www.ur-net.go.jp/order/index.html,https://www2.njss.info/organizations/proc/5074
+都市再生機構(UR) 西日本支社 うめきた都市再生事務所,大阪府,0,0,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.ur-net.go.jp/,https://www.ur-net.go.jp/order/index.html,https://www2.njss.info/organizations/proc/5075
+都市再生機構(UR) 西日本支社 広島都市再生事務所,広島県,0,0,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.ur-net.go.jp/,https://www.ur-net.go.jp/order/index.html,https://www2.njss.info/organizations/proc/5076
+都市再生機構(UR) 西日本支社 北大阪都市再生事務所,大阪府,0,0,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.ur-net.go.jp/,https://www.ur-net.go.jp/order/index.html,https://www2.njss.info/organizations/proc/5077
+都市再生機構(UR) 西日本支社 彩都開発事務所,大阪府,0,0,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.ur-net.go.jp/,https://www.ur-net.go.jp/order/index.html,https://www2.njss.info/organizations/proc/5078
+都市再生機構(UR) 西日本支社 和泉開発事務所,大阪府,0,0,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.ur-net.go.jp/,https://www.ur-net.go.jp/order/index.html,https://www2.njss.info/organizations/proc/5079
+都市再生機構(UR) 西日本支社 神戸西開発事務所,兵庫県,0,0,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.ur-net.go.jp/,https://www.ur-net.go.jp/order/index.html,https://www2.njss.info/organizations/proc/5080
+都市再生機構(UR) 西日本支社 名塩分室,兵庫県,0,0,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.ur-net.go.jp/,https://www.ur-net.go.jp/order/index.html,https://www2.njss.info/organizations/proc/5081
+都市再生機構(UR) 西日本支社 千里エリア経営センター,大阪府,0,0,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.ur-net.go.jp/,https://www.ur-net.go.jp/order/index.html,https://www2.njss.info/organizations/proc/5082
+都市再生機構(UR) 西日本支社 大阪住宅管理センター,大阪府,0,0,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.ur-net.go.jp/,https://www.ur-net.go.jp/order/index.html,https://www2.njss.info/organizations/proc/5083
+都市再生機構(UR) 西日本支社 泉北住宅管理センター,大阪府,0,0,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.ur-net.go.jp/,https://www.ur-net.go.jp/order/index.html,https://www2.njss.info/organizations/proc/5084
+都市再生機構(UR) 西日本支社 兵庫住宅管理センター,兵庫県,0,0,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.ur-net.go.jp/,https://www.ur-net.go.jp/order/index.html,https://www2.njss.info/organizations/proc/5085
+都市再生機構(UR) 西日本支社 京都住宅管理センター,京都府,0,0,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.ur-net.go.jp/,https://www.ur-net.go.jp/order/index.html,https://www2.njss.info/organizations/proc/5086
+都市再生機構(UR) 西日本支社 奈良住宅管理センター,奈良県,0,0,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.ur-net.go.jp/,https://www.ur-net.go.jp/order/index.html,https://www2.njss.info/organizations/proc/5087
+都市再生機構(UR) 西日本支社 阪神住宅管理センター,兵庫県,0,0,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.ur-net.go.jp/,https://www.ur-net.go.jp/order/index.html,https://www2.njss.info/organizations/proc/5088
+都市再生機構(UR) 九州支社 九州公園事務所,福岡県,0,0,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.ur-net.go.jp/,https://www.ur-net.go.jp/order/index.html,https://www2.njss.info/organizations/proc/5089
+都市再生機構(UR) 九州支社 城野都市再生事務所,福岡県,0,0,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.ur-net.go.jp/,https://www.ur-net.go.jp/order/index.html,https://www2.njss.info/organizations/proc/5090
+都市再生機構(UR) 九州支社 福岡東部開発事務所,福岡県,0,0,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.ur-net.go.jp/,https://www.ur-net.go.jp/order/index.html,https://www2.njss.info/organizations/proc/5091
+都市再生機構(UR) 九州支社 沖縄都市再生事務所,沖縄県,0,0,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.ur-net.go.jp/,https://www.ur-net.go.jp/order/index.html,https://www2.njss.info/organizations/proc/5092
+都市再生機構(UR) 九州支社 福岡団地再生業務事務所,福岡県,0,0,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.ur-net.go.jp/,https://www.ur-net.go.jp/order/index.html,https://www2.njss.info/organizations/proc/5093
+都市再生機構(UR) 九州支社 福岡住宅管理センター,福岡県,0,0,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.ur-net.go.jp/,https://www.ur-net.go.jp/order/index.html,https://www2.njss.info/organizations/proc/5094
+都市再生機構(UR) 九州支社 北九州住宅管理センター,福岡県,0,0,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.ur-net.go.jp/,https://www.ur-net.go.jp/order/index.html,https://www2.njss.info/organizations/proc/5095
+都市再生機構(UR) 九州支社 UR福岡営業センター,福岡県,0,0,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.ur-net.go.jp/,https://www.ur-net.go.jp/order/index.html,https://www2.njss.info/organizations/proc/5096
+都市再生機構(UR) 九州支社 北九州募集センター,福岡県,0,0,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.ur-net.go.jp/,https://www.ur-net.go.jp/order/index.html,https://www2.njss.info/organizations/proc/5097
+都市再生機構(UR) 九州支社 黒崎募集センター,福岡県,0,0,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.ur-net.go.jp/,https://www.ur-net.go.jp/order/index.html,https://www2.njss.info/organizations/proc/5098
+都市再生機構(UR) 長岡営業所,新潟県,0,0,追加済み,既存の監視機関シートに登録あり（URL流用）,https://www.ur-net.go.jp/,https://www.ur-net.go.jp/orders/honsha/order.html,https://www2.njss.info/organizations/proc/5099
+都市再生機構(UR) いわき営業所,福島県,0,0,追加済み,既存の監視機関シートに登録あり（URL流用）,https://www.ur-net.go.jp/,https://www.ur-net.go.jp/orders/honsha/order.html,https://www2.njss.info/organizations/proc/5100
+都市再生機構(UR) 岩手都市開発事務所,岩手県,0,0,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.ur-net.go.jp/,https://www.ur-net.go.jp/order/index.html,https://www2.njss.info/organizations/proc/5101
+都市再生機構(UR) 浜北都市開発事務所,静岡県,0,0,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.ur-net.go.jp/,https://www.ur-net.go.jp/order/index.html,https://www2.njss.info/organizations/proc/5102
+都市再生機構(UR) 山形都市開発事務所,山形県,0,0,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.ur-net.go.jp/,https://www.ur-net.go.jp/order/index.html,https://www2.njss.info/organizations/proc/5103
+都市再生機構(UR) 今治都市開発事務所,愛媛県,0,0,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.ur-net.go.jp/,https://www.ur-net.go.jp/order/index.html,https://www2.njss.info/organizations/proc/5104
+都市再生機構(UR) 本庄都市開発事務所,埼玉県,0,0,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.ur-net.go.jp/,https://www.ur-net.go.jp/order/index.html,https://www2.njss.info/organizations/proc/5105
+都市再生機構(UR) 八戸営業所,青森県,0,0,追加済み,既存の監視機関シートに登録あり（URL流用）,https://www.ur-net.go.jp/,https://www.ur-net.go.jp/orders/honsha/order.html,https://www2.njss.info/organizations/proc/5106
+都市再生機構(UR) 東日本賃貸住宅本部 千葉地域 千葉住宅管理センター,千葉県,0,0,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.ur-net.go.jp/,https://www.ur-net.go.jp/order/index.html,https://www2.njss.info/organizations/proc/5107
+都市再生機構(UR) 東日本賃貸住宅本部 千葉地域 千葉西住宅管理センター,千葉県,0,0,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.ur-net.go.jp/,https://www.ur-net.go.jp/order/index.html,https://www2.njss.info/organizations/proc/5108
+都市再生機構(UR) 東日本賃貸住宅本部 千葉地域 松戸住宅管理センター,千葉県,0,0,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.ur-net.go.jp/,https://www.ur-net.go.jp/order/index.html,https://www2.njss.info/organizations/proc/5109
+都市再生機構(UR) 東日本賃貸住宅本部 千葉地域 松戸住宅管理センター茨城分室,茨城県,0,0,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.ur-net.go.jp/,https://www.ur-net.go.jp/order/index.html,https://www2.njss.info/organizations/proc/5110
+都市再生機構(UR) 東日本賃貸住宅本部 埼玉地域 東武動物公園駅前都市再生事務所,埼玉県,0,0,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.ur-net.go.jp/,https://www.ur-net.go.jp/order/index.html,https://www2.njss.info/organizations/proc/5111
+都市再生機構(UR) 東日本賃貸住宅本部 埼玉地域 東埼玉住宅管理センター,埼玉県,0,0,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.ur-net.go.jp/,https://www.ur-net.go.jp/order/index.html,https://www2.njss.info/organizations/proc/5112
+都市再生機構(UR) 東日本賃貸住宅本部 埼玉地域 浦和住宅管理センター,埼玉県,0,0,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.ur-net.go.jp/,https://www.ur-net.go.jp/order/index.html,https://www2.njss.info/organizations/proc/5113
+都市再生機構(UR) 東日本賃貸住宅本部 埼玉地域 西埼玉住宅管理センター,埼玉県,0,0,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.ur-net.go.jp/,https://www.ur-net.go.jp/order/index.html,https://www2.njss.info/organizations/proc/5114
+都市再生機構(UR) 東日本賃貸住宅本部 埼玉地域 埼玉団地再生業務事務所 草加松原分室,埼玉県,0,0,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.ur-net.go.jp/,https://www.ur-net.go.jp/order/index.html,https://www2.njss.info/organizations/proc/5115
+都市再生機構(UR) 東日本賃貸住宅本部 神奈川地域 殿町基盤整備現地事務所,神奈川県,0,0,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.ur-net.go.jp/,https://www.ur-net.go.jp/order/index.html,https://www2.njss.info/organizations/proc/5116
+都市再生機構(UR) 東日本賃貸住宅本部 神奈川地域 横浜住宅管理センター,神奈川県,0,0,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.ur-net.go.jp/,https://www.ur-net.go.jp/order/index.html,https://www2.njss.info/organizations/proc/5117
+都市再生機構(UR) 東日本賃貸住宅本部 神奈川地域 神奈川西住宅管理センター,神奈川県,0,0,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.ur-net.go.jp/,https://www.ur-net.go.jp/order/index.html,https://www2.njss.info/organizations/proc/5118
+都市再生機構(UR) 東日本賃貸住宅本部 神奈川地域 横浜南住宅管理センター,神奈川県,0,0,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.ur-net.go.jp/,https://www.ur-net.go.jp/order/index.html,https://www2.njss.info/organizations/proc/5119
+都市再生機構(UR) 東日本賃貸住宅本部 神奈川地域 神奈川工事事務所,神奈川県,0,0,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.ur-net.go.jp/,https://www.ur-net.go.jp/order/index.html,https://www2.njss.info/organizations/proc/5120
+都市再生機構(UR) 東日本賃貸住宅本部 神奈川地域 神奈川団地再生業務事務所,神奈川県,0,0,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.ur-net.go.jp/,https://www.ur-net.go.jp/order/index.html,https://www2.njss.info/organizations/proc/5121
+住宅金融支援機構(JHF) 北関東支店,群馬県,0,0,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.jhf.go.jp/,https://www.jhf.go.jp/financial_tender/index.html,https://www2.njss.info/organizations/proc/5140
+国立病院機構 中国四国グループ 岡山医療センター 岡山市立金川病院,岡山県,0,24,追加済み,調達ページを実アクセスで確認済み ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://nho.hosp.go.jp/,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/5177
+高齢・障害・求職者雇用支援機構 北海道支部 北海道職業能力開発促進センター旭川訓練センター,北海道,0,26,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.jeed.go.jp/,https://www.jeed.go.jp/jeed/information/index.html,https://www2.njss.info/organizations/proc/5766
+高齢・障害・求職者雇用支援機構 北海道支部 北海道職業能力開発促進センター釧路訓練センター,北海道,0,16,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.jeed.go.jp/,https://www.jeed.go.jp/jeed/information/index.html,https://www2.njss.info/organizations/proc/5767
+高齢・障害・求職者雇用支援機構 北海道支部 北海道職業能力開発促進センター函館訓練センター,北海道,0,21,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.jeed.go.jp/,https://www.jeed.go.jp/jeed/information/index.html,https://www2.njss.info/organizations/proc/5769
+高齢・障害・求職者雇用支援機構 岩手支部,岩手県,0,434,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.jeed.go.jp/,https://www.jeed.go.jp/jeed/information/index.html,https://www2.njss.info/organizations/proc/5793
+高齢・障害・求職者雇用支援機構 山形支部,山形県,0,418,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.jeed.go.jp/,https://www.jeed.go.jp/jeed/information/index.html,https://www2.njss.info/organizations/proc/5795
+高齢・障害・求職者雇用支援機構 福島支部 福島職業能力開発促進センターいわき訓練センター,福島県,0,33,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.jeed.go.jp/,https://www.jeed.go.jp/jeed/information/index.html,https://www2.njss.info/organizations/proc/5797
+高齢・障害・求職者雇用支援機構 福島支部 福島職業能力開発促進センター会津訓練センター,福島県,0,21,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.jeed.go.jp/,https://www.jeed.go.jp/jeed/information/index.html,https://www2.njss.info/organizations/proc/5798
+高齢・障害・求職者雇用支援機構 千葉支部 千葉職業能力開発促進センター君津訓練センター,千葉県,0,64,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.jeed.go.jp/,https://www.jeed.go.jp/jeed/information/index.html,https://www2.njss.info/organizations/proc/5803
+高齢・障害・求職者雇用支援機構 千葉支部 千葉職業能力開発促進センター高度訓練センター,千葉県,0,87,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.jeed.go.jp/,https://www.jeed.go.jp/jeed/information/index.html,https://www2.njss.info/organizations/proc/5804
+高齢・障害・求職者雇用支援機構 神奈川支部,神奈川県,0,817,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.jeed.go.jp/,https://www.jeed.go.jp/jeed/information/index.html,https://www2.njss.info/organizations/proc/5805
+高齢・障害・求職者雇用支援機構 長野支部 長野職業能力開発促進センター松本訓練センター,長野県,0,23,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.jeed.go.jp/,https://www.jeed.go.jp/jeed/information/index.html,https://www2.njss.info/organizations/proc/5811
+高齢・障害・求職者雇用支援機構 愛知支部 中部職業能力開発促進センター名古屋港湾労働分所,愛知県,0,10,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.jeed.go.jp/,https://www.jeed.go.jp/jeed/information/index.html,https://www2.njss.info/organizations/proc/5813
+高齢・障害・求職者雇用支援機構 三重支部 三重職業能力開発促進センター伊勢訓練センター,三重県,0,24,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.jeed.go.jp/,https://www.jeed.go.jp/jeed/information/index.html,https://www2.njss.info/organizations/proc/5814
+高齢・障害・求職者雇用支援機構 大阪支部 関西職業能力開発促進センター大阪港湾労働分所,大阪府,0,1,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.jeed.go.jp/,https://www.jeed.go.jp/jeed/information/index.html,https://www2.njss.info/organizations/proc/5851
+高齢・障害・求職者雇用支援機構 兵庫支部 兵庫職業能力開発促進センター加古川訓練センター,兵庫県,0,28,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.jeed.go.jp/,https://www.jeed.go.jp/jeed/information/index.html,https://www2.njss.info/organizations/proc/5853
+高齢・障害・求職者雇用支援機構 鳥取支部 鳥取職業能力開発促進センター米子訓練センター,鳥取県,0,47,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.jeed.go.jp/,https://www.jeed.go.jp/jeed/information/index.html,https://www2.njss.info/organizations/proc/5857
+高齢・障害・求職者雇用支援機構 島根支部,島根県,0,574,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.jeed.go.jp/,https://www.jeed.go.jp/jeed/information/index.html,https://www2.njss.info/organizations/proc/5858
+高齢・障害・求職者雇用支援機構 徳島支部,徳島県,0,200,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.jeed.go.jp/,https://www.jeed.go.jp/jeed/information/index.html,https://www2.njss.info/organizations/proc/5862
+高齢・障害・求職者雇用支援機構 愛媛支部,愛媛県,0,387,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.jeed.go.jp/,https://www.jeed.go.jp/jeed/information/index.html,https://www2.njss.info/organizations/proc/5864
+高齢・障害・求職者雇用支援機構 福岡支部 福岡職業能力開発促進センター飯塚訓練センター,福岡県,0,7,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.jeed.go.jp/,https://www.jeed.go.jp/jeed/information/index.html,https://www2.njss.info/organizations/proc/5867
+高齢・障害・求職者雇用支援機構 佐賀支部,佐賀県,0,348,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.jeed.go.jp/,https://www.jeed.go.jp/jeed/information/index.html,https://www2.njss.info/organizations/proc/5868
+高齢・障害・求職者雇用支援機構 長崎支部 長崎職業能力開発促進センター佐世保訓練センター,長崎県,0,14,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.jeed.go.jp/,https://www.jeed.go.jp/jeed/information/index.html,https://www2.njss.info/organizations/proc/5869
+高齢・障害・求職者雇用支援機構 熊本支部 熊本職業能力開発促進センター荒尾訓練センター,熊本県,0,33,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.jeed.go.jp/,https://www.jeed.go.jp/jeed/information/index.html,https://www2.njss.info/organizations/proc/5871
+高齢・障害・求職者雇用支援機構 宮崎支部 宮崎職業能力開発促進センター延岡訓練センター,宮崎県,0,43,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.jeed.go.jp/,https://www.jeed.go.jp/jeed/information/index.html,https://www2.njss.info/organizations/proc/5873
+森林研究・整備機構 森林保険センター,神奈川県,0,161,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.ffpri.go.jp/,https://www.ffpri.go.jp/chotatsu.html,https://www2.njss.info/organizations/proc/6108
+国立美術館 国立国際美術館,大阪府,0,180,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.nmao.go.jp/,https://www.nmao.go.jp/tender/,https://www2.njss.info/organizations/proc/6294
+地域医療機能推進機構(JCHO) 北海道東北地区事務所,東京都,0,0,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.jcho.go.jp/,https://www.jcho.go.jp/disclosure-procurement/,https://www2.njss.info/organizations/proc/7136
+地域医療機能推進機構(JCHO) 関東地区事務所,東京都,0,589,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.jcho.go.jp/,https://www.jcho.go.jp/disclosure-procurement/,https://www2.njss.info/organizations/proc/7137
+地域医療機能推進機構(JCHO) 東海北陸地区事務所,愛知県,0,0,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.jcho.go.jp/,https://www.jcho.go.jp/disclosure-procurement/,https://www2.njss.info/organizations/proc/7138
+地域医療機能推進機構(JCHO) 近畿四国地区事務所,大阪府,0,1,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.jcho.go.jp/,https://www.jcho.go.jp/disclosure-procurement/,https://www2.njss.info/organizations/proc/7139
+地域医療機能推進機構(JCHO) 九州地区事務所,福岡県,0,59,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.jcho.go.jp/,https://www.jcho.go.jp/disclosure-procurement/,https://www2.njss.info/organizations/proc/7140
+地域医療機能推進機構(JCHO) 星ヶ丘医療センター,大阪府,0,883,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.jcho.go.jp/,https://www.jcho.go.jp/disclosure-procurement/,https://www2.njss.info/organizations/proc/7146
+地域医療機能推進機構(JCHO) 神戸中央病院,兵庫県,0,733,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.jcho.go.jp/,https://www.jcho.go.jp/disclosure-procurement/,https://www2.njss.info/organizations/proc/7147
+地域医療機能推進機構(JCHO) 船橋中央病院,千葉県,0,894,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.jcho.go.jp/,https://www.jcho.go.jp/disclosure-procurement/,https://www2.njss.info/organizations/proc/7163
+地域医療機能推進機構(JCHO) りつりん病院,香川県,0,400,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.jcho.go.jp/,https://www.jcho.go.jp/disclosure-procurement/,https://www2.njss.info/organizations/proc/7190
+地域医療機能推進機構(JCHO) 宇和島病院,愛媛県,0,428,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.jcho.go.jp/,https://www.jcho.go.jp/disclosure-procurement/,https://www2.njss.info/organizations/proc/7191
+地域医療機能推進機構(JCHO) 福岡ゆたか中央病院,福岡県,0,452,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.jcho.go.jp/,https://www.jcho.go.jp/disclosure-procurement/,https://www2.njss.info/organizations/proc/7197
+地域医療機能推進機構(JCHO) 松浦中央病院,長崎県,0,221,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.jcho.go.jp/,https://www.jcho.go.jp/disclosure-procurement/,https://www2.njss.info/organizations/proc/7199
+地域医療機能推進機構(JCHO) 宮崎江南病院,宮崎県,0,371,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.jcho.go.jp/,https://www.jcho.go.jp/disclosure-procurement/,https://www2.njss.info/organizations/proc/7205
+大学改革支援・学位授与機構,東京都,0,401,追加済み,公式サイト・調達ページを自動確認,https://www.niad.ac.jp/,https://www.niad.ac.jp/disclosure/nyusatsu.html,https://www2.njss.info/organizations/proc/7585
+国際観光振興機構〈日本政府観光局〉(JNTO) バンコク事務所,東京都,0,24,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.jnto.go.jp/,https://www.jnto.go.jp/about-us/procurement/bid-info/,https://www2.njss.info/organizations/proc/7716
+水資源機構 筑後川局 筑後川下流総合管理所 福岡導水管理所,福岡県,0,151,追加済み,調達ページを実アクセスで確認済み ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.water.go.jp/,https://www.water.go.jp/honsya/honsya/keiyaku/,https://www2.njss.info/organizations/proc/7862
+国立重度知的障害者総合施設のぞみの園,群馬県,0,91,追加済み,公式サイト・調達ページを自動確認,https://www.nozomi.go.jp/,https://www.nozomi.go.jp/supply/index.html,https://www2.njss.info/organizations/proc/7972
+奄美群島振興開発基金,鹿児島県,0,8,追加済み,公式サイト・調達ページを自動確認,https://www.amami.go.jp/,https://www.amami.go.jp/news/3342.html,https://www2.njss.info/organizations/proc/7974
+海上・港湾・航空技術研究所,東京都,0,0,追加済み,公式サイト・調達ページを自動確認,https://www.mpat.go.jp/,https://www.mpat.go.jp/disclosures/procurement/,https://www2.njss.info/organizations/proc/7976
+労働者健康安全機構 アスベスト疾患研究・研修センター,岡山県,0,3,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.johas.go.jp/,https://www.johas.go.jp/procurement/,https://www2.njss.info/organizations/proc/9138
+水資源機構 筑後川局 筑後川上流総合管理所 朝倉ダム総合事業所,福岡県,0,120,追加済み,調達ページを実アクセスで確認済み ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.water.go.jp/,https://www.water.go.jp/honsya/honsya/keiyaku/,https://www2.njss.info/organizations/proc/9140
+国立文化財機構(NICH) アジア太平洋無形文化遺産研究センター,大阪府,0,1,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.nich.go.jp/,https://www.nich.go.jp/information/nyusatsu/,https://www2.njss.info/organizations/proc/9194
+国立高等専門学校機構 東京都立産業技術高等専門学校,東京都,0,0,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.kosen-k.go.jp/,https://www.kosen-k.go.jp/wp/wp-content/uploads/2025/04/chotatsuhoushin.pdf,https://www2.njss.info/organizations/proc/9204
+国立高等専門学校機構 大阪公立大学工業高等専門学校,大阪府,0,0,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.kosen-k.go.jp/,https://www.kosen-k.go.jp/wp/wp-content/uploads/2025/04/chotatsuhoushin.pdf,https://www2.njss.info/organizations/proc/9226
+国立美術館 国立工芸館,石川県,0,24,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.artmuseums.go.jp/,https://www.artmuseums.go.jp/offer,https://www2.njss.info/organizations/proc/9231
+国立文化財機構(NICH) 皇居三の丸尚蔵館,東京都,0,13,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.nich.go.jp/,https://www.nich.go.jp/information/nyusatsu/,https://www2.njss.info/organizations/proc/9235
+国立高等専門学校機構 阿南工業高等専門学校,徳島県,0,20,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.kosen-k.go.jp/,https://www.kosen-k.go.jp/wp/wp-content/uploads/2025/04/chotatsuhoushin.pdf,https://www2.njss.info/organizations/proc/9237
+国立高等専門学校機構 旭川工業高等専門学校,北海道,0,18,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.kosen-k.go.jp/,https://www.kosen-k.go.jp/wp/wp-content/uploads/2025/04/chotatsuhoushin.pdf,https://www2.njss.info/organizations/proc/9238
+国立高等専門学校機構 沼津工業高等専門学校,静岡県,0,18,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.kosen-k.go.jp/,https://www.kosen-k.go.jp/wp/wp-content/uploads/2025/04/chotatsuhoushin.pdf,https://www2.njss.info/organizations/proc/9241
+森林研究・整備機構,茨城県,0,0,追加済み,公式サイト・調達ページを自動確認,https://www.ffpri.go.jp/,https://www.ffpri.go.jp/chotatsu.html,https://www2.njss.info/organizations/proc/9285
+労働者健康安全機構 東北労災看護専門学校,宮城県,0,1,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.johas.go.jp/,https://www.johas.go.jp/procurement/,https://www2.njss.info/organizations/proc/9586
+男女共同参画機構(JGEPA),埼玉県,0,0,追加済み,公式サイト・調達ページを自動確認,https://www.jgepa.go.jp/,https://www.jgepa.go.jp/about/procure/index.html,https://www2.njss.info/organizations/proc/9792
+国立高等専門学校機構 東京工業高等専門学校,東京都,0,7,追加済み,公式サイト・調達ページを自動確認 ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.kosen-k.go.jp/,https://www.kosen-k.go.jp/wp/wp-content/uploads/2025/04/chotatsuhoushin.pdf,https://www2.njss.info/organizations/proc/9797
+水資源機構 筑後川局 筑後川下流総合管理所,福岡県,6,103,追加済み,調達ページを実アクセスで確認済み ※親法人の調達ページを設定（支部・施設個別ページは要人力確認）,https://www.water.go.jp/,https://www.water.go.jp/honsya/honsya/keiyaku/,https://www2.njss.info/organizations/proc/7860

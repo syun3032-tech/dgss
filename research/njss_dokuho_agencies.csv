@@ -83,7 +83,7 @@
 水資源機構 中部支社 揖斐川・長良川総合管理所,6,https://www.water.go.jp/,www.water.go.jp,0,https://www.water.go.jp/honsya/honsya/keiyaku/,https://www2.njss.info/organizations/proc/476,2026-07-09
 国立病院機構 北海道東北グループ 仙台医療センター,6,https://nho.hosp.go.jp/,nho.hosp.go.jp,0,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/776,2026-07-09
 国立病院機構 北海道東北グループ あきた病院,6,https://nho.hosp.go.jp/,nho.hosp.go.jp,0,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/779,2026-07-09
-国立病院機構 近畿グループ 大阪医療センター,6,https://osaka.hosp.go.jp/,osaka.hosp.go.jp,0,https://osaka.hosp.go.jp/nyusatsu/index.html,https://www2.njss.info/organizations/proc/858,2026-07-09
+国立病院機構 近畿グループ 大阪医療センター,6,https://nho.hosp.go.jp/,nho.hosp.go.jp,0,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/858,2026-07-09
 国立文化財機構(NICH) 東京国立博物館(TNM),6,https://www.nich.go.jp/,www.nich.go.jp,0,https://www.nich.go.jp/information/nyusatsu/,https://www2.njss.info/organizations/proc/1097,2026-07-09
 国立文化財機構(NICH) 奈良文化財研究所,6,https://www.nich.go.jp/,www.nich.go.jp,0,https://www.nich.go.jp/information/nyusatsu/,https://www2.njss.info/organizations/proc/1100,2026-07-09
 労働者健康安全機構 千葉労災病院,6,https://www.johas.go.jp/,www.johas.go.jp,0,https://www.johas.go.jp/procurement/,https://www2.njss.info/organizations/proc/1468,2026-07-09
@@ -99,3 +99,688 @@
 地域医療機能推進機構(JCHO) 人吉医療センター,6,https://www.jcho.go.jp/,www.jcho.go.jp,0,https://www.jcho.go.jp/disclosure-procurement/,https://www2.njss.info/organizations/proc/7202,2026-07-09
 海上技術安全研究所(NMRI),5,https://www.nmri.go.jp/,www.nmri.go.jp,0,https://www.nmri.go.jp/bid/,https://www2.njss.info/organizations/proc/450,2026-07-09
 水資源機構 関西・吉野川支社淀川本部 木津川ダム総合管理所,5,https://www.water.go.jp/,www.water.go.jp,0,https://www.water.go.jp/honsya/honsya/keiyaku/,https://www2.njss.info/organizations/proc/483,2026-07-09
+水資源機構 関西・吉野川支社吉野川本部 吉野川上流総合管理所,5,https://www.water.go.jp/,www.water.go.jp,0,https://www.water.go.jp/honsya/honsya/keiyaku/,https://www2.njss.info/organizations/proc/488,2026-07-09
+労働者健康安全機構 労働安全衛生総合研究所(JNIOSH),5,https://www.johas.go.jp/,www.johas.go.jp,0,https://www.johas.go.jp/procurement/,https://www2.njss.info/organizations/proc/608,2026-07-09
+医薬基盤・健康・栄養研究所(NIBN),5,https://www.nibiohn.go.jp/,www.nibiohn.go.jp,0,https://www.nibiohn.go.jp/procurement/index.html,https://www2.njss.info/organizations/proc/609,2026-07-09
+国立病院機構 関東信越グループ 高崎総合医療センター,5,https://nho.hosp.go.jp/,nho.hosp.go.jp,0,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/816,2026-07-09
+国立病院機構 九州グループ 福岡病院,5,https://nho.hosp.go.jp/,nho.hosp.go.jp,0,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/822,2026-07-09
+国立病院機構 中国四国グループ 岡山医療センター,5,https://nho.hosp.go.jp/,nho.hosp.go.jp,0,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/823,2026-07-09
+国立病院機構 中国四国グループ 呉医療センター・中国がんセンター,5,https://nho.hosp.go.jp/,nho.hosp.go.jp,0,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/831,2026-07-09
+国立病院機構 関東信越グループ 小諸高原病院,5,https://nho.hosp.go.jp/,nho.hosp.go.jp,0,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/842,2026-07-09
+国立病院機構 九州グループ 別府医療センター,5,https://nho.hosp.go.jp/,nho.hosp.go.jp,0,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/898,2026-07-09
+家畜改良センター(NLBC) 十勝牧場,5,https://www.nlbc.go.jp/,www.nlbc.go.jp,0,https://www.nlbc.go.jp/chotatsujoho/index.html,https://www2.njss.info/organizations/proc/1434,2026-07-09
+労働者健康安全機構 東北労災病院,5,https://www.johas.go.jp/,www.johas.go.jp,0,https://www.johas.go.jp/procurement/,https://www2.njss.info/organizations/proc/1464,2026-07-09
+労働者健康安全機構 浜松労災病院,5,https://www.johas.go.jp/,www.johas.go.jp,0,https://www.johas.go.jp/procurement/,https://www2.njss.info/organizations/proc/1475,2026-07-09
+日本学術振興会(JSPS),5,https://www.jsps.go.jp/,www.jsps.go.jp,0,https://www.jsps.go.jp/j-choutatsu/index.html,https://www2.njss.info/organizations/proc/1659,2026-07-09
+国立文化財機構(NICH) 奈良国立博物館,5,https://www.nich.go.jp/,www.nich.go.jp,0,https://www.nich.go.jp/information/nyusatsu/,https://www2.njss.info/organizations/proc/4508,2026-07-09
+高齢・障害・求職者雇用支援機構 石川支部,5,https://www.jeed.go.jp/,www.jeed.go.jp,0,https://www.jeed.go.jp/jeed/information/index.html,https://www2.njss.info/organizations/proc/5808,2026-07-09
+高齢・障害・求職者雇用支援機構 岐阜支部,5,https://www.jeed.go.jp/,www.jeed.go.jp,0,https://www.jeed.go.jp/jeed/information/index.html,https://www2.njss.info/organizations/proc/5812,2026-07-09
+高齢・障害・求職者雇用支援機構 広島支部,5,https://www.jeed.go.jp/,www.jeed.go.jp,0,https://www.jeed.go.jp/jeed/information/index.html,https://www2.njss.info/organizations/proc/5860,2026-07-09
+高齢・障害・求職者雇用支援機構 大分支部,5,https://www.jeed.go.jp/,www.jeed.go.jp,0,https://www.jeed.go.jp/jeed/information/index.html,https://www2.njss.info/organizations/proc/5872,2026-07-09
+地域医療機能推進機構(JCHO) 千葉病院,5,https://www.jcho.go.jp/,www.jcho.go.jp,0,https://www.jcho.go.jp/disclosure-procurement/,https://www2.njss.info/organizations/proc/7162,2026-07-09
+地域医療機能推進機構(JCHO) 横浜保土ケ谷中央病院,5,https://www.jcho.go.jp/,www.jcho.go.jp,0,https://www.jcho.go.jp/disclosure-procurement/,https://www2.njss.info/organizations/proc/7170,2026-07-09
+地域医療機能推進機構(JCHO) 三島総合病院,5,https://www.jcho.go.jp/,www.jcho.go.jp,0,https://www.jcho.go.jp/disclosure-procurement/,https://www2.njss.info/organizations/proc/7180,2026-07-09
+地域医療機能推進機構(JCHO) 北海道病院,5,https://www.jcho.go.jp/,www.jcho.go.jp,0,https://www.jcho.go.jp/disclosure-procurement/,https://www2.njss.info/organizations/proc/7187,2026-07-09
+地域医療機能推進機構(JCHO) 熊本総合病院,5,https://www.jcho.go.jp/,www.jcho.go.jp,0,https://www.jcho.go.jp/disclosure-procurement/,https://www2.njss.info/organizations/proc/7201,2026-07-09
+地域医療機能推進機構(JCHO) 天草中央総合病院,5,https://www.jcho.go.jp/,www.jcho.go.jp,0,https://www.jcho.go.jp/disclosure-procurement/,https://www2.njss.info/organizations/proc/7203,2026-07-09
+教職員支援機構(NITS),4,https://www.nits.go.jp/,www.nits.go.jp,0,https://www.nits.go.jp/nyusatsu/general.html,https://www2.njss.info/organizations/proc/227,2026-07-09
+家畜改良センター(NLBC),4,https://www.nlbc.go.jp/,www.nlbc.go.jp,0,https://www.nlbc.go.jp/chotatsujoho/index.html,https://www2.njss.info/organizations/proc/294,2026-07-09
+日本高速道路保有・債務返済機構,4,https://www.jehdra.go.jp/,www.jehdra.go.jp,0,https://www.jehdra.go.jp/kiko/nyusatsu.html,https://www2.njss.info/organizations/proc/441,2026-07-09
+水資源機構 渡良瀬川ダム総合管理所,4,https://www.water.go.jp/,www.water.go.jp,0,https://www.water.go.jp/honsya/honsya/keiyaku/,https://www2.njss.info/organizations/proc/467,2026-07-09
+水資源機構 関西・吉野川支社淀川本部 琵琶湖総合管理所,4,https://www.water.go.jp/,www.water.go.jp,0,https://www.water.go.jp/honsya/honsya/keiyaku/,https://www2.njss.info/organizations/proc/482,2026-07-09
+地域医療機能推進機構(JCHO),4,https://www.jcho.go.jp/,www.jcho.go.jp,0,https://www.jcho.go.jp/disclosure-procurement/,https://www2.njss.info/organizations/proc/612,2026-07-09
+国立成育医療研究センター,4,https://www.ncchd.go.jp/,www.ncchd.go.jp,0,https://www.ncchd.go.jp/purchase/index.html,https://www2.njss.info/organizations/proc/690,2026-07-09
+国立病院機構 北海道東北グループ 弘前総合医療センター,4,https://nho.hosp.go.jp/,nho.hosp.go.jp,0,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/769,2026-07-09
+国立病院機構 北海道東北グループ 岩手病院,4,https://nho.hosp.go.jp/,nho.hosp.go.jp,0,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/774,2026-07-09
+国立病院機構 関東信越グループ 久里浜医療センター,4,https://nho.hosp.go.jp/,nho.hosp.go.jp,0,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/782,2026-07-09
+国立病院機構 近畿グループ 和歌山病院,4,https://nho.hosp.go.jp/,nho.hosp.go.jp,0,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/791,2026-07-09
+国立病院機構 関東信越グループ 水戸医療センター,4,https://nho.hosp.go.jp/,nho.hosp.go.jp,0,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/796,2026-07-09
+国立病院機構 九州グループ 九州がんセンター,4,https://nho.hosp.go.jp/,nho.hosp.go.jp,0,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/801,2026-07-09
+国立病院機構 近畿グループ 敦賀医療センター,4,https://nho.hosp.go.jp/,nho.hosp.go.jp,0,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/815,2026-07-09
+国立病院機構 近畿グループ あわら病院,4,https://nho.hosp.go.jp/,nho.hosp.go.jp,0,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/819,2026-07-09
+国立病院機構 九州グループ 佐賀病院,4,https://nho.hosp.go.jp/,nho.hosp.go.jp,0,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/839,2026-07-09
+国立病院機構 中国四国グループ 広島西医療センター,4,https://nho.hosp.go.jp/,nho.hosp.go.jp,0,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/840,2026-07-09
+国立病院機構 近畿グループ 舞鶴医療センター,4,https://nho.hosp.go.jp/,nho.hosp.go.jp,0,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/845,2026-07-09
+国立病院機構 関東信越グループ 横浜医療センター,4,https://nho.hosp.go.jp/,nho.hosp.go.jp,0,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/875,2026-07-09
+国立病院機構 九州グループ 熊本医療センター,4,https://nho.hosp.go.jp/,nho.hosp.go.jp,0,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/882,2026-07-09
+国立病院機構 中国四国グループ 岩国医療センター,4,https://nho.hosp.go.jp/,nho.hosp.go.jp,0,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/903,2026-07-09
+労働者健康安全機構 北海道せき損センター,4,https://www.johas.go.jp/,www.johas.go.jp,0,https://www.johas.go.jp/procurement/,https://www2.njss.info/organizations/proc/1460,2026-07-09
+労働者健康安全機構 富山労災病院,4,https://www.johas.go.jp/,www.johas.go.jp,0,https://www.johas.go.jp/procurement/,https://www2.njss.info/organizations/proc/1474,2026-07-09
+労働者健康安全機構 関西労災病院,4,https://www.johas.go.jp/,www.johas.go.jp,0,https://www.johas.go.jp/procurement/,https://www2.njss.info/organizations/proc/1479,2026-07-09
+労働者健康安全機構 熊本労災病院,4,https://www.johas.go.jp/,www.johas.go.jp,0,https://www.johas.go.jp/procurement/,https://www2.njss.info/organizations/proc/1490,2026-07-09
+高齢・障害・求職者雇用支援機構 長野支部,4,https://www.jeed.go.jp/,www.jeed.go.jp,0,https://www.jeed.go.jp/jeed/information/index.html,https://www2.njss.info/organizations/proc/4411,2026-07-09
+高齢・障害・求職者雇用支援機構 長崎支部,4,https://www.jeed.go.jp/,www.jeed.go.jp,0,https://www.jeed.go.jp/jeed/information/index.html,https://www2.njss.info/organizations/proc/4415,2026-07-09
+高齢・障害・求職者雇用支援機構 栃木支部,4,https://www.jeed.go.jp/,www.jeed.go.jp,0,https://www.jeed.go.jp/jeed/information/index.html,https://www2.njss.info/organizations/proc/5652,2026-07-09
+高齢・障害・求職者雇用支援機構 富山支部,4,https://www.jeed.go.jp/,www.jeed.go.jp,0,https://www.jeed.go.jp/jeed/information/index.html,https://www2.njss.info/organizations/proc/5807,2026-07-09
+高齢・障害・求職者雇用支援機構 山梨支部,4,https://www.jeed.go.jp/,www.jeed.go.jp,0,https://www.jeed.go.jp/jeed/information/index.html,https://www2.njss.info/organizations/proc/5810,2026-07-09
+高齢・障害・求職者雇用支援機構 岡山支部,4,https://www.kibireha.jeed.go.jp/,www.kibireha.jeed.go.jp,0,https://www.kibireha.jeed.go.jp/tender/tender.html,https://www2.njss.info/organizations/proc/5859,2026-07-09
+高齢・障害・求職者雇用支援機構 福岡支部,4,https://www.jeed.go.jp/,www.jeed.go.jp,0,https://www.jeed.go.jp/jeed/information/index.html,https://www2.njss.info/organizations/proc/5866,2026-07-09
+地域医療機能推進機構(JCHO) 埼玉メディカルセンター,4,https://www.jcho.go.jp/,www.jcho.go.jp,0,https://www.jcho.go.jp/disclosure-procurement/,https://www2.njss.info/organizations/proc/7161,2026-07-09
+地域医療機能推進機構(JCHO) 横浜中央病院,4,https://www.jcho.go.jp/,www.jcho.go.jp,0,https://www.jcho.go.jp/disclosure-procurement/,https://www2.njss.info/organizations/proc/7169,2026-07-09
+地域医療機能推進機構(JCHO) 札幌北辰病院,4,https://www.jcho.go.jp/,www.jcho.go.jp,0,https://www.jcho.go.jp/disclosure-procurement/,https://www2.njss.info/organizations/proc/7188,2026-07-09
+地域医療機能推進機構(JCHO) 徳山中央病院,4,https://www.jcho.go.jp/,www.jcho.go.jp,0,https://www.jcho.go.jp/disclosure-procurement/,https://www2.njss.info/organizations/proc/7194,2026-07-09
+地域医療機能推進機構(JCHO) 九州病院,4,https://www.jcho.go.jp/,www.jcho.go.jp,0,https://www.jcho.go.jp/disclosure-procurement/,https://www2.njss.info/organizations/proc/7195,2026-07-09
+地域医療機能推進機構(JCHO) 諫早総合病院,4,https://www.jcho.go.jp/,www.jcho.go.jp,0,https://www.jcho.go.jp/disclosure-procurement/,https://www2.njss.info/organizations/proc/7200,2026-07-09
+都市再生機構(UR) 東北震災復興支援本部,4,https://www.ur-net.go.jp/,www.ur-net.go.jp,0,https://www.ur-net.go.jp/order/index.html,https://www2.njss.info/organizations/proc/7723,2026-07-09
+国立高等専門学校機構 福島工業高等専門学校,3,https://www.kosen-k.go.jp/,www.kosen-k.go.jp,0,https://www.kosen-k.go.jp/wp/wp-content/uploads/2025/04/chotatsuhoushin.pdf,https://www2.njss.info/organizations/proc/202,2026-07-09
+国立高等専門学校機構 小山工業高等専門学校,3,https://www.kosen-k.go.jp/,www.kosen-k.go.jp,0,https://www.kosen-k.go.jp/wp/wp-content/uploads/2025/04/chotatsuhoushin.pdf,https://www2.njss.info/organizations/proc/211,2026-07-09
+国立科学博物館,3,https://www.kahaku.go.jp/,www.kahaku.go.jp,0,https://www.kahaku.go.jp/info/chotatsu.html,https://www2.njss.info/organizations/proc/224,2026-07-09
+人間文化研究機構 国立国語研究所(NINJAL),3,https://www.nihu.jp/,www.nihu.jp,0,https://www.ninjal.ac.jp/info/disclosure/procurement/,https://www2.njss.info/organizations/proc/225,2026-07-09
+国立特別支援教育総合研究所(NISE),3,https://www.nise.go.jp/,www.nise.go.jp,0,https://www.nise.go.jp/about_nise/information/bid/,https://www2.njss.info/organizations/proc/232,2026-07-09
+国際農林水産業研究センター(JIRCAS),3,https://www.jircas.go.jp/,www.jircas.go.jp,0,https://www.jircas.go.jp/ja/procurement,https://www2.njss.info/organizations/proc/285,2026-07-09
+農業者年金基金,3,https://www.nounen.go.jp/,www.nounen.go.jp,0,https://www.nounen.go.jp/disclosure/data/r08/3-4_zuii_r0804.xlsx,https://www2.njss.info/organizations/proc/296,2026-07-09
+電子航法研究所(ENRI),3,https://www.enri.go.jp/,www.enri.go.jp,0,https://www.enri.go.jp/jp/procrm.html,https://www2.njss.info/organizations/proc/440,2026-07-09
+水資源機構 中部支社,3,https://www.water.go.jp/,www.water.go.jp,0,https://www.water.go.jp/honsya/honsya/keiyaku/,https://www2.njss.info/organizations/proc/469,2026-07-09
+水資源機構 中部支社 揖斐川・長良川総合管理所 徳山ダム管理所,3,https://www.water.go.jp/,www.water.go.jp,0,https://www.water.go.jp/honsya/honsya/keiyaku/,https://www2.njss.info/organizations/proc/472,2026-07-09
+水資源機構 筑後川局 筑後川下流総合管理所 筑後川下流用水管理所,3,https://www.water.go.jp/,www.water.go.jp,0,https://www.water.go.jp/honsya/honsya/keiyaku/,https://www2.njss.info/organizations/proc/494,2026-07-09
+工業所有権情報・研修館(INPIT),3,https://www.inpit.go.jp/,www.inpit.go.jp,0,https://www.inpit.go.jp/kobo/anken/r08/0630.html,https://www2.njss.info/organizations/proc/720,2026-07-09
+環境再生保全機構(ERCA),3,https://www.erca.go.jp/,www.erca.go.jp,0,https://www.erca.go.jp/erca/chotatsu/index.html,https://www2.njss.info/organizations/proc/742,2026-07-09
+国立病院機構 北海道東北グループ 北海道がんセンター,3,https://nho.hosp.go.jp/,nho.hosp.go.jp,0,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/762,2026-07-09
+国立病院機構 北海道東北グループ 山形病院,3,https://nho.hosp.go.jp/,nho.hosp.go.jp,0,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/780,2026-07-09
+国立病院機構 九州グループ 小倉医療センター,3,https://nho.hosp.go.jp/,nho.hosp.go.jp,0,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/795,2026-07-09
+国立病院機構 東海北陸グループ 鈴鹿病院,3,https://nho.hosp.go.jp/,nho.hosp.go.jp,0,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/798,2026-07-09
+国立病院機構 関東信越グループ 神奈川病院,3,https://nho.hosp.go.jp/,nho.hosp.go.jp,0,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/799,2026-07-09
+国立病院機構 東海北陸グループ 三重中央医療センター,3,https://nho.hosp.go.jp/,nho.hosp.go.jp,0,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/800,2026-07-09
+国立病院機構 関東信越グループ 茨城東病院 胸部疾患・療育医療センター,3,https://nho.hosp.go.jp/,nho.hosp.go.jp,0,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/805,2026-07-09
+国立病院機構 近畿グループ 京都医療センター,3,https://nho.hosp.go.jp/,nho.hosp.go.jp,0,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/837,2026-07-09
+国立病院機構 中国四国グループ 東広島医療センター,3,https://nho.hosp.go.jp/,nho.hosp.go.jp,0,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/846,2026-07-09
+国立病院機構 九州グループ 東佐賀病院,3,https://nho.hosp.go.jp/,nho.hosp.go.jp,0,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/857,2026-07-09
+国立病院機構 東海北陸グループ 金沢医療センター,3,https://nho.hosp.go.jp/,nho.hosp.go.jp,0,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/859,2026-07-09
+国立病院機構 九州グループ 嬉野医療センター,3,https://nho.hosp.go.jp/,nho.hosp.go.jp,0,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/864,2026-07-09
+国立病院機構 関東信越グループ 東京病院,3,https://nho.hosp.go.jp/,nho.hosp.go.jp,0,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/867,2026-07-09
+国立病院機構 九州グループ 熊本南病院,3,https://nho.hosp.go.jp/,nho.hosp.go.jp,0,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/889,2026-07-09
+国立病院機構 東海北陸グループ 名古屋医療センター,3,https://nho.hosp.go.jp/,nho.hosp.go.jp,0,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/891,2026-07-09
+国立病院機構 中国四国グループ 山口宇部医療センター,3,https://nho.hosp.go.jp/,nho.hosp.go.jp,0,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/902,2026-07-09
+国立病院機構 近畿グループ 神戸医療センター,3,https://nho.hosp.go.jp/,nho.hosp.go.jp,0,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/913,2026-07-09
+労働者健康安全機構 秋田労災病院,3,https://www.johas.go.jp/,www.johas.go.jp,0,https://www.johas.go.jp/procurement/,https://www2.njss.info/organizations/proc/1465,2026-07-09
+労働者健康安全機構 関東労災病院,3,https://www.johas.go.jp/,www.johas.go.jp,0,https://www.johas.go.jp/procurement/,https://www2.njss.info/organizations/proc/1470,2026-07-09
+労働者健康安全機構 和歌山労災病院,3,https://www.johas.go.jp/,www.johas.go.jp,0,https://www.johas.go.jp/procurement/,https://www2.njss.info/organizations/proc/1480,2026-07-09
+高齢・障害・求職者雇用支援機構 宮城支部,3,https://www.jeed.go.jp/,www.jeed.go.jp,0,https://www.jeed.go.jp/jeed/information/index.html,https://www2.njss.info/organizations/proc/4410,2026-07-09
+高齢・障害・求職者雇用支援機構 宮崎支部,3,https://www.jeed.go.jp/,www.jeed.go.jp,0,https://www.jeed.go.jp/jeed/information/index.html,https://www2.njss.info/organizations/proc/4416,2026-07-09
+高齢・障害・求職者雇用支援機構 福島支部,3,https://www.jeed.go.jp/,www.jeed.go.jp,0,https://www.jeed.go.jp/jeed/information/index.html,https://www2.njss.info/organizations/proc/5796,2026-07-09
+高齢・障害・求職者雇用支援機構 奈良支部,3,https://www.jeed.go.jp/,www.jeed.go.jp,0,https://www.jeed.go.jp/jeed/information/index.html,https://www2.njss.info/organizations/proc/5854,2026-07-09
+高齢・障害・求職者雇用支援機構 山口支部,3,https://www.jeed.go.jp/,www.jeed.go.jp,0,https://www.jeed.go.jp/jeed/information/index.html,https://www2.njss.info/organizations/proc/5861,2026-07-09
+高齢・障害・求職者雇用支援機構 熊本支部,3,https://www.jeed.go.jp/,www.jeed.go.jp,0,https://www.jeed.go.jp/jeed/information/index.html,https://www2.njss.info/organizations/proc/5870,2026-07-09
+高齢・障害・求職者雇用支援機構 沖縄支部,3,https://www.jeed.go.jp/,www.jeed.go.jp,0,https://www.jeed.go.jp/jeed/information/index.html,https://www2.njss.info/organizations/proc/5875,2026-07-09
+地域医療機能推進機構(JCHO) 南海医療センター,3,https://www.jcho.go.jp/,www.jcho.go.jp,0,https://www.jcho.go.jp/disclosure-procurement/,https://www2.njss.info/organizations/proc/7141,2026-07-09
+地域医療機能推進機構(JCHO) さいたま北部医療センター,3,https://www.jcho.go.jp/,www.jcho.go.jp,0,https://www.jcho.go.jp/disclosure-procurement/,https://www2.njss.info/organizations/proc/7160,2026-07-09
+地域医療機能推進機構(JCHO) 東京新宿メディカルセンター,3,https://shinjuku.jcho.go.jp/,shinjuku.jcho.go.jp,0,https://shinjuku.jcho.go.jp/introduction/various/調達情報/,https://www2.njss.info/organizations/proc/7165,2026-07-09
+地域医療機能推進機構(JCHO) 仙台病院,3,https://www.jcho.go.jp/,www.jcho.go.jp,0,https://www.jcho.go.jp/disclosure-procurement/,https://www2.njss.info/organizations/proc/7173,2026-07-09
+地域医療機能推進機構(JCHO) 高知西病院,3,https://www.jcho.go.jp/,www.jcho.go.jp,0,https://www.jcho.go.jp/disclosure-procurement/,https://www2.njss.info/organizations/proc/7192,2026-07-09
+地域医療機能推進機構(JCHO) 下関医療センター,3,https://www.jcho.go.jp/,www.jcho.go.jp,0,https://www.jcho.go.jp/disclosure-procurement/,https://www2.njss.info/organizations/proc/7193,2026-07-09
+水資源機構 関西・吉野川支社吉野川本部 吉野川下流総合管理所,3,https://www.water.go.jp/,www.water.go.jp,0,https://www.water.go.jp/honsya/honsya/keiyaku/,https://www2.njss.info/organizations/proc/9783,2026-07-09
+国立高等専門学校機構 有明工業高等専門学校,2,https://www.kosen-k.go.jp/,www.kosen-k.go.jp,0,https://www.kosen-k.go.jp/wp/wp-content/uploads/2025/04/chotatsuhoushin.pdf,https://www2.njss.info/organizations/proc/201,2026-07-09
+国立高等専門学校機構 岐阜工業高等専門学校,2,https://www.kosen-k.go.jp/,www.kosen-k.go.jp,0,https://www.kosen-k.go.jp/wp/wp-content/uploads/2025/04/chotatsuhoushin.pdf,https://www2.njss.info/organizations/proc/203,2026-07-09
+国立高等専門学校機構 長岡工業高等専門学校,2,https://www.kosen-k.go.jp/,www.kosen-k.go.jp,0,https://www.kosen-k.go.jp/wp/wp-content/uploads/2025/04/chotatsuhoushin.pdf,https://www2.njss.info/organizations/proc/210,2026-07-09
+国立高等専門学校機構 鶴岡工業高等専門学校,2,https://www.kosen-k.go.jp/,www.kosen-k.go.jp,0,https://www.kosen-k.go.jp/wp/wp-content/uploads/2025/04/chotatsuhoushin.pdf,https://www2.njss.info/organizations/proc/214,2026-07-09
+国立高等専門学校機構 大分工業高等専門学校,2,https://www.kosen-k.go.jp/,www.kosen-k.go.jp,0,https://www.kosen-k.go.jp/wp/wp-content/uploads/2025/04/chotatsuhoushin.pdf,https://www2.njss.info/organizations/proc/215,2026-07-09
+大学入試センター(DNC),2,https://www.dnc.ac.jp/,www.dnc.ac.jp,0,https://www.dnc.ac.jp/disclosure/choutatsu_jouhou/index.html,https://www2.njss.info/organizations/proc/219,2026-07-09
+国立公文書館,2,https://www.archives.go.jp/,www.archives.go.jp,0,https://www.archives.go.jp/chotatsu/index.html,https://www2.njss.info/organizations/proc/301,2026-07-09
+輸出入・港湾関連情報処理センター(NACCS),2,https://www.naccs.jp/,www.naccs.jp,0,https://www.naccs.jp/archives/cyoutatsu_index.html,https://www2.njss.info/organizations/proc/399,2026-07-09
+水資源機構 千葉用水総合管理所,2,https://www.water.go.jp/,www.water.go.jp,0,https://www.water.go.jp/honsya/honsya/keiyaku/,https://www2.njss.info/organizations/proc/460,2026-07-09
+水資源機構 利根川上流総合管理所,2,https://www.water.go.jp/,www.water.go.jp,0,https://www.water.go.jp/honsya/honsya/keiyaku/,https://www2.njss.info/organizations/proc/463,2026-07-09
+水資源機構 中部支社 愛知用水総合管理所,2,https://www.water.go.jp/,www.water.go.jp,0,https://www.water.go.jp/honsya/honsya/keiyaku/,https://www2.njss.info/organizations/proc/470,2026-07-09
+水資源機構 中部支社 木曽川上流ダム総合管理所 味噌川ダム管理所,2,https://www.water.go.jp/,www.water.go.jp,0,https://www.water.go.jp/honsya/honsya/keiyaku/,https://www2.njss.info/organizations/proc/477,2026-07-09
+水資源機構 関西・吉野川支社淀川本部 桂川・猪名川ダム総合管理所 一庫ダム管理所,2,https://www.water.go.jp/,www.water.go.jp,0,https://www.water.go.jp/honsya/honsya/keiyaku/,https://www2.njss.info/organizations/proc/484,2026-07-09
+水資源機構 筑後川局,2,https://www.water.go.jp/,www.water.go.jp,0,https://www.water.go.jp/honsya/honsya/keiyaku/,https://www2.njss.info/organizations/proc/490,2026-07-09
+年金積立金管理運用(GPIF),2,https://www.gpif.go.jp/,www.gpif.go.jp,0,https://www.gpif.go.jp/info/procurement/,https://www2.njss.info/organizations/proc/604,2026-07-09
+福祉医療機構(WAM),2,https://www.wam.go.jp/,www.wam.go.jp,0,https://www.wam.go.jp/hp/cat/chotatsujoho/,https://www2.njss.info/organizations/proc/614,2026-07-09
+国立病院機構 北海道東北グループ 宮城病院,2,https://nho.hosp.go.jp/,nho.hosp.go.jp,0,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/778,2026-07-09
+国立病院機構 東海北陸グループ 東尾張病院,2,https://nho.hosp.go.jp/,nho.hosp.go.jp,0,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/787,2026-07-09
+国立病院機構 近畿グループ 南和歌山医療センター,2,https://nho.hosp.go.jp/,nho.hosp.go.jp,0,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/788,2026-07-09
+国立病院機構 関東信越グループ 西新潟中央病院,2,https://nho.hosp.go.jp/,nho.hosp.go.jp,0,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/806,2026-07-09
+国立病院機構 九州グループ 九州医療センター,2,https://nho.hosp.go.jp/,nho.hosp.go.jp,0,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/807,2026-07-09
+国立病院機構 関東信越グループ 東長野病院,2,https://nho.hosp.go.jp/,nho.hosp.go.jp,0,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/821,2026-07-09
+国立病院機構 関東信越グループ 渋川医療センター,2,https://nho.hosp.go.jp/,nho.hosp.go.jp,0,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/825,2026-07-09
+国立病院機構 関東信越グループ 埼玉病院,2,https://nho.hosp.go.jp/,nho.hosp.go.jp,0,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/835,2026-07-09
+国立病院機構 中国四国グループ 福山医療センター,2,https://nho.hosp.go.jp/,nho.hosp.go.jp,0,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/836,2026-07-09
+国立病院機構 東海北陸グループ 北陸病院,2,https://nho.hosp.go.jp/,nho.hosp.go.jp,0,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/854,2026-07-09
+国立病院機構 近畿グループ 大阪刀根山医療センター,2,https://nho.hosp.go.jp/,nho.hosp.go.jp,0,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/865,2026-07-09
+国立病院機構 九州グループ 長崎病院,2,https://nho.hosp.go.jp/,nho.hosp.go.jp,0,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/869,2026-07-09
+国立病院機構 東海北陸グループ 石川病院,2,https://nho.hosp.go.jp/,nho.hosp.go.jp,0,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/870,2026-07-09
+国立病院機構 近畿グループ 姫路医療センター,2,https://nho.hosp.go.jp/,nho.hosp.go.jp,0,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/872,2026-07-09
+国立病院機構 東海北陸グループ 長良医療センター,2,https://nho.hosp.go.jp/,nho.hosp.go.jp,0,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/874,2026-07-09
+国立病院機構 東海北陸グループ 静岡てんかん・神経医療センター,2,https://nho.hosp.go.jp/,nho.hosp.go.jp,0,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/877,2026-07-09
+国立病院機構 近畿グループ 兵庫中央病院,2,https://nho.hosp.go.jp/,nho.hosp.go.jp,0,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/879,2026-07-09
+国立病院機構 九州グループ 南九州病院,2,https://nho.hosp.go.jp/,nho.hosp.go.jp,0,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/890,2026-07-09
+国立病院機構 九州グループ 菊池病院,2,https://nho.hosp.go.jp/,nho.hosp.go.jp,0,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/892,2026-07-09
+国立病院機構 九州グループ 指宿医療センター,2,https://nho.hosp.go.jp/,nho.hosp.go.jp,0,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/893,2026-07-09
+国立病院機構 九州グループ 西別府病院,2,https://nho.hosp.go.jp/,nho.hosp.go.jp,0,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/900,2026-07-09
+国立病院機構 中国四国グループ とくしま医療センター東病院,2,https://nho.hosp.go.jp/,nho.hosp.go.jp,0,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/905,2026-07-09
+国立文化財機構(NICH) 東京文化財研究所,2,https://www.nich.go.jp/,www.nich.go.jp,0,https://www.nich.go.jp/information/nyusatsu/,https://www2.njss.info/organizations/proc/1099,2026-07-09
+家畜改良センター(NLBC) 茨城牧場,2,https://www.nlbc.go.jp/,www.nlbc.go.jp,0,https://www.nlbc.go.jp/chotatsujoho/index.html,https://www2.njss.info/organizations/proc/1437,2026-07-09
+労働者健康安全機構 大阪ろうさい病院,2,https://www.johas.go.jp/,www.johas.go.jp,0,https://www.johas.go.jp/procurement/,https://www2.njss.info/organizations/proc/1478,2026-07-09
+労働者健康安全機構 岡山労災病院,2,https://www.johas.go.jp/,www.johas.go.jp,0,https://www.johas.go.jp/procurement/,https://www2.njss.info/organizations/proc/1482,2026-07-09
+労働者健康安全機構 香川労災病院,2,https://www.kagawah.johas.go.jp/,www.kagawah.johas.go.jp,0,https://www.kagawah.johas.go.jp/info/procurement/,https://www2.njss.info/organizations/proc/1485,2026-07-09
+労働者健康安全機構 九州労災病院,2,https://www.johas.go.jp/,www.johas.go.jp,0,https://www.johas.go.jp/procurement/,https://www2.njss.info/organizations/proc/1487,2026-07-09
+高齢・障害・求職者雇用支援機構 愛知支部,2,https://www.jeed.go.jp/,www.jeed.go.jp,0,https://www.jeed.go.jp/jeed/information/index.html,https://www2.njss.info/organizations/proc/4432,2026-07-09
+日本貿易保険(NEXI),2,https://www.nexi.go.jp/,www.nexi.go.jp,0,https://www.nexi.go.jp/supply/,https://www2.njss.info/organizations/proc/5649,2026-07-09
+高齢・障害・求職者雇用支援機構 秋田支部,2,https://www.jeed.go.jp/,www.jeed.go.jp,0,https://www.jeed.go.jp/jeed/information/index.html,https://www2.njss.info/organizations/proc/5794,2026-07-09
+高齢・障害・求職者雇用支援機構 茨城支部,2,https://www.jeed.go.jp/,www.jeed.go.jp,0,https://www.jeed.go.jp/jeed/information/index.html,https://www2.njss.info/organizations/proc/5799,2026-07-09
+高齢・障害・求職者雇用支援機構 千葉支部,2,https://www.jeed.go.jp/,www.jeed.go.jp,0,https://www.jeed.go.jp/jeed/information/index.html,https://www2.njss.info/organizations/proc/5802,2026-07-09
+高齢・障害・求職者雇用支援機構 福井支部,2,https://www.jeed.go.jp/,www.jeed.go.jp,0,https://www.jeed.go.jp/jeed/information/index.html,https://www2.njss.info/organizations/proc/5809,2026-07-09
+高齢・障害・求職者雇用支援機構 兵庫支部,2,https://www.jeed.go.jp/,www.jeed.go.jp,0,https://www.jeed.go.jp/jeed/information/index.html,https://www2.njss.info/organizations/proc/5852,2026-07-09
+高齢・障害・求職者雇用支援機構 和歌山支部,2,https://www.jeed.go.jp/,www.jeed.go.jp,0,https://www.jeed.go.jp/jeed/information/index.html,https://www2.njss.info/organizations/proc/5855,2026-07-09
+高齢・障害・求職者雇用支援機構 高知支部,2,https://www.jeed.go.jp/,www.jeed.go.jp,0,https://www.jeed.go.jp/jeed/information/index.html,https://www2.njss.info/organizations/proc/5865,2026-07-09
+高齢・障害・求職者雇用支援機構 鹿児島支部,2,https://www.jeed.go.jp/,www.jeed.go.jp,0,https://www.jeed.go.jp/jeed/information/index.html,https://www2.njss.info/organizations/proc/5874,2026-07-09
+地域医療機能推進機構(JCHO) 東京山手メディカルセンター,2,https://www.jcho.go.jp/,www.jcho.go.jp,0,https://www.jcho.go.jp/disclosure-procurement/,https://www2.njss.info/organizations/proc/7166,2026-07-09
+地域医療機能推進機構(JCHO) 秋田病院,2,https://www.jcho.go.jp/,www.jcho.go.jp,0,https://www.jcho.go.jp/disclosure-procurement/,https://www2.njss.info/organizations/proc/7175,2026-07-09
+地域医療機能推進機構(JCHO) 二本松病院,2,https://www.jcho.go.jp/,www.jcho.go.jp,0,https://www.jcho.go.jp/disclosure-procurement/,https://www2.njss.info/organizations/proc/7176,2026-07-09
+地域医療機能推進機構(JCHO) 可児とうのう病院,2,https://www.jcho.go.jp/,www.jcho.go.jp,0,https://www.jcho.go.jp/disclosure-procurement/,https://www2.njss.info/organizations/proc/7178,2026-07-09
+地域医療機能推進機構(JCHO) 高岡ふしき病院,2,https://www.jcho.go.jp/,www.jcho.go.jp,0,https://www.jcho.go.jp/disclosure-procurement/,https://www2.njss.info/organizations/proc/7183,2026-07-09
+地域医療機能推進機構(JCHO) 若狭高浜病院,2,https://www.jcho.go.jp/,www.jcho.go.jp,0,https://www.jcho.go.jp/disclosure-procurement/,https://www2.njss.info/organizations/proc/7186,2026-07-09
+地域医療機能推進機構(JCHO) 久留米総合病院,2,https://www.jcho.go.jp/,www.jcho.go.jp,0,https://www.jcho.go.jp/disclosure-procurement/,https://www2.njss.info/organizations/proc/7196,2026-07-09
+地域医療機能推進機構(JCHO) 佐賀中部病院,2,https://www.jcho.go.jp/,www.jcho.go.jp,0,https://www.jcho.go.jp/disclosure-procurement/,https://www2.njss.info/organizations/proc/7198,2026-07-09
+水資源機構 総合技術センター,2,https://www.water.go.jp/,www.water.go.jp,0,https://www.water.go.jp/honsya/honsya/keiyaku/,https://www2.njss.info/organizations/proc/9230,2026-07-09
+国立高等専門学校機構 秋田工業高等専門学校,2,https://www.kosen-k.go.jp/,www.kosen-k.go.jp,0,https://www.kosen-k.go.jp/wp/wp-content/uploads/2025/04/chotatsuhoushin.pdf,https://www2.njss.info/organizations/proc/9239,2026-07-09
+国立高等専門学校機構 松江工業高等専門学校,2,https://www.kosen-k.go.jp/,www.kosen-k.go.jp,0,https://www.kosen-k.go.jp/wp/wp-content/uploads/2025/04/chotatsuhoushin.pdf,https://www2.njss.info/organizations/proc/9240,2026-07-09
+駐留軍等労働者労務管理機構(LMO),1,https://www.lmo.go.jp/,www.lmo.go.jp,0,https://www.lmo.go.jp/procurement/index.html,https://www2.njss.info/organizations/proc/52,2026-07-09
+国立高等専門学校機構 函館工業高等専門学校,1,https://www.kosen-k.go.jp/,www.kosen-k.go.jp,0,https://www.kosen-k.go.jp/wp/wp-content/uploads/2025/04/chotatsuhoushin.pdf,https://www2.njss.info/organizations/proc/204,2026-07-09
+国立高等専門学校機構 北九州工業高等専門学校,1,https://www.kosen-k.go.jp/,www.kosen-k.go.jp,0,https://www.kosen-k.go.jp/wp/wp-content/uploads/2025/04/chotatsuhoushin.pdf,https://www2.njss.info/organizations/proc/207,2026-07-09
+国立高等専門学校機構 木更津工業高等専門学校,1,https://www.kosen-k.go.jp/,www.kosen-k.go.jp,0,https://www.kosen-k.go.jp/wp/wp-content/uploads/2025/04/chotatsuhoushin.pdf,https://www2.njss.info/organizations/proc/208,2026-07-09
+国立高等専門学校機構 都城工業高等専門学校,1,https://www.kosen-k.go.jp/,www.kosen-k.go.jp,0,https://www.kosen-k.go.jp/wp/wp-content/uploads/2025/04/chotatsuhoushin.pdf,https://www2.njss.info/organizations/proc/209,2026-07-09
+北方領土問題対策協会,1,https://www.hoppou.go.jp/,www.hoppou.go.jp,0,https://www.hoppou.go.jp/organization/procurement/index.html,https://www2.njss.info/organizations/proc/302,2026-07-09
+国民生活センター,1,https://www.kokusen.go.jp/,www.kokusen.go.jp,0,https://www.kokusen.go.jp/compe/index.html,https://www2.njss.info/organizations/proc/303,2026-07-09
+住宅金融支援機構(JHF) 東北支店,1,https://www.jhf.go.jp/,www.jhf.go.jp,0,https://www.jhf.go.jp/financial_tender/index.html,https://www2.njss.info/organizations/proc/389,2026-07-09
+住宅金融支援機構(JHF) 九州支店,1,https://www.jhf.go.jp/,www.jhf.go.jp,0,https://www.jhf.go.jp/financial_tender/index.html,https://www2.njss.info/organizations/proc/396,2026-07-09
+酒類総合研究所,1,https://www.nrib.go.jp/,www.nrib.go.jp,0,https://www.nrib.go.jp/gui/bid/bid01.html,https://www2.njss.info/organizations/proc/401,2026-07-09
+空港周辺整備機構,1,https://www.oeia.or.jp/,www.oeia.or.jp,0,https://www.oeia.or.jp/nyusatu/one.cgi,https://www2.njss.info/organizations/proc/453,2026-07-09
+水資源機構 荒川ダム総合管理所,1,https://www.water.go.jp/,www.water.go.jp,0,https://www.water.go.jp/honsya/honsya/keiyaku/,https://www2.njss.info/organizations/proc/458,2026-07-09
+水資源機構 利根川上流総合管理所 群馬用水管理所,1,https://www.water.go.jp/,www.water.go.jp,0,https://www.water.go.jp/honsya/honsya/keiyaku/,https://www2.njss.info/organizations/proc/459,2026-07-09
+水資源機構 関西・吉野川支社淀川本部,1,https://www.water.go.jp/,www.water.go.jp,0,https://www.water.go.jp/honsya/honsya/keiyaku/,https://www2.njss.info/organizations/proc/479,2026-07-09
+水資源機構 関西・吉野川支社淀川本部 丹生事務所,1,https://www.water.go.jp/,www.water.go.jp,0,https://www.water.go.jp/honsya/honsya/keiyaku/,https://www2.njss.info/organizations/proc/481,2026-07-09
+水資源機構 筑後川局 筑後川上流総合管理所 寺内ダム管理所,1,https://www.water.go.jp/,www.water.go.jp,0,https://www.water.go.jp/honsya/honsya/keiyaku/,https://www2.njss.info/organizations/proc/495,2026-07-09
+労働政策研究・研修機構(JILPT),1,https://www.jil.go.jp/,www.jil.go.jp,0,https://www.jil.go.jp/information/nyusatsu/index.html,https://www2.njss.info/organizations/proc/607,2026-07-09
+経済産業研究所(RIETI),1,https://www.rieti.go.jp/,www.rieti.go.jp,0,https://www.rieti.go.jp/jp/public-offer.html,https://www2.njss.info/organizations/proc/726,2026-07-09
+国立病院機構 北海道東北グループ 盛岡医療センター,1,https://nho.hosp.go.jp/,nho.hosp.go.jp,0,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/772,2026-07-09
+国立病院機構 北海道東北グループ 釜石病院,1,https://nho.hosp.go.jp/,nho.hosp.go.jp,0,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/775,2026-07-09
+国立病院機構 東海北陸グループ 東名古屋病院,1,https://nho.hosp.go.jp/,nho.hosp.go.jp,0,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/783,2026-07-09
+国立病院機構 北海道東北グループ いわき病院,1,https://nho.hosp.go.jp/,nho.hosp.go.jp,0,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/789,2026-07-09
+国立病院機構 東海北陸グループ 三重病院,1,https://nho.hosp.go.jp/,nho.hosp.go.jp,0,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/793,2026-07-09
+国立病院機構 関東信越グループ 霞ヶ浦医療センター,1,https://nho.hosp.go.jp/,nho.hosp.go.jp,0,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/802,2026-07-09
+国立病院機構 中国四国グループ 米子医療センター,1,https://nho.hosp.go.jp/,nho.hosp.go.jp,0,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/808,2026-07-09
+国立病院機構 関東信越グループ 新潟病院,1,https://nho.hosp.go.jp/,nho.hosp.go.jp,0,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/809,2026-07-09
+国立病院機構 関東信越グループ 栃木医療センター,1,https://nho.hosp.go.jp/,nho.hosp.go.jp,0,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/810,2026-07-09
+国立病院機構 中国四国グループ 松江医療センター,1,https://nho.hosp.go.jp/,nho.hosp.go.jp,0,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/812,2026-07-09
+国立病院機構 関東信越グループ 宇都宮病院,1,https://nho.hosp.go.jp/,nho.hosp.go.jp,0,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/813,2026-07-09
+国立病院機構 関東信越グループ さいがた医療センター,1,https://nho.hosp.go.jp/,nho.hosp.go.jp,0,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/814,2026-07-09
+国立病院機構 関東信越グループ 甲府病院,1,https://nho.hosp.go.jp/,nho.hosp.go.jp,0,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/817,2026-07-09
+国立病院機構 九州グループ 大牟田病院,1,https://nho.hosp.go.jp/,nho.hosp.go.jp,0,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/827,2026-07-09
+国立病院機構 近畿グループ 東近江総合医療センター,1,https://nho.hosp.go.jp/,nho.hosp.go.jp,0,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/828,2026-07-09
+国立病院機構 関東信越グループ 西埼玉中央病院,1,https://nho.hosp.go.jp/,nho.hosp.go.jp,0,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/830,2026-07-09
+国立病院機構 九州グループ 福岡東医療センター,1,https://nho.hosp.go.jp/,nho.hosp.go.jp,0,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/833,2026-07-09
+国立病院機構 関東信越グループ 東埼玉病院,1,https://nho.hosp.go.jp/,nho.hosp.go.jp,0,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/838,2026-07-09
+国立病院機構 九州グループ 肥前精神医療センター,1,https://nho.hosp.go.jp/,nho.hosp.go.jp,0,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/844,2026-07-09
+国立病院機構 近畿グループ 南京都病院,1,https://nho.hosp.go.jp/,nho.hosp.go.jp,0,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/848,2026-07-09
+国立病院機構 関東信越グループ 千葉東病院,1,https://nho.hosp.go.jp/,nho.hosp.go.jp,0,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/849,2026-07-09
+国立病院機構 関東信越グループ 下志津病院,1,https://nho.hosp.go.jp/,nho.hosp.go.jp,0,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/855,2026-07-09
+国立病院機構 中国四国グループ 関門医療センター,1,https://nho.hosp.go.jp/,nho.hosp.go.jp,0,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/856,2026-07-09
+国立病院機構 近畿グループ 近畿中央呼吸器センター,1,https://nho.hosp.go.jp/,nho.hosp.go.jp,0,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/861,2026-07-09
+国立病院機構 東海北陸グループ 医王病院,1,https://nho.hosp.go.jp/,nho.hosp.go.jp,0,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/862,2026-07-09
+国立病院機構 関東信越グループ 災害医療センター,1,https://nho.hosp.go.jp/,nho.hosp.go.jp,0,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/863,2026-07-09
+国立病院機構 近畿グループ 大阪南医療センター,1,https://nho.hosp.go.jp/,nho.hosp.go.jp,0,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/868,2026-07-09
+国立病院機構 九州グループ 長崎医療センター,1,https://nho.hosp.go.jp/,nho.hosp.go.jp,0,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/873,2026-07-09
+国立病院機構 近畿グループ 兵庫あおの病院,1,https://nho.hosp.go.jp/,nho.hosp.go.jp,0,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/876,2026-07-09
+国立病院機構 九州グループ 長崎川棚医療センター,1,https://nho.hosp.go.jp/,nho.hosp.go.jp,0,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/878,2026-07-09
+国立病院機構 九州グループ 琉球病院,1,https://nho.hosp.go.jp/,nho.hosp.go.jp,0,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/883,2026-07-09
+国立病院機構 近畿グループ やまと精神医療センター,1,https://nho.hosp.go.jp/,nho.hosp.go.jp,0,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/887,2026-07-09
+国立病院機構 九州グループ 熊本再春医療センター,1,https://nho.hosp.go.jp/,nho.hosp.go.jp,0,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/895,2026-07-09
+国立病院機構 九州グループ 宮崎病院,1,https://nho.hosp.go.jp/,nho.hosp.go.jp,0,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/897,2026-07-09
+国立病院機構 九州グループ 宮崎東病院,1,https://nho.hosp.go.jp/,nho.hosp.go.jp,0,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/901,2026-07-09
+国立病院機構 中国四国グループ とくしま医療センター西病院,1,https://nho.hosp.go.jp/,nho.hosp.go.jp,0,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/906,2026-07-09
+国立病院機構 中国四国グループ 四国こどもとおとなの医療センター,1,https://nho.hosp.go.jp/,nho.hosp.go.jp,0,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/909,2026-07-09
+国立病院機構 中国四国グループ 四国がんセンター,1,https://nho.hosp.go.jp/,nho.hosp.go.jp,0,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/910,2026-07-09
+家畜改良センター(NLBC) 奥羽牧場,1,https://www.nlbc.go.jp/,www.nlbc.go.jp,0,https://www.nlbc.go.jp/chotatsujoho/index.html,https://www2.njss.info/organizations/proc/1435,2026-07-09
+家畜改良センター(NLBC) 茨城牧場 長野支場,1,https://www.nlbc.go.jp/,www.nlbc.go.jp,0,https://www.nlbc.go.jp/chotatsujoho/index.html,https://www2.njss.info/organizations/proc/1438,2026-07-09
+家畜改良センター(NLBC) 岡崎牧場,1,https://www.nlbc.go.jp/,www.nlbc.go.jp,0,https://www.nlbc.go.jp/chotatsujoho/index.html,https://www2.njss.info/organizations/proc/1439,2026-07-09
+家畜改良センター(NLBC) 兵庫牧場,1,https://www.nlbc.go.jp/,www.nlbc.go.jp,0,https://www.nlbc.go.jp/chotatsujoho/index.html,https://www2.njss.info/organizations/proc/1440,2026-07-09
+家畜改良センター(NLBC) 宮崎牧場,1,https://www.nlbc.go.jp/,www.nlbc.go.jp,0,https://www.nlbc.go.jp/chotatsujoho/index.html,https://www2.njss.info/organizations/proc/1443,2026-07-09
+労働者健康安全機構 福島労災病院,1,https://www.johas.go.jp/,www.johas.go.jp,0,https://www.johas.go.jp/procurement/,https://www2.njss.info/organizations/proc/1466,2026-07-09
+労働者健康安全機構 中部労災病院,1,https://www.johas.go.jp/,www.johas.go.jp,0,https://www.johas.go.jp/procurement/,https://www2.njss.info/organizations/proc/1476,2026-07-09
+労働者健康安全機構 長崎労災病院,1,https://www.johas.go.jp/,www.johas.go.jp,0,https://www.johas.go.jp/procurement/,https://www2.njss.info/organizations/proc/1489,2026-07-09
+労働者健康安全機構 千葉労災看護専門学校,1,https://www.johas.go.jp/,www.johas.go.jp,0,https://www.johas.go.jp/procurement/,https://www2.njss.info/organizations/proc/1556,2026-07-09
+労働者健康安全機構 横浜労災看護専門学校,1,https://www.johas.go.jp/,www.johas.go.jp,0,https://www.johas.go.jp/procurement/,https://www2.njss.info/organizations/proc/1557,2026-07-09
+宇宙航空研究開発機構(JAXA) 筑波宇宙センター,1,https://www.jaxa.jp/,www.jaxa.jp,0,https://stage.tksc.jaxa.jp/compe/index_j.html,https://www2.njss.info/organizations/proc/2489,2026-07-09
+国立病院機構 北海道東北グループ 北海道医療センター,1,https://nho.hosp.go.jp/,nho.hosp.go.jp,0,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/4203,2026-07-09
+高齢・障害・求職者雇用支援機構 静岡支部,1,https://www.jeed.go.jp/,www.jeed.go.jp,0,https://www.jeed.go.jp/jeed/information/index.html,https://www2.njss.info/organizations/proc/4412,2026-07-09
+高齢・障害・求職者雇用支援機構 三重支部,1,https://www.jeed.go.jp/,www.jeed.go.jp,0,https://www.jeed.go.jp/jeed/information/index.html,https://www2.njss.info/organizations/proc/4414,2026-07-09
+国立文化財機構(NICH) 京都国立博物館,1,https://www.nich.go.jp/,www.nich.go.jp,0,https://www.nich.go.jp/information/nyusatsu/,https://www2.njss.info/organizations/proc/4507,2026-07-09
+高齢・障害・求職者雇用支援機構 青森支部,1,https://www.jeed.go.jp/,www.jeed.go.jp,0,https://www.jeed.go.jp/jeed/information/index.html,https://www2.njss.info/organizations/proc/5792,2026-07-09
+高齢・障害・求職者雇用支援機構 群馬支部,1,https://www.jeed.go.jp/,www.jeed.go.jp,0,https://www.jeed.go.jp/jeed/information/index.html,https://www2.njss.info/organizations/proc/5800,2026-07-09
+高齢・障害・求職者雇用支援機構 滋賀支部,1,https://www.jeed.go.jp/,www.jeed.go.jp,0,https://www.jeed.go.jp/jeed/information/index.html,https://www2.njss.info/organizations/proc/5849,2026-07-09
+高齢・障害・求職者雇用支援機構 京都支部,1,https://www.jeed.go.jp/,www.jeed.go.jp,0,https://www.jeed.go.jp/jeed/information/index.html,https://www2.njss.info/organizations/proc/5850,2026-07-09
+高齢・障害・求職者雇用支援機構 鳥取支部,1,https://www.jeed.go.jp/,www.jeed.go.jp,0,https://www.jeed.go.jp/jeed/information/index.html,https://www2.njss.info/organizations/proc/5856,2026-07-09
+高齢・障害・求職者雇用支援機構 香川支部,1,https://www.jeed.go.jp/,www.jeed.go.jp,0,https://www.jeed.go.jp/jeed/information/index.html,https://www2.njss.info/organizations/proc/5863,2026-07-09
+国立美術館 京都国立近代美術館,1,https://www.artmuseums.go.jp/,www.artmuseums.go.jp,0,https://www.artmuseums.go.jp/offer,https://www2.njss.info/organizations/proc/6293,2026-07-09
+地域医療機能推進機構(JCHO) 滋賀病院,1,https://www.jcho.go.jp/,www.jcho.go.jp,0,https://www.jcho.go.jp/disclosure-procurement/,https://www2.njss.info/organizations/proc/7142,2026-07-09
+地域医療機能推進機構(JCHO) 京都鞍馬口医療センター,1,https://www.jcho.go.jp/,www.jcho.go.jp,0,https://www.jcho.go.jp/disclosure-procurement/,https://www2.njss.info/organizations/proc/7143,2026-07-09
+地域医療機能推進機構(JCHO) 大阪病院,1,https://www.jcho.go.jp/,www.jcho.go.jp,0,https://www.jcho.go.jp/disclosure-procurement/,https://www2.njss.info/organizations/proc/7144,2026-07-09
+地域医療機能推進機構(JCHO) 大阪みなと中央病院,1,https://www.jcho.go.jp/,www.jcho.go.jp,0,https://www.jcho.go.jp/disclosure-procurement/,https://www2.njss.info/organizations/proc/7145,2026-07-09
+地域医療機能推進機構(JCHO) 大和郡山病院,1,https://www.jcho.go.jp/,www.jcho.go.jp,0,https://www.jcho.go.jp/disclosure-procurement/,https://www2.njss.info/organizations/proc/7148,2026-07-09
+地域医療機能推進機構(JCHO) 玉造病院,1,https://www.jcho.go.jp/,www.jcho.go.jp,0,https://www.jcho.go.jp/disclosure-procurement/,https://www2.njss.info/organizations/proc/7149,2026-07-09
+地域医療機能推進機構(JCHO) 東京高輪病院,1,https://www.jcho.go.jp/,www.jcho.go.jp,0,https://www.jcho.go.jp/disclosure-procurement/,https://www2.njss.info/organizations/proc/7164,2026-07-09
+地域医療機能推進機構(JCHO) 東京城東病院,1,https://www.jcho.go.jp/,www.jcho.go.jp,0,https://www.jcho.go.jp/disclosure-procurement/,https://www2.njss.info/organizations/proc/7167,2026-07-09
+地域医療機能推進機構(JCHO) 東京蒲田医療センター,1,https://www.jcho.go.jp/,www.jcho.go.jp,0,https://www.jcho.go.jp/disclosure-procurement/,https://www2.njss.info/organizations/proc/7168,2026-07-09
+地域医療機能推進機構(JCHO) 相模野病院,1,https://www.jcho.go.jp/,www.jcho.go.jp,0,https://www.jcho.go.jp/disclosure-procurement/,https://www2.njss.info/organizations/proc/7171,2026-07-09
+地域医療機能推進機構(JCHO) 湯河原病院,1,https://www.jcho.go.jp/,www.jcho.go.jp,0,https://www.jcho.go.jp/disclosure-procurement/,https://www2.njss.info/organizations/proc/7172,2026-07-09
+地域医療機能推進機構(JCHO) 山梨病院,1,https://www.jcho.go.jp/,www.jcho.go.jp,0,https://www.jcho.go.jp/disclosure-procurement/,https://www2.njss.info/organizations/proc/7177,2026-07-09
+地域医療機能推進機構(JCHO) 中京病院,1,https://www.jcho.go.jp/,www.jcho.go.jp,0,https://www.jcho.go.jp/disclosure-procurement/,https://www2.njss.info/organizations/proc/7181,2026-07-09
+地域医療機能推進機構(JCHO) 金沢病院,1,https://www.jcho.go.jp/,www.jcho.go.jp,0,https://www.jcho.go.jp/disclosure-procurement/,https://www2.njss.info/organizations/proc/7184,2026-07-09
+地域医療機能推進機構(JCHO) 登別病院,1,https://www.jcho.go.jp/,www.jcho.go.jp,0,https://www.jcho.go.jp/disclosure-procurement/,https://www2.njss.info/organizations/proc/7189,2026-07-09
+地域医療機能推進機構(JCHO) 湯布院病院,1,https://www.jcho.go.jp/,www.jcho.go.jp,0,https://www.jcho.go.jp/disclosure-procurement/,https://www2.njss.info/organizations/proc/7204,2026-07-09
+労働者健康安全機構 神戸労災病院,1,https://www.johas.go.jp/,www.johas.go.jp,0,https://www.johas.go.jp/procurement/,https://www2.njss.info/organizations/proc/9142,2026-07-09
+国立美術館 国立映画アーカイブ,1,https://www.artmuseums.go.jp/,www.artmuseums.go.jp,0,https://www.artmuseums.go.jp/offer,https://www2.njss.info/organizations/proc/9280,2026-07-09
+国立高等専門学校機構 茨城工業高等専門学校,0,https://www.kosen-k.go.jp/,www.kosen-k.go.jp,0,https://www.kosen-k.go.jp/wp/wp-content/uploads/2025/04/chotatsuhoushin.pdf,https://www2.njss.info/organizations/proc/205,2026-07-09
+国立高等専門学校機構 一関工業高等専門学校,0,https://www.kosen-k.go.jp/,www.kosen-k.go.jp,0,https://www.kosen-k.go.jp/wp/wp-content/uploads/2025/04/chotatsuhoushin.pdf,https://www2.njss.info/organizations/proc/206,2026-07-09
+国立高等専門学校機構 佐世保工業高等専門学校,0,https://www.kosen-k.go.jp/,www.kosen-k.go.jp,0,https://www.kosen-k.go.jp/wp/wp-content/uploads/2025/04/chotatsuhoushin.pdf,https://www2.njss.info/organizations/proc/212,2026-07-09
+国立文化財機構(NICH),0,https://www.nich.go.jp/,www.nich.go.jp,0,https://www.nich.go.jp/information/nyusatsu/,https://www2.njss.info/organizations/proc/228,2026-07-09
+理化学研究所 筑波事業所,0,https://choutatsu.riken.jp/,choutatsu.riken.jp,0,https://choutatsu.riken.jp/r-world/info/procurement/index/index/,https://www2.njss.info/organizations/proc/237,2026-07-09
+理化学研究所 播磨事業所,0,https://choutatsu.riken.jp/,choutatsu.riken.jp,0,https://choutatsu.riken.jp/r-world/info/procurement/index/index/,https://www2.njss.info/organizations/proc/238,2026-07-09
+理化学研究所 横浜事業所,0,https://choutatsu.riken.jp/,choutatsu.riken.jp,0,https://choutatsu.riken.jp/r-world/info/procurement/index/index/,https://www2.njss.info/organizations/proc/239,2026-07-09
+理化学研究所 神戸事業所,0,https://choutatsu.riken.jp/,choutatsu.riken.jp,0,https://choutatsu.riken.jp/r-world/info/procurement/index/index/,https://www2.njss.info/organizations/proc/240,2026-07-09
+水産研究・教育機構 水産大学校,0,https://www.fra.go.jp/,www.fra.go.jp,0,https://www.fra.go.jp/home/keiyaku/,https://www2.njss.info/organizations/proc/295,2026-07-09
+統計センター(NSTAC),0,https://www.nstac.go.jp/,www.nstac.go.jp,0,https://www.nstac.go.jp/about/supply/koukoku/,https://www2.njss.info/organizations/proc/360,2026-07-09
+住宅金融支援機構(JHF) 北海道支店,0,https://www.jhf.go.jp/,www.jhf.go.jp,0,https://www.jhf.go.jp/financial_tender/index.html,https://www2.njss.info/organizations/proc/388,2026-07-09
+住宅金融支援機構(JHF) 首都圏支店,0,https://www.jhf.go.jp/,www.jhf.go.jp,0,https://www.jhf.go.jp/financial_tender/index.html,https://www2.njss.info/organizations/proc/390,2026-07-09
+住宅金融支援機構(JHF) 東海支店,0,https://www.jhf.go.jp/,www.jhf.go.jp,0,https://www.jhf.go.jp/financial_tender/index.html,https://www2.njss.info/organizations/proc/391,2026-07-09
+住宅金融支援機構(JHF) 近畿支店,0,https://www.jhf.go.jp/,www.jhf.go.jp,0,https://www.jhf.go.jp/financial_tender/index.html,https://www2.njss.info/organizations/proc/392,2026-07-09
+住宅金融支援機構(JHF) 北陸支店,0,https://www.jhf.go.jp/,www.jhf.go.jp,0,https://www.jhf.go.jp/financial_tender/index.html,https://www2.njss.info/organizations/proc/393,2026-07-09
+住宅金融支援機構(JHF) 四国支店,0,https://www.jhf.go.jp/,www.jhf.go.jp,0,https://www.jhf.go.jp/financial_tender/index.html,https://www2.njss.info/organizations/proc/394,2026-07-09
+住宅金融支援機構(JHF) 中国支店,0,https://www.jhf.go.jp/,www.jhf.go.jp,0,https://www.jhf.go.jp/financial_tender/index.html,https://www2.njss.info/organizations/proc/395,2026-07-09
+住宅金融支援機構(JHF) 南九州支店,0,https://www.jhf.go.jp/,www.jhf.go.jp,0,https://www.jhf.go.jp/financial_tender/index.html,https://www2.njss.info/organizations/proc/397,2026-07-09
+海上災害防止センター(MDPC),0,https://www.mdpc.or.jp/,www.mdpc.or.jp,0,https://www.mdpc.or.jp/tender/index.html,https://www2.njss.info/organizations/proc/446,2026-07-09
+水資源機構 渡良瀬川ダム総合管理所 思川開発建設所,0,https://www.water.go.jp/,www.water.go.jp,0,https://www.water.go.jp/honsya/honsya/keiyaku/,https://www2.njss.info/organizations/proc/461,2026-07-09
+水資源機構 利根川上流総合管理所 下久保ダム管理所,0,https://www.water.go.jp/,www.water.go.jp,0,https://www.water.go.jp/honsya/honsya/keiyaku/,https://www2.njss.info/organizations/proc/466,2026-07-09
+水資源機構 利根川下流総合管理所 霞ヶ浦用水管理所,0,https://www.water.go.jp/,www.water.go.jp,0,https://www.water.go.jp/honsya/honsya/keiyaku/,https://www2.njss.info/organizations/proc/468,2026-07-09
+水資源機構 中部支社 木曽川上流ダム総合管理所 岩屋ダム管理所,0,https://www.water.go.jp/,www.water.go.jp,0,https://www.water.go.jp/honsya/honsya/keiyaku/,https://www2.njss.info/organizations/proc/474,2026-07-09
+水資源機構 中部支社 木曽川中下流用水総合管理所 三重用水管理所,0,https://www.water.go.jp/,www.water.go.jp,0,https://www.water.go.jp/honsya/honsya/keiyaku/,https://www2.njss.info/organizations/proc/478,2026-07-09
+水資源機構 関西・吉野川支社淀川本部 木津川ダム総合管理所 川上ダム管理所,0,https://www.water.go.jp/,www.water.go.jp,0,https://www.water.go.jp/honsya/honsya/keiyaku/,https://www2.njss.info/organizations/proc/480,2026-07-09
+水資源機構 関西・吉野川支社淀川本部 桂川・猪名川ダム総合管理所,0,https://www.water.go.jp/,www.water.go.jp,0,https://www.water.go.jp/honsya/honsya/keiyaku/,https://www2.njss.info/organizations/proc/485,2026-07-09
+水資源機構 関西・吉野川支社吉野川本部,0,https://www.water.go.jp/,www.water.go.jp,0,https://www.water.go.jp/honsya/honsya/keiyaku/,https://www2.njss.info/organizations/proc/486,2026-07-09
+水資源機構 関西・吉野川支社吉野川本部 吉野川上流総合管理所 香川用水管理所,0,https://www.water.go.jp/,www.water.go.jp,0,https://www.water.go.jp/honsya/honsya/keiyaku/,https://www2.njss.info/organizations/proc/487,2026-07-09
+水資源機構 関西・吉野川支社吉野川本部 吉野川下流総合管理所 旧吉野川河口堰管理所,0,https://www.water.go.jp/,www.water.go.jp,0,https://www.water.go.jp/honsya/honsya/keiyaku/,https://www2.njss.info/organizations/proc/489,2026-07-09
+水資源機構 筑後川局 筑後川上流総合管理所 両筑平野用水管理所,0,https://www.water.go.jp/,www.water.go.jp,0,https://www.water.go.jp/honsya/honsya/keiyaku/,https://www2.njss.info/organizations/proc/491,2026-07-09
+水資源機構 筑後川局 筑後川上流総合管理所 大山ダム管理所,0,https://www.water.go.jp/,www.water.go.jp,0,https://www.water.go.jp/honsya/honsya/keiyaku/,https://www2.njss.info/organizations/proc/492,2026-07-09
+水資源機構 筑後川局 筑後川上流総合管理所 小石原川ダム管理所,0,https://www.water.go.jp/,www.water.go.jp,0,https://www.water.go.jp/honsya/honsya/keiyaku/,https://www2.njss.info/organizations/proc/493,2026-07-09
+水資源機構 筑後川局 筑後川下流総合管理所 筑後大堰管理室,0,https://www.water.go.jp/,www.water.go.jp,0,https://www.water.go.jp/honsya/honsya/keiyaku/,https://www2.njss.info/organizations/proc/496,2026-07-09
+国立健康危機管理研究機構(JIHS) 国立国際医療センター,0,https://www.jihs.go.jp/,www.jihs.go.jp,0,https://www.jihs.go.jp/content12/20250327173843.html,https://www2.njss.info/organizations/proc/687,2026-07-09
+国立病院機構 北海道東北グループ,0,https://nho.hosp.go.jp/,nho.hosp.go.jp,0,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/761,2026-07-09
+国立病院機構 北海道東北グループ 札幌南病院,0,https://nho.hosp.go.jp/,nho.hosp.go.jp,0,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/763,2026-07-09
+国立病院機構 北海道東北グループ 西札幌病院,0,https://nho.hosp.go.jp/,nho.hosp.go.jp,0,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/764,2026-07-09
+国立病院機構 北海道東北グループ 函館医療センター,0,https://nho.hosp.go.jp/,nho.hosp.go.jp,0,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/765,2026-07-09
+国立病院機構 北海道東北グループ 旭川医療センター,0,https://nho.hosp.go.jp/,nho.hosp.go.jp,0,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/766,2026-07-09
+国立病院機構 北海道東北グループ 帯広病院,0,https://nho.hosp.go.jp/,nho.hosp.go.jp,0,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/767,2026-07-09
+国立病院機構 北海道東北グループ 八戸病院,0,https://nho.hosp.go.jp/,nho.hosp.go.jp,0,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/770,2026-07-09
+国立病院機構 北海道東北グループ 青森病院,0,https://nho.hosp.go.jp/,nho.hosp.go.jp,0,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/771,2026-07-09
+国立病院機構 北海道東北グループ 花巻病院,0,https://nho.hosp.go.jp/,nho.hosp.go.jp,0,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/773,2026-07-09
+国立病院機構 北海道東北グループ 仙台西多賀病院,0,https://nho.hosp.go.jp/,nho.hosp.go.jp,0,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/777,2026-07-09
+国立病院機構 北海道東北グループ 米沢病院,0,https://nho.hosp.go.jp/,nho.hosp.go.jp,0,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/781,2026-07-09
+国立病院機構 北海道東北グループ 福島病院,0,https://nho.hosp.go.jp/,nho.hosp.go.jp,0,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/784,2026-07-09
+国立病院機構 関東信越グループ 箱根病院,0,https://nho.hosp.go.jp/,nho.hosp.go.jp,0,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/785,2026-07-09
+国立病院機構 九州グループ,0,https://nho.hosp.go.jp/,nho.hosp.go.jp,0,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/786,2026-07-09
+国立病院機構 東海北陸グループ 豊橋医療センター,0,https://nho.hosp.go.jp/,nho.hosp.go.jp,0,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/790,2026-07-09
+国立病院機構 関東信越グループ,0,https://nho.hosp.go.jp/,nho.hosp.go.jp,0,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/792,2026-07-09
+国立病院機構 中国四国グループ,0,https://nho.hosp.go.jp/,nho.hosp.go.jp,0,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/797,2026-07-09
+国立病院機構 中国四国グループ 鳥取医療センター,0,https://nho.hosp.go.jp/,nho.hosp.go.jp,0,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/803,2026-07-09
+国立病院機構 東海北陸グループ 榊原病院,0,https://nho.hosp.go.jp/,nho.hosp.go.jp,0,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/804,2026-07-09
+国立病院機構 近畿グループ,0,https://nho.hosp.go.jp/,nho.hosp.go.jp,0,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/811,2026-07-09
+国立病院機構 中国四国グループ 浜田医療センター,0,https://nho.hosp.go.jp/,nho.hosp.go.jp,0,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/818,2026-07-09
+国立病院機構 関東信越グループ まつもと医療センター,0,https://nho.hosp.go.jp/,nho.hosp.go.jp,0,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/824,2026-07-09
+国立病院機構 中国四国グループ 南岡山医療センター,0,https://nho.hosp.go.jp/,nho.hosp.go.jp,0,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/826,2026-07-09
+国立病院機構 近畿グループ 紫香楽病院,0,https://nho.hosp.go.jp/,nho.hosp.go.jp,0,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/832,2026-07-09
+国立病院機構 近畿グループ 宇多野病院,0,https://nho.hosp.go.jp/,nho.hosp.go.jp,0,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/841,2026-07-09
+国立病院機構 関東信越グループ 千葉医療センター,0,https://nho.hosp.go.jp/,nho.hosp.go.jp,0,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/843,2026-07-09
+国立病院機構 東海北陸グループ,0,https://nho.hosp.go.jp/,nho.hosp.go.jp,0,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/847,2026-07-09
+国立病院機構 中国四国グループ 賀茂精神医療センター,0,https://nho.hosp.go.jp/,nho.hosp.go.jp,0,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/850,2026-07-09
+国立病院機構 東海北陸グループ 富山病院,0,https://nho.hosp.go.jp/,nho.hosp.go.jp,0,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/851,2026-07-09
+国立病院機構 関東信越グループ 下総精神医療センター,0,https://nho.hosp.go.jp/,nho.hosp.go.jp,0,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/853,2026-07-09
+国立病院機構 東海北陸グループ 七尾病院,0,https://nho.hosp.go.jp/,nho.hosp.go.jp,0,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/866,2026-07-09
+国立病院機構 関東信越グループ 村山医療センター,0,https://nho.hosp.go.jp/,nho.hosp.go.jp,0,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/871,2026-07-09
+国立病院機構 近畿グループ 奈良医療センター,0,https://nho.hosp.go.jp/,nho.hosp.go.jp,0,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/884,2026-07-09
+国立病院機構 東海北陸グループ 天竜病院,0,https://nho.hosp.go.jp/,nho.hosp.go.jp,0,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/885,2026-07-09
+国立病院機構 九州グループ 沖縄病院,0,https://nho.hosp.go.jp/,nho.hosp.go.jp,0,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/886,2026-07-09
+国立病院機構 九州グループ 鹿児島医療センター,0,https://nho.hosp.go.jp/,nho.hosp.go.jp,0,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/894,2026-07-09
+国立病院機構 九州グループ 大分医療センター,0,https://nho.hosp.go.jp/,nho.hosp.go.jp,0,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/896,2026-07-09
+国立病院機構 九州グループ 都城医療センター,0,https://nho.hosp.go.jp/,nho.hosp.go.jp,0,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/899,2026-07-09
+国立病院機構 中国四国グループ 柳井医療センター,0,https://nho.hosp.go.jp/,nho.hosp.go.jp,0,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/904,2026-07-09
+国立病院機構 中国四国グループ 高松医療センター,0,https://nho.hosp.go.jp/,nho.hosp.go.jp,0,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/907,2026-07-09
+国立病院機構 中国四国グループ 愛媛医療センター,0,https://nho.hosp.go.jp/,nho.hosp.go.jp,0,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/911,2026-07-09
+国立病院機構 中国四国グループ 高知病院,0,https://nho.hosp.go.jp/,nho.hosp.go.jp,0,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/912,2026-07-09
+国立文化財機構(NICH) 九州国立博物館,0,https://www.nich.go.jp/,www.nich.go.jp,0,https://www.nich.go.jp/information/nyusatsu/,https://www2.njss.info/organizations/proc/1098,2026-07-09
+国立美術館 国立新美術館(NACT),0,https://www.artmuseums.go.jp/,www.artmuseums.go.jp,0,https://www.artmuseums.go.jp/offer,https://www2.njss.info/organizations/proc/1101,2026-07-09
+国立美術館 東京国立近代美術館,0,https://www.artmuseums.go.jp/,www.artmuseums.go.jp,0,https://www.artmuseums.go.jp/offer,https://www2.njss.info/organizations/proc/1102,2026-07-09
+国立美術館 国立西洋美術館,0,https://www.artmuseums.go.jp/,www.artmuseums.go.jp,0,https://www.artmuseums.go.jp/offer,https://www2.njss.info/organizations/proc/1103,2026-07-09
+森林研究・整備機構 森林総合研究所 林木育種センター,0,https://www.ffpri.go.jp/,www.ffpri.go.jp,0,https://www.ffpri.go.jp/chotatsu.html,https://www2.njss.info/organizations/proc/1378,2026-07-09
+森林研究・整備機構 森林総合研究所 北海道支所,0,https://www.ffpri.go.jp/,www.ffpri.go.jp,0,https://www.ffpri.go.jp/chotatsu.html,https://www2.njss.info/organizations/proc/1379,2026-07-09
+森林研究・整備機構 森林総合研究所 東北支所,0,https://www.ffpri.go.jp/,www.ffpri.go.jp,0,https://www.ffpri.go.jp/chotatsu.html,https://www2.njss.info/organizations/proc/1380,2026-07-09
+森林研究・整備機構 森林総合研究所 関西支所,0,https://www.ffpri.go.jp/,www.ffpri.go.jp,0,https://www.ffpri.go.jp/chotatsu.html,https://www2.njss.info/organizations/proc/1381,2026-07-09
+森林研究・整備機構 森林総合研究所 四国支所,0,https://www.ffpri.go.jp/,www.ffpri.go.jp,0,https://www.ffpri.go.jp/chotatsu.html,https://www2.njss.info/organizations/proc/1382,2026-07-09
+森林研究・整備機構 森林総合研究所 九州支所,0,https://www.ffpri.go.jp/,www.ffpri.go.jp,0,https://www.ffpri.go.jp/chotatsu.html,https://www2.njss.info/organizations/proc/1383,2026-07-09
+森林研究・整備機構 森林総合研究所 多摩森林科学園,0,https://www.ffpri.go.jp/,www.ffpri.go.jp,0,https://www.ffpri.go.jp/chotatsu.html,https://www2.njss.info/organizations/proc/1384,2026-07-09
+森林研究・整備機構 森林総合研究所 林木育種センター 北海道育種場,0,https://www.ffpri.go.jp/,www.ffpri.go.jp,0,https://www.ffpri.go.jp/chotatsu.html,https://www2.njss.info/organizations/proc/1385,2026-07-09
+森林研究・整備機構 森林総合研究所 林木育種センター 東北育種場,0,https://www.ffpri.go.jp/,www.ffpri.go.jp,0,https://www.ffpri.go.jp/chotatsu.html,https://www2.njss.info/organizations/proc/1386,2026-07-09
+森林研究・整備機構 森林総合研究所 林木育種センター 関西育種場,0,https://www.ffpri.go.jp/,www.ffpri.go.jp,0,https://www.ffpri.go.jp/chotatsu.html,https://www2.njss.info/organizations/proc/1387,2026-07-09
+森林研究・整備機構 森林総合研究所 林木育種センター 九州育種場,0,https://www.ffpri.go.jp/,www.ffpri.go.jp,0,https://www.ffpri.go.jp/chotatsu.html,https://www2.njss.info/organizations/proc/1389,2026-07-09
+森林研究・整備機構 森林整備センター 東北北海道整備局,0,https://www.ffpri.go.jp/,www.ffpri.go.jp,0,https://www.ffpri.go.jp/chotatsu.html,https://www2.njss.info/organizations/proc/1390,2026-07-09
+森林研究・整備機構 森林整備センター 関東整備局,0,https://www.green.go.jp/,www.green.go.jp,0,https://www.green.go.jp/keiyaku/buppin/index.html,https://www2.njss.info/organizations/proc/1391,2026-07-09
+森林研究・整備機構 森林整備センター 中部整備局,0,https://www.green.go.jp/,www.green.go.jp,0,https://www.green.go.jp/keiyaku/buppin/index.html,https://www2.njss.info/organizations/proc/1392,2026-07-09
+森林研究・整備機構 森林整備センター 近畿北陸整備局,0,https://www.ffpri.go.jp/,www.ffpri.go.jp,0,https://www.ffpri.go.jp/chotatsu.html,https://www2.njss.info/organizations/proc/1393,2026-07-09
+森林研究・整備機構 森林整備センター 中国四国整備局,0,https://www.ffpri.go.jp/,www.ffpri.go.jp,0,https://www.ffpri.go.jp/chotatsu.html,https://www2.njss.info/organizations/proc/1394,2026-07-09
+森林研究・整備機構 森林整備センター 九州整備局,0,https://www.green.go.jp/,www.green.go.jp,0,https://www.green.go.jp/keiyaku/buppin/index.html,https://www2.njss.info/organizations/proc/1395,2026-07-09
+家畜改良センター(NLBC) 新冠牧場,0,https://www.nlbc.go.jp/,www.nlbc.go.jp,0,https://www.nlbc.go.jp/chotatsujoho/index.html,https://www2.njss.info/organizations/proc/1433,2026-07-09
+家畜改良センター(NLBC) 岩手牧場,0,https://www.nlbc.go.jp/,www.nlbc.go.jp,0,https://www.nlbc.go.jp/chotatsujoho/index.html,https://www2.njss.info/organizations/proc/1436,2026-07-09
+家畜改良センター(NLBC) 鳥取牧場,0,https://www.nlbc.go.jp/,www.nlbc.go.jp,0,https://www.nlbc.go.jp/chotatsujoho/index.html,https://www2.njss.info/organizations/proc/1441,2026-07-09
+家畜改良センター(NLBC) 熊本牧場,0,https://www.nlbc.go.jp/,www.nlbc.go.jp,0,https://www.nlbc.go.jp/chotatsujoho/index.html,https://www2.njss.info/organizations/proc/1442,2026-07-09
+労働者健康安全機構 釧路労災病院,0,https://www.johas.go.jp/,www.johas.go.jp,0,https://www.johas.go.jp/procurement/,https://www2.njss.info/organizations/proc/1462,2026-07-09
+労働者健康安全機構 旭労災病院,0,https://www.johas.go.jp/,www.johas.go.jp,0,https://www.johas.go.jp/procurement/,https://www2.njss.info/organizations/proc/1477,2026-07-09
+労働者健康安全機構 山口労災病院,0,https://www.johas.go.jp/,www.johas.go.jp,0,https://www.johas.go.jp/procurement/,https://www2.njss.info/organizations/proc/1484,2026-07-09
+労働者健康安全機構 愛媛労災病院,0,https://www.johas.go.jp/,www.johas.go.jp,0,https://www.johas.go.jp/procurement/,https://www2.njss.info/organizations/proc/1486,2026-07-09
+労働者健康安全機構 九州労災病院門司メディカルセンター,0,https://www.johas.go.jp/,www.johas.go.jp,0,https://www.johas.go.jp/procurement/,https://www2.njss.info/organizations/proc/1488,2026-07-09
+労働者健康安全機構 吉備高原医療リハビリテーションセンター,0,https://www.johas.go.jp/,www.johas.go.jp,0,https://www.johas.go.jp/procurement/,https://www2.njss.info/organizations/proc/1491,2026-07-09
+労働者健康安全機構 総合せき損センター,0,https://www.johas.go.jp/,www.johas.go.jp,0,https://www.johas.go.jp/procurement/,https://www2.njss.info/organizations/proc/1492,2026-07-09
+労働者健康安全機構 北海道産業保健総合支援センター,0,https://www.johas.go.jp/,www.johas.go.jp,0,https://www.johas.go.jp/procurement/,https://www2.njss.info/organizations/proc/1494,2026-07-09
+労働者健康安全機構 青森産業保健総合支援センター,0,https://www.johas.go.jp/,www.johas.go.jp,0,https://www.johas.go.jp/procurement/,https://www2.njss.info/organizations/proc/1495,2026-07-09
+労働者健康安全機構 岩手産業保健総合支援センター,0,https://www.johas.go.jp/,www.johas.go.jp,0,https://www.johas.go.jp/procurement/,https://www2.njss.info/organizations/proc/1496,2026-07-09
+労働者健康安全機構 宮城産業保健総合支援センター,0,https://www.johas.go.jp/,www.johas.go.jp,0,https://www.johas.go.jp/procurement/,https://www2.njss.info/organizations/proc/1497,2026-07-09
+労働者健康安全機構 秋田産業保健総合支援センター,0,https://www.johas.go.jp/,www.johas.go.jp,0,https://www.johas.go.jp/procurement/,https://www2.njss.info/organizations/proc/1498,2026-07-09
+労働者健康安全機構 山形産業保健総合支援センター,0,https://www.johas.go.jp/,www.johas.go.jp,0,https://www.johas.go.jp/procurement/,https://www2.njss.info/organizations/proc/1499,2026-07-09
+労働者健康安全機構 福島産業保健総合支援センター,0,https://www.johas.go.jp/,www.johas.go.jp,0,https://www.johas.go.jp/procurement/,https://www2.njss.info/organizations/proc/1500,2026-07-09
+労働者健康安全機構 茨城産業保健総合支援センター,0,https://www.johas.go.jp/,www.johas.go.jp,0,https://www.johas.go.jp/procurement/,https://www2.njss.info/organizations/proc/1501,2026-07-09
+労働者健康安全機構 栃木産業保健総合支援センター,0,https://www.johas.go.jp/,www.johas.go.jp,0,https://www.johas.go.jp/procurement/,https://www2.njss.info/organizations/proc/1502,2026-07-09
+労働者健康安全機構 群馬産業保健総合支援センター,0,https://www.johas.go.jp/,www.johas.go.jp,0,https://www.johas.go.jp/procurement/,https://www2.njss.info/organizations/proc/1503,2026-07-09
+労働者健康安全機構 埼玉産業保健総合支援センター,0,https://www.johas.go.jp/,www.johas.go.jp,0,https://www.johas.go.jp/procurement/,https://www2.njss.info/organizations/proc/1504,2026-07-09
+労働者健康安全機構 千葉産業保健総合支援センター,0,https://www.johas.go.jp/,www.johas.go.jp,0,https://www.johas.go.jp/procurement/,https://www2.njss.info/organizations/proc/1505,2026-07-09
+労働者健康安全機構 東京産業保健総合支援センター,0,https://www.johas.go.jp/,www.johas.go.jp,0,https://www.johas.go.jp/procurement/,https://www2.njss.info/organizations/proc/1506,2026-07-09
+労働者健康安全機構 神奈川産業保健総合支援センター,0,https://www.johas.go.jp/,www.johas.go.jp,0,https://www.johas.go.jp/procurement/,https://www2.njss.info/organizations/proc/1507,2026-07-09
+労働者健康安全機構 富山産業保健総合支援センター,0,https://www.johas.go.jp/,www.johas.go.jp,0,https://www.johas.go.jp/procurement/,https://www2.njss.info/organizations/proc/1508,2026-07-09
+労働者健康安全機構 石川産業保健総合支援センター,0,https://www.johas.go.jp/,www.johas.go.jp,0,https://www.johas.go.jp/procurement/,https://www2.njss.info/organizations/proc/1509,2026-07-09
+労働者健康安全機構 福井産業保健総合支援センター,0,https://www.johas.go.jp/,www.johas.go.jp,0,https://www.johas.go.jp/procurement/,https://www2.njss.info/organizations/proc/1510,2026-07-09
+労働者健康安全機構 山梨産業保健総合支援センター,0,https://www.johas.go.jp/,www.johas.go.jp,0,https://www.johas.go.jp/procurement/,https://www2.njss.info/organizations/proc/1511,2026-07-09
+労働者健康安全機構 長野産業保健総合支援センター,0,https://www.johas.go.jp/,www.johas.go.jp,0,https://www.johas.go.jp/procurement/,https://www2.njss.info/organizations/proc/1512,2026-07-09
+労働者健康安全機構 岐阜産業保健総合支援センター,0,https://www.johas.go.jp/,www.johas.go.jp,0,https://www.johas.go.jp/procurement/,https://www2.njss.info/organizations/proc/1513,2026-07-09
+労働者健康安全機構 静岡産業保健総合支援センター,0,https://www.johas.go.jp/,www.johas.go.jp,0,https://www.johas.go.jp/procurement/,https://www2.njss.info/organizations/proc/1514,2026-07-09
+労働者健康安全機構 愛知産業保健総合支援センター,0,https://www.johas.go.jp/,www.johas.go.jp,0,https://www.johas.go.jp/procurement/,https://www2.njss.info/organizations/proc/1515,2026-07-09
+労働者健康安全機構 三重産業保健総合支援センター,0,https://www.johas.go.jp/,www.johas.go.jp,0,https://www.johas.go.jp/procurement/,https://www2.njss.info/organizations/proc/1516,2026-07-09
+労働者健康安全機構 滋賀産業保健総合支援センター,0,https://www.johas.go.jp/,www.johas.go.jp,0,https://www.johas.go.jp/procurement/,https://www2.njss.info/organizations/proc/1517,2026-07-09
+労働者健康安全機構 京都産業保健総合支援センター,0,https://www.johas.go.jp/,www.johas.go.jp,0,https://www.johas.go.jp/procurement/,https://www2.njss.info/organizations/proc/1518,2026-07-09
+労働者健康安全機構 大阪産業保健総合支援センター,0,https://www.johas.go.jp/,www.johas.go.jp,0,https://www.johas.go.jp/procurement/,https://www2.njss.info/organizations/proc/1519,2026-07-09
+労働者健康安全機構 兵庫産業保健総合支援センター,0,https://www.johas.go.jp/,www.johas.go.jp,0,https://www.johas.go.jp/procurement/,https://www2.njss.info/organizations/proc/1520,2026-07-09
+労働者健康安全機構 奈良産業保健総合支援センター,0,https://www.johas.go.jp/,www.johas.go.jp,0,https://www.johas.go.jp/procurement/,https://www2.njss.info/organizations/proc/1521,2026-07-09
+労働者健康安全機構 和歌山産業保健総合支援センター,0,https://www.johas.go.jp/,www.johas.go.jp,0,https://www.johas.go.jp/procurement/,https://www2.njss.info/organizations/proc/1522,2026-07-09
+労働者健康安全機構 鳥取産業保健総合支援センター,0,https://www.johas.go.jp/,www.johas.go.jp,0,https://www.johas.go.jp/procurement/,https://www2.njss.info/organizations/proc/1523,2026-07-09
+労働者健康安全機構 島根産業保健総合支援センター,0,https://www.johas.go.jp/,www.johas.go.jp,0,https://www.johas.go.jp/procurement/,https://www2.njss.info/organizations/proc/1524,2026-07-09
+労働者健康安全機構 岡山産業保健総合支援センター,0,https://www.johas.go.jp/,www.johas.go.jp,0,https://www.johas.go.jp/procurement/,https://www2.njss.info/organizations/proc/1525,2026-07-09
+労働者健康安全機構 広島産業保健総合支援センター,0,https://www.johas.go.jp/,www.johas.go.jp,0,https://www.johas.go.jp/procurement/,https://www2.njss.info/organizations/proc/1526,2026-07-09
+労働者健康安全機構 山口産業保健総合支援センター,0,https://www.johas.go.jp/,www.johas.go.jp,0,https://www.johas.go.jp/procurement/,https://www2.njss.info/organizations/proc/1527,2026-07-09
+労働者健康安全機構 徳島産業保健総合支援センター,0,https://www.johas.go.jp/,www.johas.go.jp,0,https://www.johas.go.jp/procurement/,https://www2.njss.info/organizations/proc/1528,2026-07-09
+労働者健康安全機構 香川産業保健総合支援センター,0,https://www.johas.go.jp/,www.johas.go.jp,0,https://www.johas.go.jp/procurement/,https://www2.njss.info/organizations/proc/1529,2026-07-09
+労働者健康安全機構 愛媛産業保健推進連絡事務所,0,https://www.johas.go.jp/,www.johas.go.jp,0,https://www.johas.go.jp/procurement/,https://www2.njss.info/organizations/proc/1530,2026-07-09
+労働者健康安全機構 高知産業保健総合支援センター,0,https://www.johas.go.jp/,www.johas.go.jp,0,https://www.johas.go.jp/procurement/,https://www2.njss.info/organizations/proc/1531,2026-07-09
+労働者健康安全機構 福岡産業保健総合支援センター,0,https://www.johas.go.jp/,www.johas.go.jp,0,https://www.johas.go.jp/procurement/,https://www2.njss.info/organizations/proc/1532,2026-07-09
+労働者健康安全機構 佐賀産業保健総合支援センター,0,https://www.johas.go.jp/,www.johas.go.jp,0,https://www.johas.go.jp/procurement/,https://www2.njss.info/organizations/proc/1533,2026-07-09
+労働者健康安全機構 長崎産業保健総合支援センター,0,https://www.johas.go.jp/,www.johas.go.jp,0,https://www.johas.go.jp/procurement/,https://www2.njss.info/organizations/proc/1534,2026-07-09
+労働者健康安全機構 熊本産業保健総合支援センター,0,https://www.johas.go.jp/,www.johas.go.jp,0,https://www.johas.go.jp/procurement/,https://www2.njss.info/organizations/proc/1535,2026-07-09
+労働者健康安全機構 大分産業保健総合支援センター,0,https://www.johas.go.jp/,www.johas.go.jp,0,https://www.johas.go.jp/procurement/,https://www2.njss.info/organizations/proc/1536,2026-07-09
+労働者健康安全機構 宮崎産業保健総合支援センター,0,https://www.johas.go.jp/,www.johas.go.jp,0,https://www.johas.go.jp/procurement/,https://www2.njss.info/organizations/proc/1537,2026-07-09
+労働者健康安全機構 鹿児島産業保健総合支援センター,0,https://www.johas.go.jp/,www.johas.go.jp,0,https://www.johas.go.jp/procurement/,https://www2.njss.info/organizations/proc/1538,2026-07-09
+労働者健康安全機構 沖縄産業保健総合支援センター,0,https://www.johas.go.jp/,www.johas.go.jp,0,https://www.johas.go.jp/procurement/,https://www2.njss.info/organizations/proc/1539,2026-07-09
+労働者健康安全機構 東北労災病院 治療就労両立支援センター,0,https://www.johas.go.jp/,www.johas.go.jp,0,https://www.johas.go.jp/procurement/,https://www2.njss.info/organizations/proc/1541,2026-07-09
+労働者健康安全機構 東京労災病院 治療就労両立支援センター,0,https://www.johas.go.jp/,www.johas.go.jp,0,https://www.johas.go.jp/procurement/,https://www2.njss.info/organizations/proc/1542,2026-07-09
+労働者健康安全機構 関東労災病院 治療就労両立支援センター,0,https://www.johas.go.jp/,www.johas.go.jp,0,https://www.johas.go.jp/procurement/,https://www2.njss.info/organizations/proc/1543,2026-07-09
+労働者健康安全機構 中部労災病院 治療就労両立支援センター,0,https://www.johas.go.jp/,www.johas.go.jp,0,https://www.johas.go.jp/procurement/,https://www2.njss.info/organizations/proc/1544,2026-07-09
+労働者健康安全機構 大阪ろうさい病院 治療就労両立支援センター,0,https://www.johas.go.jp/,www.johas.go.jp,0,https://www.johas.go.jp/procurement/,https://www2.njss.info/organizations/proc/1545,2026-07-09
+労働者健康安全機構 関西労災病院 治療就労両立支援センター,0,https://www.johas.go.jp/,www.johas.go.jp,0,https://www.johas.go.jp/procurement/,https://www2.njss.info/organizations/proc/1546,2026-07-09
+労働者健康安全機構 九州労災病院 治療就労両立支援センター,0,https://www.johas.go.jp/,www.johas.go.jp,0,https://www.johas.go.jp/procurement/,https://www2.njss.info/organizations/proc/1547,2026-07-09
+労働者健康安全機構 労災リハビリテーションセンター宮城作業所,0,https://www.johas.go.jp/,www.johas.go.jp,0,https://www.johas.go.jp/procurement/,https://www2.njss.info/organizations/proc/1550,2026-07-09
+労働者健康安全機構 労災リハビリテーションセンター千葉作業所,0,https://www.johas.go.jp/,www.johas.go.jp,0,https://www.johas.go.jp/procurement/,https://www2.njss.info/organizations/proc/1551,2026-07-09
+労働者健康安全機構 労災リハビリテーションセンター福井作業所,0,https://www.johas.go.jp/,www.johas.go.jp,0,https://www.johas.go.jp/procurement/,https://www2.njss.info/organizations/proc/1552,2026-07-09
+労働者健康安全機構 労災リハビリテーションセンター長野作業所,0,https://www.johas.go.jp/,www.johas.go.jp,0,https://www.johas.go.jp/procurement/,https://www2.njss.info/organizations/proc/1553,2026-07-09
+労働者健康安全機構 労災リハビリテーションセンター愛知作業所,0,https://www.johas.go.jp/,www.johas.go.jp,0,https://www.johas.go.jp/procurement/,https://www2.njss.info/organizations/proc/1554,2026-07-09
+労働者健康安全機構 釧路労災看護専門学校,0,https://www.johas.go.jp/,www.johas.go.jp,0,https://www.johas.go.jp/procurement/,https://www2.njss.info/organizations/proc/1555,2026-07-09
+労働者健康安全機構 中部労災看護専門学校,0,https://www.johas.go.jp/,www.johas.go.jp,0,https://www.johas.go.jp/procurement/,https://www2.njss.info/organizations/proc/1558,2026-07-09
+労働者健康安全機構 大阪労災看護専門学校,0,https://www.johas.go.jp/,www.johas.go.jp,0,https://www.johas.go.jp/procurement/,https://www2.njss.info/organizations/proc/1559,2026-07-09
+労働者健康安全機構 関西労災看護専門学校,0,https://www.johas.go.jp/,www.johas.go.jp,0,https://www.johas.go.jp/procurement/,https://www2.njss.info/organizations/proc/1560,2026-07-09
+労働者健康安全機構 岡山労災看護専門学校,0,https://www.johas.go.jp/,www.johas.go.jp,0,https://www.johas.go.jp/procurement/,https://www2.njss.info/organizations/proc/1561,2026-07-09
+労働者健康安全機構 熊本労災看護専門学校,0,https://www.johas.go.jp/,www.johas.go.jp,0,https://www.johas.go.jp/procurement/,https://www2.njss.info/organizations/proc/1562,2026-07-09
+労働者健康安全機構 中国労災病院治療就労両立支援センター,0,https://www.johas.go.jp/,www.johas.go.jp,0,https://www.johas.go.jp/procurement/,https://www2.njss.info/organizations/proc/1563,2026-07-09
+労働者健康安全機構 労災リハビリテーション福岡作業所,0,https://www.johas.go.jp/,www.johas.go.jp,0,https://www.johas.go.jp/procurement/,https://www2.njss.info/organizations/proc/1883,2026-07-09
+製品評価技術基盤機構(NITE) 東北支所,0,https://www.nite.go.jp/,www.nite.go.jp,0,https://www.nite.go.jp/nite/chotatsu/index.html,https://www2.njss.info/organizations/proc/1891,2026-07-09
+製品評価技術基盤機構(NITE) 北関東支所,0,https://www.nite.go.jp/,www.nite.go.jp,0,https://www.nite.go.jp/nite/chotatsu/index.html,https://www2.njss.info/organizations/proc/1892,2026-07-09
+製品評価技術基盤機構(NITE) 中部支所,0,https://www.nite.go.jp/,www.nite.go.jp,0,https://www.nite.go.jp/nite/chotatsu/index.html,https://www2.njss.info/organizations/proc/1893,2026-07-09
+製品評価技術基盤機構(NITE) 北陸支所,0,https://www.nite.go.jp/,www.nite.go.jp,0,https://www.nite.go.jp/nite/chotatsu/index.html,https://www2.njss.info/organizations/proc/1894,2026-07-09
+製品評価技術基盤機構(NITE) 中国支所,0,https://www.nite.go.jp/,www.nite.go.jp,0,https://www.nite.go.jp/nite/chotatsu/index.html,https://www2.njss.info/organizations/proc/1895,2026-07-09
+製品評価技術基盤機構(NITE) 九州支所,0,https://www.nite.go.jp/,www.nite.go.jp,0,https://www.nite.go.jp/nite/chotatsu/index.html,https://www2.njss.info/organizations/proc/1896,2026-07-09
+労働者健康安全機構 労働安全衛生総合研究所登戸地区,0,https://www.johas.go.jp/,www.johas.go.jp,0,https://www.johas.go.jp/procurement/,https://www2.njss.info/organizations/proc/1897,2026-07-09
+航空大学校 帯広分校,0,https://www.kouku-dai.ac.jp/,www.kouku-dai.ac.jp,0,https://www.kouku-dai.ac.jp/cgi-bin/05_supply/view.cgi?print=20&sort=down4%20down5%20down6&keys2=1&word=0&tid=list3,https://www2.njss.info/organizations/proc/2081,2026-07-09
+航空大学校 仙台分校,0,https://www.kouku-dai.ac.jp/,www.kouku-dai.ac.jp,0,https://www.kouku-dai.ac.jp/cgi-bin/05_supply/view.cgi?print=20&sort=down4%20down5%20down6&keys2=1&word=0&tid=list3,https://www2.njss.info/organizations/proc/2082,2026-07-09
+造幣局(MINT) 東京支局,0,https://www.mint.go.jp/,www.mint.go.jp,0,https://www.mint.go.jp/about/bid,https://www2.njss.info/organizations/proc/2111,2026-07-09
+造幣局(MINT) 広島支局,0,https://www.mint.go.jp/,www.mint.go.jp,0,https://www.mint.go.jp/about/bid,https://www2.njss.info/organizations/proc/2112,2026-07-09
+国立印刷局 研究所,0,https://www.npb.go.jp/,www.npb.go.jp,0,https://www.npb.go.jp/zyohoteikyo/finance/nyusatu/koubo.html,https://www2.njss.info/organizations/proc/2113,2026-07-09
+国立印刷局 王子工場,0,https://www.npb.go.jp/,www.npb.go.jp,0,https://www.npb.go.jp/zyohoteikyo/finance/nyusatu/koubo.html,https://www2.njss.info/organizations/proc/2114,2026-07-09
+国立印刷局 東京工場,0,https://www.npb.go.jp/,www.npb.go.jp,0,https://www.npb.go.jp/zyohoteikyo/finance/nyusatu/koubo.html,https://www2.njss.info/organizations/proc/2115,2026-07-09
+国立印刷局 小田原工場,0,https://www.npb.go.jp/,www.npb.go.jp,0,https://www.npb.go.jp/zyohoteikyo/finance/nyusatu/koubo.html,https://www2.njss.info/organizations/proc/2117,2026-07-09
+国立印刷局 静岡工場,0,https://www.npb.go.jp/,www.npb.go.jp,0,https://www.npb.go.jp/zyohoteikyo/finance/nyusatu/koubo.html,https://www2.njss.info/organizations/proc/2118,2026-07-09
+国立印刷局 彦根工場,0,https://www.npb.go.jp/,www.npb.go.jp,0,https://www.npb.go.jp/zyohoteikyo/finance/nyusatu/koubo.html,https://www2.njss.info/organizations/proc/2119,2026-07-09
+国立印刷局 岡山工場,0,https://www.npb.go.jp/,www.npb.go.jp,0,https://www.npb.go.jp/zyohoteikyo/finance/nyusatu/koubo.html,https://www2.njss.info/organizations/proc/2120,2026-07-09
+国民生活センター 東京事務所,0,https://www.kokusen.go.jp/,www.kokusen.go.jp,0,https://www.kokusen.go.jp/compe/index.html,https://www2.njss.info/organizations/proc/2122,2026-07-09
+北方領土問題対策協会 札幌事務所,0,https://www.hoppou.go.jp/,www.hoppou.go.jp,0,https://www.hoppou.go.jp/organization/procurement/index.html,https://www2.njss.info/organizations/proc/2123,2026-07-09
+農業・食品産業技術総合研究機構(NARO) 果樹研究所 盛岡拠点,0,https://www.naro.go.jp/,www.naro.go.jp,0,https://www.naro.go.jp/supply/index.html,https://www2.njss.info/organizations/proc/2407,2026-07-09
+農業・食品産業技術総合研究機構(NARO) 果樹研究所 興津拠点,0,https://www.naro.go.jp/,www.naro.go.jp,0,https://www.naro.go.jp/supply/index.html,https://www2.njss.info/organizations/proc/2408,2026-07-09
+農業・食品産業技術総合研究機構(NARO) 果樹研究所 安芸津拠点,0,https://www.naro.go.jp/,www.naro.go.jp,0,https://www.naro.go.jp/supply/index.html,https://www2.njss.info/organizations/proc/2409,2026-07-09
+農業・食品産業技術総合研究機構(NARO) 果樹研究所 口之津拠点,0,https://www.naro.go.jp/,www.naro.go.jp,0,https://www.naro.go.jp/supply/index.html,https://www2.njss.info/organizations/proc/2410,2026-07-09
+農業・食品産業技術総合研究機構(NARO) 畜産草地研究所 那須拠点,0,https://www.naro.go.jp/,www.naro.go.jp,0,https://www.naro.go.jp/supply/index.html,https://www2.njss.info/organizations/proc/2413,2026-07-09
+農業・食品産業技術総合研究機構(NARO) 畜産草地研究所 御代田各拠点,0,https://www.naro.go.jp/,www.naro.go.jp,0,https://www.naro.go.jp/supply/index.html,https://www2.njss.info/organizations/proc/2414,2026-07-09
+農業・食品産業技術総合研究機構(NARO) 動物衛生研究所 北海道支所,0,https://www.naro.go.jp/,www.naro.go.jp,0,https://www.naro.go.jp/supply/index.html,https://www2.njss.info/organizations/proc/2415,2026-07-09
+農業・食品産業技術総合研究機構(NARO) 動物衛生研究所 海外病研究施設,0,https://www.naro.go.jp/,www.naro.go.jp,0,https://www.naro.go.jp/supply/index.html,https://www2.njss.info/organizations/proc/2416,2026-07-09
+農業・食品産業技術総合研究機構(NARO) 北海道農業研究センター 紋別拠点,0,https://www.naro.go.jp/,www.naro.go.jp,0,https://www.naro.go.jp/supply/index.html,https://www2.njss.info/organizations/proc/2417,2026-07-09
+農業・食品産業技術総合研究機構(NARO) 北海道農業研究センター 美唄拠点,0,https://www.naro.go.jp/,www.naro.go.jp,0,https://www.naro.go.jp/supply/index.html,https://www2.njss.info/organizations/proc/2418,2026-07-09
+農業・食品産業技術総合研究機構(NARO) 東北農業研究センター 大仙拠点,0,https://www.naro.go.jp/,www.naro.go.jp,0,https://www.naro.go.jp/supply/index.html,https://www2.njss.info/organizations/proc/2419,2026-07-09
+農業・食品産業技術総合研究機構(NARO) 東北農業研究センター 福島拠点,0,https://www.naro.go.jp/,www.naro.go.jp,0,https://www.naro.go.jp/supply/index.html,https://www2.njss.info/organizations/proc/2420,2026-07-09
+農業・食品産業技術総合研究機構(NARO) 近畿中国四国農業研究センター 綾部拠点,0,https://www.naro.go.jp/,www.naro.go.jp,0,https://www.naro.go.jp/supply/index.html,https://www2.njss.info/organizations/proc/2421,2026-07-09
+農業・食品産業技術総合研究機構(NARO) 近畿中国四国農業研究センター 大田拠点,0,https://www.naro.go.jp/,www.naro.go.jp,0,https://www.naro.go.jp/supply/index.html,https://www2.njss.info/organizations/proc/2422,2026-07-09
+農業・食品産業技術総合研究機構(NARO) 近畿中国四国農業研究センター 善通寺拠点,0,https://www.naro.go.jp/,www.naro.go.jp,0,https://www.naro.go.jp/supply/index.html,https://www2.njss.info/organizations/proc/2423,2026-07-09
+農業・食品産業技術総合研究機構(NARO) 九州沖縄農業研究センター 久留米拠点,0,https://www.naro.go.jp/,www.naro.go.jp,0,https://www.naro.go.jp/supply/index.html,https://www2.njss.info/organizations/proc/2424,2026-07-09
+農業・食品産業技術総合研究機構(NARO) 九州沖縄農業研究センター 筑後拠点,0,https://www.naro.go.jp/,www.naro.go.jp,0,https://www.naro.go.jp/supply/index.html,https://www2.njss.info/organizations/proc/2425,2026-07-09
+農業・食品産業技術総合研究機構(NARO) 九州沖縄農業研究センター 都城拠点,0,https://www.naro.go.jp/,www.naro.go.jp,0,https://www.naro.go.jp/supply/index.html,https://www2.njss.info/organizations/proc/2426,2026-07-09
+農業・食品産業技術総合研究機構(NARO) 九州沖縄農業研究センター 種子島拠点,0,https://www.naro.go.jp/,www.naro.go.jp,0,https://www.naro.go.jp/supply/index.html,https://www2.njss.info/organizations/proc/2427,2026-07-09
+森林研究・整備機構 森林整備センター 東北北海道整備局 札幌水源林整備事務所,0,https://www.ffpri.go.jp/,www.ffpri.go.jp,0,https://www.ffpri.go.jp/chotatsu.html,https://www2.njss.info/organizations/proc/2428,2026-07-09
+森林研究・整備機構 森林整備センター 東北北海道整備局 青森水源林整備事務所,0,https://www.ffpri.go.jp/,www.ffpri.go.jp,0,https://www.ffpri.go.jp/chotatsu.html,https://www2.njss.info/organizations/proc/2429,2026-07-09
+森林研究・整備機構 森林整備センター 東北北海道整備局 盛岡水源林整備事務所,0,https://www.ffpri.go.jp/,www.ffpri.go.jp,0,https://www.ffpri.go.jp/chotatsu.html,https://www2.njss.info/organizations/proc/2430,2026-07-09
+森林研究・整備機構 森林整備センター 東北北海道整備局 秋田水源林整備事務所,0,https://www.ffpri.go.jp/,www.ffpri.go.jp,0,https://www.ffpri.go.jp/chotatsu.html,https://www2.njss.info/organizations/proc/2431,2026-07-09
+森林研究・整備機構 森林整備センター 東北北海道整備局 山形水源林整備事務所,0,https://www.ffpri.go.jp/,www.ffpri.go.jp,0,https://www.ffpri.go.jp/chotatsu.html,https://www2.njss.info/organizations/proc/2432,2026-07-09
+森林研究・整備機構 森林整備センター 関東整備局 福島水源林整備事務所,0,https://www.ffpri.go.jp/,www.ffpri.go.jp,0,https://www.ffpri.go.jp/chotatsu.html,https://www2.njss.info/organizations/proc/2433,2026-07-09
+森林研究・整備機構 森林整備センター 関東整備局 宇都宮水源林整備事務所,0,https://www.ffpri.go.jp/,www.ffpri.go.jp,0,https://www.ffpri.go.jp/chotatsu.html,https://www2.njss.info/organizations/proc/2434,2026-07-09
+森林研究・整備機構 森林整備センター 関東整備局 前橋水源林整備事務所,0,https://www.ffpri.go.jp/,www.ffpri.go.jp,0,https://www.ffpri.go.jp/chotatsu.html,https://www2.njss.info/organizations/proc/2435,2026-07-09
+森林研究・整備機構 森林整備センター 関東整備局 新潟水源林整備事務所,0,https://www.ffpri.go.jp/,www.ffpri.go.jp,0,https://www.ffpri.go.jp/chotatsu.html,https://www2.njss.info/organizations/proc/2436,2026-07-09
+森林研究・整備機構 森林整備センター 関東整備局 甲府水源林整備事務所,0,https://www.ffpri.go.jp/,www.ffpri.go.jp,0,https://www.ffpri.go.jp/chotatsu.html,https://www2.njss.info/organizations/proc/2437,2026-07-09
+森林研究・整備機構 森林整備センター 関東整備局 静岡水源林整備事務所,0,https://www.ffpri.go.jp/,www.ffpri.go.jp,0,https://www.ffpri.go.jp/chotatsu.html,https://www2.njss.info/organizations/proc/2438,2026-07-09
+森林研究・整備機構 森林整備センター 中部整備局 富山水源林整備事務所,0,https://www.ffpri.go.jp/,www.ffpri.go.jp,0,https://www.ffpri.go.jp/chotatsu.html,https://www2.njss.info/organizations/proc/2439,2026-07-09
+森林研究・整備機構 森林整備センター 中部整備局 長野水源林整備事務所,0,https://www.ffpri.go.jp/,www.ffpri.go.jp,0,https://www.ffpri.go.jp/chotatsu.html,https://www2.njss.info/organizations/proc/2440,2026-07-09
+森林研究・整備機構 森林整備センター 中部整備局 岐阜水源林整備事務所,0,https://www.ffpri.go.jp/,www.ffpri.go.jp,0,https://www.ffpri.go.jp/chotatsu.html,https://www2.njss.info/organizations/proc/2441,2026-07-09
+森林研究・整備機構 森林整備センター 中部整備局 津水源林整備事務所,0,https://www.ffpri.go.jp/,www.ffpri.go.jp,0,https://www.ffpri.go.jp/chotatsu.html,https://www2.njss.info/organizations/proc/2442,2026-07-09
+森林研究・整備機構 森林整備センター 近畿北陸整備局 金沢水源林整備事務所,0,https://www.ffpri.go.jp/,www.ffpri.go.jp,0,https://www.ffpri.go.jp/chotatsu.html,https://www2.njss.info/organizations/proc/2443,2026-07-09
+森林研究・整備機構 森林整備センター 近畿北陸整備局 福井水源林整備事務所,0,https://www.ffpri.go.jp/,www.ffpri.go.jp,0,https://www.ffpri.go.jp/chotatsu.html,https://www2.njss.info/organizations/proc/2444,2026-07-09
+森林研究・整備機構 森林整備センター 近畿北陸整備局 京都水源林整備事務所,0,https://www.ffpri.go.jp/,www.ffpri.go.jp,0,https://www.ffpri.go.jp/chotatsu.html,https://www2.njss.info/organizations/proc/2445,2026-07-09
+森林研究・整備機構 森林整備センター 近畿北陸整備局 神戸水源林整備事務所,0,https://www.ffpri.go.jp/,www.ffpri.go.jp,0,https://www.ffpri.go.jp/chotatsu.html,https://www2.njss.info/organizations/proc/2446,2026-07-09
+森林研究・整備機構 森林整備センター 近畿北陸整備局 奈良水源林整備事務所,0,https://www.ffpri.go.jp/,www.ffpri.go.jp,0,https://www.ffpri.go.jp/chotatsu.html,https://www2.njss.info/organizations/proc/2447,2026-07-09
+森林研究・整備機構 森林整備センター 近畿北陸整備局 和歌山水源林整備事務所,0,https://www.ffpri.go.jp/,www.ffpri.go.jp,0,https://www.ffpri.go.jp/chotatsu.html,https://www2.njss.info/organizations/proc/2448,2026-07-09
+森林研究・整備機構 森林整備センター 中国四国整備局 鳥取水源林整備事務所,0,https://www.ffpri.go.jp/,www.ffpri.go.jp,0,https://www.ffpri.go.jp/chotatsu.html,https://www2.njss.info/organizations/proc/2449,2026-07-09
+森林研究・整備機構 森林整備センター 中国四国整備局 松江水源林整備事務所,0,https://www.ffpri.go.jp/,www.ffpri.go.jp,0,https://www.ffpri.go.jp/chotatsu.html,https://www2.njss.info/organizations/proc/2450,2026-07-09
+森林研究・整備機構 森林整備センター 中国四国整備局 広島水源林整備事務所,0,https://www.ffpri.go.jp/,www.ffpri.go.jp,0,https://www.ffpri.go.jp/chotatsu.html,https://www2.njss.info/organizations/proc/2451,2026-07-09
+森林研究・整備機構 森林整備センター 中国四国整備局 山口水源林整備事務所,0,https://www.ffpri.go.jp/,www.ffpri.go.jp,0,https://www.ffpri.go.jp/chotatsu.html,https://www2.njss.info/organizations/proc/2452,2026-07-09
+森林研究・整備機構 森林整備センター 中国四国整備局 徳島水源林整備事務所,0,https://www.ffpri.go.jp/,www.ffpri.go.jp,0,https://www.ffpri.go.jp/chotatsu.html,https://www2.njss.info/organizations/proc/2453,2026-07-09
+森林研究・整備機構 森林整備センター 中国四国整備局 松山水源林整備事務所,0,https://www.ffpri.go.jp/,www.ffpri.go.jp,0,https://www.ffpri.go.jp/chotatsu.html,https://www2.njss.info/organizations/proc/2454,2026-07-09
+森林研究・整備機構 森林整備センター 中国四国整備局 高知水源林整備事務所,0,https://www.ffpri.go.jp/,www.ffpri.go.jp,0,https://www.ffpri.go.jp/chotatsu.html,https://www2.njss.info/organizations/proc/2455,2026-07-09
+森林研究・整備機構 森林整備センター 九州整備局 佐賀水源林整備事務所,0,https://www.ffpri.go.jp/,www.ffpri.go.jp,0,https://www.ffpri.go.jp/chotatsu.html,https://www2.njss.info/organizations/proc/2456,2026-07-09
+森林研究・整備機構 森林整備センター 九州整備局 熊本水源林整備事務所,0,https://www.ffpri.go.jp/,www.ffpri.go.jp,0,https://www.ffpri.go.jp/chotatsu.html,https://www2.njss.info/organizations/proc/2457,2026-07-09
+森林研究・整備機構 森林整備センター 九州整備局 大分水源林整備事務所,0,https://www.ffpri.go.jp/,www.ffpri.go.jp,0,https://www.ffpri.go.jp/chotatsu.html,https://www2.njss.info/organizations/proc/2458,2026-07-09
+森林研究・整備機構 森林整備センター 九州整備局 宮崎水源林整備事務所,0,https://www.ffpri.go.jp/,www.ffpri.go.jp,0,https://www.ffpri.go.jp/chotatsu.html,https://www2.njss.info/organizations/proc/2459,2026-07-09
+森林研究・整備機構 森林整備センター 九州整備局 鹿児島水源林整備事務所,0,https://www.ffpri.go.jp/,www.ffpri.go.jp,0,https://www.ffpri.go.jp/chotatsu.html,https://www2.njss.info/organizations/proc/2460,2026-07-09
+農林水産消費安全技術センター(FAMIC) 横浜事務所,0,https://www.famic.go.jp/,www.famic.go.jp,0,https://www.famic.go.jp/public_information/supply_information/nyuusatsu/,https://www2.njss.info/organizations/proc/2461,2026-07-09
+農林水産消費安全技術センター(FAMIC) 札幌センター,0,https://www.famic.go.jp/,www.famic.go.jp,0,https://www.famic.go.jp/public_information/supply_information/nyuusatsu/,https://www2.njss.info/organizations/proc/2462,2026-07-09
+農林水産消費安全技術センター(FAMIC) 仙台センター,0,https://www.famic.go.jp/,www.famic.go.jp,0,https://www.famic.go.jp/public_information/supply_information/nyuusatsu/,https://www2.njss.info/organizations/proc/2463,2026-07-09
+農林水産消費安全技術センター(FAMIC) 名古屋センター,0,https://www.famic.go.jp/,www.famic.go.jp,0,https://www.famic.go.jp/public_information/supply_information/nyuusatsu/,https://www2.njss.info/organizations/proc/2464,2026-07-09
+農林水産消費安全技術センター(FAMIC) 神戸センター,0,https://www.famic.go.jp/,www.famic.go.jp,0,https://www.famic.go.jp/public_information/supply_information/nyuusatsu/,https://www2.njss.info/organizations/proc/2465,2026-07-09
+農林水産消費安全技術センター(FAMIC) 福岡センター,0,https://www.famic.go.jp/,www.famic.go.jp,0,https://www.famic.go.jp/public_information/supply_information/nyuusatsu/,https://www2.njss.info/organizations/proc/2466,2026-07-09
+国際農林水産業研究センター(JIRCAS) 熱帯・島嶼研究拠点,0,https://www.jircas.go.jp/,www.jircas.go.jp,0,https://www.jircas.go.jp/ja/procurement,https://www2.njss.info/organizations/proc/2476,2026-07-09
+駐留軍等労働者労務管理機構(LMO) 本部横浜事務所,0,https://www.lmo.go.jp/,www.lmo.go.jp,0,https://www.lmo.go.jp/procurement/index.html,https://www2.njss.info/organizations/proc/2478,2026-07-09
+駐留軍等労働者労務管理機構(LMO) 三沢支部,0,https://www.lmo.go.jp/,www.lmo.go.jp,0,https://www.lmo.go.jp/procurement/index.html,https://www2.njss.info/organizations/proc/2479,2026-07-09
+駐留軍等労働者労務管理機構(LMO) 横田支部,0,https://www.lmo.go.jp/,www.lmo.go.jp,0,https://www.lmo.go.jp/procurement/index.html,https://www2.njss.info/organizations/proc/2480,2026-07-09
+駐留軍等労働者労務管理機構(LMO) 横須賀支部,0,https://www.lmo.go.jp/,www.lmo.go.jp,0,https://www.lmo.go.jp/procurement/index.html,https://www2.njss.info/organizations/proc/2481,2026-07-09
+駐留軍等労働者労務管理機構(LMO) 座間支部,0,https://www.lmo.go.jp/,www.lmo.go.jp,0,https://www.lmo.go.jp/procurement/index.html,https://www2.njss.info/organizations/proc/2482,2026-07-09
+駐留軍等労働者労務管理機構(LMO) 岩国支部,0,https://www.lmo.go.jp/,www.lmo.go.jp,0,https://www.lmo.go.jp/procurement/index.html,https://www2.njss.info/organizations/proc/2483,2026-07-09
+駐留軍等労働者労務管理機構(LMO) 佐世保支部,0,https://www.lmo.go.jp/,www.lmo.go.jp,0,https://www.lmo.go.jp/procurement/index.html,https://www2.njss.info/organizations/proc/2484,2026-07-09
+駐留軍等労働者労務管理機構(LMO) 沖縄支部,0,https://www.lmo.go.jp/,www.lmo.go.jp,0,https://www.lmo.go.jp/procurement/index.html,https://www2.njss.info/organizations/proc/2485,2026-07-09
+量子科学技術研究開発機構(QST) 放射線医学総合研究所 那珂湊支所,0,https://www.qst.go.jp/,www.qst.go.jp,0,https://www.qst.go.jp/site/procurement/,https://www2.njss.info/organizations/proc/2486,2026-07-09
+教職員支援機構(NITS) 教員研修センター 東京事務所,0,https://www.nits.go.jp/,www.nits.go.jp,0,https://www.nits.go.jp/nyusatsu/general.html,https://www2.njss.info/organizations/proc/2487,2026-07-09
+宇宙航空研究開発機構(JAXA) 調布航空宇宙センター,0,https://www.jaxa.jp/,www.jaxa.jp,0,https://stage.tksc.jaxa.jp/compe/index_j.html,https://www2.njss.info/organizations/proc/2488,2026-07-09
+宇宙航空研究開発機構(JAXA) 相模原キャンパス,0,https://www.jaxa.jp/,www.jaxa.jp,0,https://stage.tksc.jaxa.jp/compe/index_j.html,https://www2.njss.info/organizations/proc/2490,2026-07-09
+国立高等専門学校機構 香川高等専門学校,0,https://www.kosen-k.go.jp/,www.kosen-k.go.jp,0,https://www.kosen-k.go.jp/wp/wp-content/uploads/2025/04/chotatsuhoushin.pdf,https://www2.njss.info/organizations/proc/4202,2026-07-09
+高齢・障害・求職者雇用支援機構 静岡支部 東海職業能力開発大学校附属浜松職業能力開発短期大学校,0,https://www.jeed.go.jp/,www.jeed.go.jp,0,https://www.jeed.go.jp/jeed/information/index.html,https://www2.njss.info/organizations/proc/4413,2026-07-09
+高齢・障害・求職者雇用支援機構 近畿職業能力開発大学校,0,https://www.jeed.go.jp/,www.jeed.go.jp,0,https://www.jeed.go.jp/jeed/information/index.html,https://www2.njss.info/organizations/proc/4434,2026-07-09
+都市再生機構(UR) 東日本賃貸住宅本部 東日本公園事務所,0,https://www.ur-net.go.jp/,www.ur-net.go.jp,0,https://www.ur-net.go.jp/order/index.html,https://www2.njss.info/organizations/proc/4518,2026-07-09
+都市再生機構(UR) 東日本賃貸住宅本部 東京東住宅管理センター,0,https://www.ur-net.go.jp/,www.ur-net.go.jp,0,https://www.ur-net.go.jp/order/index.html,https://www2.njss.info/organizations/proc/4519,2026-07-09
+都市再生機構(UR) 東日本賃貸住宅本部 北多摩住宅管理センター,0,https://www.ur-net.go.jp/,www.ur-net.go.jp,0,https://www.ur-net.go.jp/order/index.html,https://www2.njss.info/organizations/proc/4520,2026-07-09
+都市再生機構(UR) 東日本賃貸住宅本部 東京北住宅管理センター,0,https://www.ur-net.go.jp/,www.ur-net.go.jp,0,https://www.ur-net.go.jp/order/index.html,https://www2.njss.info/organizations/proc/4521,2026-07-09
+都市再生機構(UR) 東日本賃貸住宅本部 南多摩住宅管理センター,0,https://www.ur-net.go.jp/,www.ur-net.go.jp,0,https://www.ur-net.go.jp/order/index.html,https://www2.njss.info/organizations/proc/4522,2026-07-09
+都市再生機構(UR) 東日本賃貸住宅本部 東京南住宅管理センター,0,https://www.ur-net.go.jp/,www.ur-net.go.jp,0,https://www.ur-net.go.jp/order/index.html,https://www2.njss.info/organizations/proc/4523,2026-07-09
+都市再生機構(UR) 東日本賃貸住宅本部 城北住宅管理センター,0,https://www.ur-net.go.jp/,www.ur-net.go.jp,0,https://www.ur-net.go.jp/order/index.html,https://www2.njss.info/organizations/proc/4524,2026-07-09
+都市再生機構(UR) 東日本賃貸住宅本部 北海道住宅管理センター,0,https://www.ur-net.go.jp/,www.ur-net.go.jp,0,https://www.ur-net.go.jp/order/index.html,https://www2.njss.info/organizations/proc/4525,2026-07-09
+都市再生機構(UR) 東日本賃貸住宅本部 赤羽台団地再生業務事務所,0,https://www.ur-net.go.jp/,www.ur-net.go.jp,0,https://www.ur-net.go.jp/order/index.html,https://www2.njss.info/organizations/proc/4526,2026-07-09
+都市再生機構(UR) 東日本賃貸住宅本部 東京団地再生業務事務所,0,https://www.ur-net.go.jp/,www.ur-net.go.jp,0,https://www.ur-net.go.jp/order/index.html,https://www2.njss.info/organizations/proc/4527,2026-07-09
+都市再生機構(UR) 東日本賃貸住宅本部 武蔵野団地再生業務事務所,0,https://www.ur-net.go.jp/,www.ur-net.go.jp,0,https://www.ur-net.go.jp/order/index.html,https://www2.njss.info/organizations/proc/4528,2026-07-09
+都市再生機構(UR) 東日本賃貸住宅本部 多摩団地再生業務事務所,0,https://www.ur-net.go.jp/,www.ur-net.go.jp,0,https://www.ur-net.go.jp/order/index.html,https://www2.njss.info/organizations/proc/4529,2026-07-09
+都市再生機構(UR) 東日本賃貸住宅本部 東日本工事事務所,0,https://www.ur-net.go.jp/,www.ur-net.go.jp,0,https://www.ur-net.go.jp/order/index.html,https://www2.njss.info/organizations/proc/4530,2026-07-09
+都市再生機構(UR) 東日本都市再生本部 北海道再開発事務所,0,https://www.ur-net.go.jp/,www.ur-net.go.jp,0,https://www.ur-net.go.jp/order/index.html,https://www2.njss.info/organizations/proc/4532,2026-07-09
+都市再生機構(UR) 東日本都市再生本部 仙台都市再生事務所,0,https://www.ur-net.go.jp/,www.ur-net.go.jp,0,https://www.ur-net.go.jp/order/index.html,https://www2.njss.info/organizations/proc/4533,2026-07-09
+都市再生機構(UR) 東日本都市再生本部 勝田駅東口再開発事務所,0,https://www.ur-net.go.jp/,www.ur-net.go.jp,0,https://www.ur-net.go.jp/order/index.html,https://www2.njss.info/organizations/proc/4534,2026-07-09
+都市再生機構(UR) 東日本都市再生本部 武蔵浦和再開発事務所,0,https://www.ur-net.go.jp/,www.ur-net.go.jp,0,https://www.ur-net.go.jp/order/index.html,https://www2.njss.info/organizations/proc/4535,2026-07-09
+都市再生機構(UR) 東日本都市再生本部 狭山再開発事務所,0,https://www.ur-net.go.jp/,www.ur-net.go.jp,0,https://www.ur-net.go.jp/order/index.html,https://www2.njss.info/organizations/proc/4536,2026-07-09
+都市再生機構(UR) 東日本都市再生本部 湊都市再生事務所,0,https://www.ur-net.go.jp/,www.ur-net.go.jp,0,https://www.ur-net.go.jp/order/index.html,https://www2.njss.info/organizations/proc/4537,2026-07-09
+都市再生機構(UR) 東日本都市再生本部 晴海・勝どき都市再生事務所,0,https://www.ur-net.go.jp/,www.ur-net.go.jp,0,https://www.ur-net.go.jp/order/index.html,https://www2.njss.info/organizations/proc/4538,2026-07-09
+都市再生機構(UR) 東日本都市再生本部 四谷駅前再開発事務所,0,https://www.ur-net.go.jp/,www.ur-net.go.jp,0,https://www.ur-net.go.jp/order/index.html,https://www2.njss.info/organizations/proc/4539,2026-07-09
+都市再生機構(UR) 東日本都市再生本部 墨田市街地整備事務所,0,https://www.ur-net.go.jp/,www.ur-net.go.jp,0,https://www.ur-net.go.jp/order/index.html,https://www2.njss.info/organizations/proc/4540,2026-07-09
+都市再生機構(UR) 東日本都市再生本部 三鷹再開発事務所,0,https://www.ur-net.go.jp/,www.ur-net.go.jp,0,https://www.ur-net.go.jp/order/index.html,https://www2.njss.info/organizations/proc/4541,2026-07-09
+都市再生機構(UR) 東日本都市再生本部 武蔵小金井駅南口再開発事務所,0,https://www.ur-net.go.jp/,www.ur-net.go.jp,0,https://www.ur-net.go.jp/order/index.html,https://www2.njss.info/organizations/proc/4542,2026-07-09
+都市再生機構(UR) 東日本都市再生本部 柏崎都市再生事務所,0,https://www.ur-net.go.jp/,www.ur-net.go.jp,0,https://www.ur-net.go.jp/order/index.html,https://www2.njss.info/organizations/proc/4543,2026-07-09
+都市再生機構(UR) 東日本都市再生本部 静岡東部都市再生事務所,0,https://www.ur-net.go.jp/,www.ur-net.go.jp,0,https://www.ur-net.go.jp/order/index.html,https://www2.njss.info/organizations/proc/4544,2026-07-09
+理化学研究所 計算科学研究センター,0,https://www.riken.jp/,www.riken.jp,0,https://choutatsu.riken.jp/r-world/info/procurement/,https://www2.njss.info/organizations/proc/4694,2026-07-09
+高齢・障害・求職者雇用支援機構 関東職業能力開発大学校,0,https://www.jeed.go.jp/,www.jeed.go.jp,0,https://www.jeed.go.jp/jeed/information/index.html,https://www2.njss.info/organizations/proc/4937,2026-07-09
+水資源機構 中部支社 揖斐川・長良川総合管理所 木曽川水系連絡導水路建設所,0,https://www.water.go.jp/,www.water.go.jp,0,https://www.water.go.jp/honsya/honsya/keiyaku/,https://www2.njss.info/organizations/proc/4983,2026-07-09
+高齢・障害・求職者雇用支援機構 職業能力開発総合大学校,0,https://www.jeed.go.jp/,www.jeed.go.jp,0,https://www.jeed.go.jp/jeed/information/index.html,https://www2.njss.info/organizations/proc/5065,2026-07-09
+都市再生機構(UR) 中部支社 北勢・尾張都市再生事務所,0,https://www.ur-net.go.jp/,www.ur-net.go.jp,0,https://www.ur-net.go.jp/order/index.html,https://www2.njss.info/organizations/proc/5068,2026-07-09
+都市再生機構(UR) 中部支社 名古屋住宅管理センター,0,https://www.ur-net.go.jp/,www.ur-net.go.jp,0,https://www.ur-net.go.jp/order/index.html,https://www2.njss.info/organizations/proc/5069,2026-07-09
+都市再生機構(UR) 中部支社 大曽根住宅管理センター,0,https://www.ur-net.go.jp/,www.ur-net.go.jp,0,https://www.ur-net.go.jp/order/index.html,https://www2.njss.info/organizations/proc/5070,2026-07-09
+都市再生機構(UR) 中部支社 名古屋団地再生業務事務所,0,https://www.ur-net.go.jp/,www.ur-net.go.jp,0,https://www.ur-net.go.jp/order/index.html,https://www2.njss.info/organizations/proc/5071,2026-07-09
+都市再生機構(UR) 中部支社 名古屋工事事務所,0,https://www.ur-net.go.jp/,www.ur-net.go.jp,0,https://www.ur-net.go.jp/order/index.html,https://www2.njss.info/organizations/proc/5072,2026-07-09
+都市再生機構(UR) 中部支社 中部公園事務所,0,https://www.ur-net.go.jp/,www.ur-net.go.jp,0,https://www.ur-net.go.jp/order/index.html,https://www2.njss.info/organizations/proc/5073,2026-07-09
+都市再生機構(UR) 西日本支社 募集販売センター,0,https://www.ur-net.go.jp/,www.ur-net.go.jp,0,https://www.ur-net.go.jp/order/index.html,https://www2.njss.info/organizations/proc/5074,2026-07-09
+都市再生機構(UR) 西日本支社 うめきた都市再生事務所,0,https://www.ur-net.go.jp/,www.ur-net.go.jp,0,https://www.ur-net.go.jp/order/index.html,https://www2.njss.info/organizations/proc/5075,2026-07-09
+都市再生機構(UR) 西日本支社 広島都市再生事務所,0,https://www.ur-net.go.jp/,www.ur-net.go.jp,0,https://www.ur-net.go.jp/order/index.html,https://www2.njss.info/organizations/proc/5076,2026-07-09
+都市再生機構(UR) 西日本支社 北大阪都市再生事務所,0,https://www.ur-net.go.jp/,www.ur-net.go.jp,0,https://www.ur-net.go.jp/order/index.html,https://www2.njss.info/organizations/proc/5077,2026-07-09
+都市再生機構(UR) 西日本支社 彩都開発事務所,0,https://www.ur-net.go.jp/,www.ur-net.go.jp,0,https://www.ur-net.go.jp/order/index.html,https://www2.njss.info/organizations/proc/5078,2026-07-09
+都市再生機構(UR) 西日本支社 和泉開発事務所,0,https://www.ur-net.go.jp/,www.ur-net.go.jp,0,https://www.ur-net.go.jp/order/index.html,https://www2.njss.info/organizations/proc/5079,2026-07-09
+都市再生機構(UR) 西日本支社 神戸西開発事務所,0,https://www.ur-net.go.jp/,www.ur-net.go.jp,0,https://www.ur-net.go.jp/order/index.html,https://www2.njss.info/organizations/proc/5080,2026-07-09
+都市再生機構(UR) 西日本支社 名塩分室,0,https://www.ur-net.go.jp/,www.ur-net.go.jp,0,https://www.ur-net.go.jp/order/index.html,https://www2.njss.info/organizations/proc/5081,2026-07-09
+都市再生機構(UR) 西日本支社 千里エリア経営センター,0,https://www.ur-net.go.jp/,www.ur-net.go.jp,0,https://www.ur-net.go.jp/order/index.html,https://www2.njss.info/organizations/proc/5082,2026-07-09
+都市再生機構(UR) 西日本支社 大阪住宅管理センター,0,https://www.ur-net.go.jp/,www.ur-net.go.jp,0,https://www.ur-net.go.jp/order/index.html,https://www2.njss.info/organizations/proc/5083,2026-07-09
+都市再生機構(UR) 西日本支社 泉北住宅管理センター,0,https://www.ur-net.go.jp/,www.ur-net.go.jp,0,https://www.ur-net.go.jp/order/index.html,https://www2.njss.info/organizations/proc/5084,2026-07-09
+都市再生機構(UR) 西日本支社 兵庫住宅管理センター,0,https://www.ur-net.go.jp/,www.ur-net.go.jp,0,https://www.ur-net.go.jp/order/index.html,https://www2.njss.info/organizations/proc/5085,2026-07-09
+都市再生機構(UR) 西日本支社 京都住宅管理センター,0,https://www.ur-net.go.jp/,www.ur-net.go.jp,0,https://www.ur-net.go.jp/order/index.html,https://www2.njss.info/organizations/proc/5086,2026-07-09
+都市再生機構(UR) 西日本支社 奈良住宅管理センター,0,https://www.ur-net.go.jp/,www.ur-net.go.jp,0,https://www.ur-net.go.jp/order/index.html,https://www2.njss.info/organizations/proc/5087,2026-07-09
+都市再生機構(UR) 西日本支社 阪神住宅管理センター,0,https://www.ur-net.go.jp/,www.ur-net.go.jp,0,https://www.ur-net.go.jp/order/index.html,https://www2.njss.info/organizations/proc/5088,2026-07-09
+都市再生機構(UR) 九州支社 九州公園事務所,0,https://www.ur-net.go.jp/,www.ur-net.go.jp,0,https://www.ur-net.go.jp/order/index.html,https://www2.njss.info/organizations/proc/5089,2026-07-09
+都市再生機構(UR) 九州支社 城野都市再生事務所,0,https://www.ur-net.go.jp/,www.ur-net.go.jp,0,https://www.ur-net.go.jp/order/index.html,https://www2.njss.info/organizations/proc/5090,2026-07-09
+都市再生機構(UR) 九州支社 福岡東部開発事務所,0,https://www.ur-net.go.jp/,www.ur-net.go.jp,0,https://www.ur-net.go.jp/order/index.html,https://www2.njss.info/organizations/proc/5091,2026-07-09
+都市再生機構(UR) 九州支社 沖縄都市再生事務所,0,https://www.ur-net.go.jp/,www.ur-net.go.jp,0,https://www.ur-net.go.jp/order/index.html,https://www2.njss.info/organizations/proc/5092,2026-07-09
+都市再生機構(UR) 九州支社 福岡団地再生業務事務所,0,https://www.ur-net.go.jp/,www.ur-net.go.jp,0,https://www.ur-net.go.jp/order/index.html,https://www2.njss.info/organizations/proc/5093,2026-07-09
+都市再生機構(UR) 九州支社 福岡住宅管理センター,0,https://www.ur-net.go.jp/,www.ur-net.go.jp,0,https://www.ur-net.go.jp/order/index.html,https://www2.njss.info/organizations/proc/5094,2026-07-09
+都市再生機構(UR) 九州支社 北九州住宅管理センター,0,https://www.ur-net.go.jp/,www.ur-net.go.jp,0,https://www.ur-net.go.jp/order/index.html,https://www2.njss.info/organizations/proc/5095,2026-07-09
+都市再生機構(UR) 九州支社 UR福岡営業センター,0,https://www.ur-net.go.jp/,www.ur-net.go.jp,0,https://www.ur-net.go.jp/order/index.html,https://www2.njss.info/organizations/proc/5096,2026-07-09
+都市再生機構(UR) 九州支社 北九州募集センター,0,https://www.ur-net.go.jp/,www.ur-net.go.jp,0,https://www.ur-net.go.jp/order/index.html,https://www2.njss.info/organizations/proc/5097,2026-07-09
+都市再生機構(UR) 九州支社 黒崎募集センター,0,https://www.ur-net.go.jp/,www.ur-net.go.jp,0,https://www.ur-net.go.jp/order/index.html,https://www2.njss.info/organizations/proc/5098,2026-07-09
+都市再生機構(UR) 長岡営業所,0,https://www.ur-net.go.jp/,www.ur-net.go.jp,0,https://www.ur-net.go.jp/orders/honsha/order.html,https://www2.njss.info/organizations/proc/5099,2026-07-09
+都市再生機構(UR) いわき営業所,0,https://www.ur-net.go.jp/,www.ur-net.go.jp,0,https://www.ur-net.go.jp/orders/honsha/order.html,https://www2.njss.info/organizations/proc/5100,2026-07-09
+都市再生機構(UR) 岩手都市開発事務所,0,https://www.ur-net.go.jp/,www.ur-net.go.jp,0,https://www.ur-net.go.jp/order/index.html,https://www2.njss.info/organizations/proc/5101,2026-07-09
+都市再生機構(UR) 浜北都市開発事務所,0,https://www.ur-net.go.jp/,www.ur-net.go.jp,0,https://www.ur-net.go.jp/order/index.html,https://www2.njss.info/organizations/proc/5102,2026-07-09
+都市再生機構(UR) 山形都市開発事務所,0,https://www.ur-net.go.jp/,www.ur-net.go.jp,0,https://www.ur-net.go.jp/order/index.html,https://www2.njss.info/organizations/proc/5103,2026-07-09
+都市再生機構(UR) 今治都市開発事務所,0,https://www.ur-net.go.jp/,www.ur-net.go.jp,0,https://www.ur-net.go.jp/order/index.html,https://www2.njss.info/organizations/proc/5104,2026-07-09
+都市再生機構(UR) 本庄都市開発事務所,0,https://www.ur-net.go.jp/,www.ur-net.go.jp,0,https://www.ur-net.go.jp/order/index.html,https://www2.njss.info/organizations/proc/5105,2026-07-09
+都市再生機構(UR) 八戸営業所,0,https://www.ur-net.go.jp/,www.ur-net.go.jp,0,https://www.ur-net.go.jp/orders/honsha/order.html,https://www2.njss.info/organizations/proc/5106,2026-07-09
+都市再生機構(UR) 東日本賃貸住宅本部 千葉地域 千葉住宅管理センター,0,https://www.ur-net.go.jp/,www.ur-net.go.jp,0,https://www.ur-net.go.jp/order/index.html,https://www2.njss.info/organizations/proc/5107,2026-07-09
+都市再生機構(UR) 東日本賃貸住宅本部 千葉地域 千葉西住宅管理センター,0,https://www.ur-net.go.jp/,www.ur-net.go.jp,0,https://www.ur-net.go.jp/order/index.html,https://www2.njss.info/organizations/proc/5108,2026-07-09
+都市再生機構(UR) 東日本賃貸住宅本部 千葉地域 松戸住宅管理センター,0,https://www.ur-net.go.jp/,www.ur-net.go.jp,0,https://www.ur-net.go.jp/order/index.html,https://www2.njss.info/organizations/proc/5109,2026-07-09
+都市再生機構(UR) 東日本賃貸住宅本部 千葉地域 松戸住宅管理センター茨城分室,0,https://www.ur-net.go.jp/,www.ur-net.go.jp,0,https://www.ur-net.go.jp/order/index.html,https://www2.njss.info/organizations/proc/5110,2026-07-09
+都市再生機構(UR) 東日本賃貸住宅本部 埼玉地域 東武動物公園駅前都市再生事務所,0,https://www.ur-net.go.jp/,www.ur-net.go.jp,0,https://www.ur-net.go.jp/order/index.html,https://www2.njss.info/organizations/proc/5111,2026-07-09
+都市再生機構(UR) 東日本賃貸住宅本部 埼玉地域 東埼玉住宅管理センター,0,https://www.ur-net.go.jp/,www.ur-net.go.jp,0,https://www.ur-net.go.jp/order/index.html,https://www2.njss.info/organizations/proc/5112,2026-07-09
+都市再生機構(UR) 東日本賃貸住宅本部 埼玉地域 浦和住宅管理センター,0,https://www.ur-net.go.jp/,www.ur-net.go.jp,0,https://www.ur-net.go.jp/order/index.html,https://www2.njss.info/organizations/proc/5113,2026-07-09
+都市再生機構(UR) 東日本賃貸住宅本部 埼玉地域 西埼玉住宅管理センター,0,https://www.ur-net.go.jp/,www.ur-net.go.jp,0,https://www.ur-net.go.jp/order/index.html,https://www2.njss.info/organizations/proc/5114,2026-07-09
+都市再生機構(UR) 東日本賃貸住宅本部 埼玉地域 埼玉団地再生業務事務所 草加松原分室,0,https://www.ur-net.go.jp/,www.ur-net.go.jp,0,https://www.ur-net.go.jp/order/index.html,https://www2.njss.info/organizations/proc/5115,2026-07-09
+都市再生機構(UR) 東日本賃貸住宅本部 神奈川地域 殿町基盤整備現地事務所,0,https://www.ur-net.go.jp/,www.ur-net.go.jp,0,https://www.ur-net.go.jp/order/index.html,https://www2.njss.info/organizations/proc/5116,2026-07-09
+都市再生機構(UR) 東日本賃貸住宅本部 神奈川地域 横浜住宅管理センター,0,https://www.ur-net.go.jp/,www.ur-net.go.jp,0,https://www.ur-net.go.jp/order/index.html,https://www2.njss.info/organizations/proc/5117,2026-07-09
+都市再生機構(UR) 東日本賃貸住宅本部 神奈川地域 神奈川西住宅管理センター,0,https://www.ur-net.go.jp/,www.ur-net.go.jp,0,https://www.ur-net.go.jp/order/index.html,https://www2.njss.info/organizations/proc/5118,2026-07-09
+都市再生機構(UR) 東日本賃貸住宅本部 神奈川地域 横浜南住宅管理センター,0,https://www.ur-net.go.jp/,www.ur-net.go.jp,0,https://www.ur-net.go.jp/order/index.html,https://www2.njss.info/organizations/proc/5119,2026-07-09
+都市再生機構(UR) 東日本賃貸住宅本部 神奈川地域 神奈川工事事務所,0,https://www.ur-net.go.jp/,www.ur-net.go.jp,0,https://www.ur-net.go.jp/order/index.html,https://www2.njss.info/organizations/proc/5120,2026-07-09
+都市再生機構(UR) 東日本賃貸住宅本部 神奈川地域 神奈川団地再生業務事務所,0,https://www.ur-net.go.jp/,www.ur-net.go.jp,0,https://www.ur-net.go.jp/order/index.html,https://www2.njss.info/organizations/proc/5121,2026-07-09
+住宅金融支援機構(JHF) 北関東支店,0,https://www.jhf.go.jp/,www.jhf.go.jp,0,https://www.jhf.go.jp/financial_tender/index.html,https://www2.njss.info/organizations/proc/5140,2026-07-09
+国立病院機構 中国四国グループ 岡山医療センター 岡山市立金川病院,0,https://nho.hosp.go.jp/,nho.hosp.go.jp,0,https://nho.hosp.go.jp/bid/index.html,https://www2.njss.info/organizations/proc/5177,2026-07-09
+高齢・障害・求職者雇用支援機構 北海道支部 北海道職業能力開発促進センター旭川訓練センター,0,https://www.jeed.go.jp/,www.jeed.go.jp,0,https://www.jeed.go.jp/jeed/information/index.html,https://www2.njss.info/organizations/proc/5766,2026-07-09
+高齢・障害・求職者雇用支援機構 北海道支部 北海道職業能力開発促進センター釧路訓練センター,0,https://www.jeed.go.jp/,www.jeed.go.jp,0,https://www.jeed.go.jp/jeed/information/index.html,https://www2.njss.info/organizations/proc/5767,2026-07-09
+高齢・障害・求職者雇用支援機構 北海道支部 北海道職業能力開発促進センター函館訓練センター,0,https://www.jeed.go.jp/,www.jeed.go.jp,0,https://www.jeed.go.jp/jeed/information/index.html,https://www2.njss.info/organizations/proc/5769,2026-07-09
+高齢・障害・求職者雇用支援機構 岩手支部,0,https://www.jeed.go.jp/,www.jeed.go.jp,0,https://www.jeed.go.jp/jeed/information/index.html,https://www2.njss.info/organizations/proc/5793,2026-07-09
+高齢・障害・求職者雇用支援機構 山形支部,0,https://www.jeed.go.jp/,www.jeed.go.jp,0,https://www.jeed.go.jp/jeed/information/index.html,https://www2.njss.info/organizations/proc/5795,2026-07-09
+高齢・障害・求職者雇用支援機構 福島支部 福島職業能力開発促進センターいわき訓練センター,0,https://www.jeed.go.jp/,www.jeed.go.jp,0,https://www.jeed.go.jp/jeed/information/index.html,https://www2.njss.info/organizations/proc/5797,2026-07-09
+高齢・障害・求職者雇用支援機構 福島支部 福島職業能力開発促進センター会津訓練センター,0,https://www.jeed.go.jp/,www.jeed.go.jp,0,https://www.jeed.go.jp/jeed/information/index.html,https://www2.njss.info/organizations/proc/5798,2026-07-09
+高齢・障害・求職者雇用支援機構 千葉支部 千葉職業能力開発促進センター君津訓練センター,0,https://www.jeed.go.jp/,www.jeed.go.jp,0,https://www.jeed.go.jp/jeed/information/index.html,https://www2.njss.info/organizations/proc/5803,2026-07-09
+高齢・障害・求職者雇用支援機構 千葉支部 千葉職業能力開発促進センター高度訓練センター,0,https://www.jeed.go.jp/,www.jeed.go.jp,0,https://www.jeed.go.jp/jeed/information/index.html,https://www2.njss.info/organizations/proc/5804,2026-07-09
+高齢・障害・求職者雇用支援機構 神奈川支部,0,https://www.jeed.go.jp/,www.jeed.go.jp,0,https://www.jeed.go.jp/jeed/information/index.html,https://www2.njss.info/organizations/proc/5805,2026-07-09
+高齢・障害・求職者雇用支援機構 長野支部 長野職業能力開発促進センター松本訓練センター,0,https://www.jeed.go.jp/,www.jeed.go.jp,0,https://www.jeed.go.jp/jeed/information/index.html,https://www2.njss.info/organizations/proc/5811,2026-07-09
+高齢・障害・求職者雇用支援機構 愛知支部 中部職業能力開発促進センター名古屋港湾労働分所,0,https://www.jeed.go.jp/,www.jeed.go.jp,0,https://www.jeed.go.jp/jeed/information/index.html,https://www2.njss.info/organizations/proc/5813,2026-07-09
+高齢・障害・求職者雇用支援機構 三重支部 三重職業能力開発促進センター伊勢訓練センター,0,https://www.jeed.go.jp/,www.jeed.go.jp,0,https://www.jeed.go.jp/jeed/information/index.html,https://www2.njss.info/organizations/proc/5814,2026-07-09
+高齢・障害・求職者雇用支援機構 大阪支部 関西職業能力開発促進センター大阪港湾労働分所,0,https://www.jeed.go.jp/,www.jeed.go.jp,0,https://www.jeed.go.jp/jeed/information/index.html,https://www2.njss.info/organizations/proc/5851,2026-07-09
+高齢・障害・求職者雇用支援機構 兵庫支部 兵庫職業能力開発促進センター加古川訓練センター,0,https://www.jeed.go.jp/,www.jeed.go.jp,0,https://www.jeed.go.jp/jeed/information/index.html,https://www2.njss.info/organizations/proc/5853,2026-07-09
+高齢・障害・求職者雇用支援機構 鳥取支部 鳥取職業能力開発促進センター米子訓練センター,0,https://www.jeed.go.jp/,www.jeed.go.jp,0,https://www.jeed.go.jp/jeed/information/index.html,https://www2.njss.info/organizations/proc/5857,2026-07-09
+高齢・障害・求職者雇用支援機構 島根支部,0,https://www.jeed.go.jp/,www.jeed.go.jp,0,https://www.jeed.go.jp/jeed/information/index.html,https://www2.njss.info/organizations/proc/5858,2026-07-09
+高齢・障害・求職者雇用支援機構 徳島支部,0,https://www.jeed.go.jp/,www.jeed.go.jp,0,https://www.jeed.go.jp/jeed/information/index.html,https://www2.njss.info/organizations/proc/5862,2026-07-09
+高齢・障害・求職者雇用支援機構 愛媛支部,0,https://www.jeed.go.jp/,www.jeed.go.jp,0,https://www.jeed.go.jp/jeed/information/index.html,https://www2.njss.info/organizations/proc/5864,2026-07-09
+高齢・障害・求職者雇用支援機構 福岡支部 福岡職業能力開発促進センター飯塚訓練センター,0,https://www.jeed.go.jp/,www.jeed.go.jp,0,https://www.jeed.go.jp/jeed/information/index.html,https://www2.njss.info/organizations/proc/5867,2026-07-09
+高齢・障害・求職者雇用支援機構 佐賀支部,0,https://www.jeed.go.jp/,www.jeed.go.jp,0,https://www.jeed.go.jp/jeed/information/index.html,https://www2.njss.info/organizations/proc/5868,2026-07-09
+高齢・障害・求職者雇用支援機構 長崎支部 長崎職業能力開発促進センター佐世保訓練センター,0,https://www.jeed.go.jp/,www.jeed.go.jp,0,https://www.jeed.go.jp/jeed/information/index.html,https://www2.njss.info/organizations/proc/5869,2026-07-09
+高齢・障害・求職者雇用支援機構 熊本支部 熊本職業能力開発促進センター荒尾訓練センター,0,https://www.jeed.go.jp/,www.jeed.go.jp,0,https://www.jeed.go.jp/jeed/information/index.html,https://www2.njss.info/organizations/proc/5871,2026-07-09
+高齢・障害・求職者雇用支援機構 宮崎支部 宮崎職業能力開発促進センター延岡訓練センター,0,https://www.jeed.go.jp/,www.jeed.go.jp,0,https://www.jeed.go.jp/jeed/information/index.html,https://www2.njss.info/organizations/proc/5873,2026-07-09
+森林研究・整備機構 森林保険センター,0,https://www.ffpri.go.jp/,www.ffpri.go.jp,0,https://www.ffpri.go.jp/chotatsu.html,https://www2.njss.info/organizations/proc/6108,2026-07-09
+国立美術館 国立国際美術館,0,https://www.nmao.go.jp/,www.nmao.go.jp,0,https://www.nmao.go.jp/tender/,https://www2.njss.info/organizations/proc/6294,2026-07-09
+地域医療機能推進機構(JCHO) 北海道東北地区事務所,0,https://www.jcho.go.jp/,www.jcho.go.jp,0,https://www.jcho.go.jp/disclosure-procurement/,https://www2.njss.info/organizations/proc/7136,2026-07-09
+地域医療機能推進機構(JCHO) 関東地区事務所,0,https://www.jcho.go.jp/,www.jcho.go.jp,0,https://www.jcho.go.jp/disclosure-procurement/,https://www2.njss.info/organizations/proc/7137,2026-07-09
+地域医療機能推進機構(JCHO) 東海北陸地区事務所,0,https://www.jcho.go.jp/,www.jcho.go.jp,0,https://www.jcho.go.jp/disclosure-procurement/,https://www2.njss.info/organizations/proc/7138,2026-07-09
+地域医療機能推進機構(JCHO) 近畿四国地区事務所,0,https://www.jcho.go.jp/,www.jcho.go.jp,0,https://www.jcho.go.jp/disclosure-procurement/,https://www2.njss.info/organizations/proc/7139,2026-07-09
+地域医療機能推進機構(JCHO) 九州地区事務所,0,https://www.jcho.go.jp/,www.jcho.go.jp,0,https://www.jcho.go.jp/disclosure-procurement/,https://www2.njss.info/organizations/proc/7140,2026-07-09
+地域医療機能推進機構(JCHO) 星ヶ丘医療センター,0,https://www.jcho.go.jp/,www.jcho.go.jp,0,https://www.jcho.go.jp/disclosure-procurement/,https://www2.njss.info/organizations/proc/7146,2026-07-09
+地域医療機能推進機構(JCHO) 神戸中央病院,0,https://www.jcho.go.jp/,www.jcho.go.jp,0,https://www.jcho.go.jp/disclosure-procurement/,https://www2.njss.info/organizations/proc/7147,2026-07-09
+地域医療機能推進機構(JCHO) 船橋中央病院,0,https://www.jcho.go.jp/,www.jcho.go.jp,0,https://www.jcho.go.jp/disclosure-procurement/,https://www2.njss.info/organizations/proc/7163,2026-07-09
+地域医療機能推進機構(JCHO) りつりん病院,0,https://www.jcho.go.jp/,www.jcho.go.jp,0,https://www.jcho.go.jp/disclosure-procurement/,https://www2.njss.info/organizations/proc/7190,2026-07-09
+地域医療機能推進機構(JCHO) 宇和島病院,0,https://www.jcho.go.jp/,www.jcho.go.jp,0,https://www.jcho.go.jp/disclosure-procurement/,https://www2.njss.info/organizations/proc/7191,2026-07-09
+地域医療機能推進機構(JCHO) 福岡ゆたか中央病院,0,https://www.jcho.go.jp/,www.jcho.go.jp,0,https://www.jcho.go.jp/disclosure-procurement/,https://www2.njss.info/organizations/proc/7197,2026-07-09
+地域医療機能推進機構(JCHO) 松浦中央病院,0,https://www.jcho.go.jp/,www.jcho.go.jp,0,https://www.jcho.go.jp/disclosure-procurement/,https://www2.njss.info/organizations/proc/7199,2026-07-09
+地域医療機能推進機構(JCHO) 宮崎江南病院,0,https://www.jcho.go.jp/,www.jcho.go.jp,0,https://www.jcho.go.jp/disclosure-procurement/,https://www2.njss.info/organizations/proc/7205,2026-07-09
+大学改革支援・学位授与機構,0,https://www.niad.ac.jp/,www.niad.ac.jp,0,https://www.niad.ac.jp/disclosure/nyusatsu.html,https://www2.njss.info/organizations/proc/7585,2026-07-09
+国際観光振興機構〈日本政府観光局〉(JNTO) バンコク事務所,0,https://www.jnto.go.jp/,www.jnto.go.jp,0,https://www.jnto.go.jp/about-us/procurement/bid-info/,https://www2.njss.info/organizations/proc/7716,2026-07-09
+水資源機構 筑後川局 筑後川下流総合管理所 福岡導水管理所,0,https://www.water.go.jp/,www.water.go.jp,0,https://www.water.go.jp/honsya/honsya/keiyaku/,https://www2.njss.info/organizations/proc/7862,2026-07-09
+国立重度知的障害者総合施設のぞみの園,0,https://www.nozomi.go.jp/,www.nozomi.go.jp,0,https://www.nozomi.go.jp/supply/index.html,https://www2.njss.info/organizations/proc/7972,2026-07-09
+奄美群島振興開発基金,0,https://www.amami.go.jp/,www.amami.go.jp,0,https://www.amami.go.jp/news/3342.html,https://www2.njss.info/organizations/proc/7974,2026-07-09
+海上・港湾・航空技術研究所,0,https://www.mpat.go.jp/,www.mpat.go.jp,0,https://www.mpat.go.jp/disclosures/procurement/,https://www2.njss.info/organizations/proc/7976,2026-07-09
+労働者健康安全機構 アスベスト疾患研究・研修センター,0,https://www.johas.go.jp/,www.johas.go.jp,0,https://www.johas.go.jp/procurement/,https://www2.njss.info/organizations/proc/9138,2026-07-09
+水資源機構 筑後川局 筑後川上流総合管理所 朝倉ダム総合事業所,0,https://www.water.go.jp/,www.water.go.jp,0,https://www.water.go.jp/honsya/honsya/keiyaku/,https://www2.njss.info/organizations/proc/9140,2026-07-09
+国立文化財機構(NICH) アジア太平洋無形文化遺産研究センター,0,https://www.nich.go.jp/,www.nich.go.jp,0,https://www.nich.go.jp/information/nyusatsu/,https://www2.njss.info/organizations/proc/9194,2026-07-09
+国立高等専門学校機構 東京都立産業技術高等専門学校,0,https://www.kosen-k.go.jp/,www.kosen-k.go.jp,0,https://www.kosen-k.go.jp/wp/wp-content/uploads/2025/04/chotatsuhoushin.pdf,https://www2.njss.info/organizations/proc/9204,2026-07-09
+国立高等専門学校機構 大阪公立大学工業高等専門学校,0,https://www.kosen-k.go.jp/,www.kosen-k.go.jp,0,https://www.kosen-k.go.jp/wp/wp-content/uploads/2025/04/chotatsuhoushin.pdf,https://www2.njss.info/organizations/proc/9226,2026-07-09
+国立美術館 国立工芸館,0,https://www.artmuseums.go.jp/,www.artmuseums.go.jp,0,https://www.artmuseums.go.jp/offer,https://www2.njss.info/organizations/proc/9231,2026-07-09
+国立文化財機構(NICH) 皇居三の丸尚蔵館,0,https://www.nich.go.jp/,www.nich.go.jp,0,https://www.nich.go.jp/information/nyusatsu/,https://www2.njss.info/organizations/proc/9235,2026-07-09
+国立高等専門学校機構 阿南工業高等専門学校,0,https://www.kosen-k.go.jp/,www.kosen-k.go.jp,0,https://www.kosen-k.go.jp/wp/wp-content/uploads/2025/04/chotatsuhoushin.pdf,https://www2.njss.info/organizations/proc/9237,2026-07-09
+国立高等専門学校機構 旭川工業高等専門学校,0,https://www.kosen-k.go.jp/,www.kosen-k.go.jp,0,https://www.kosen-k.go.jp/wp/wp-content/uploads/2025/04/chotatsuhoushin.pdf,https://www2.njss.info/organizations/proc/9238,2026-07-09
+国立高等専門学校機構 沼津工業高等専門学校,0,https://www.kosen-k.go.jp/,www.kosen-k.go.jp,0,https://www.kosen-k.go.jp/wp/wp-content/uploads/2025/04/chotatsuhoushin.pdf,https://www2.njss.info/organizations/proc/9241,2026-07-09
+森林研究・整備機構,0,https://www.ffpri.go.jp/,www.ffpri.go.jp,0,https://www.ffpri.go.jp/chotatsu.html,https://www2.njss.info/organizations/proc/9285,2026-07-09
+労働者健康安全機構 東北労災看護専門学校,0,https://www.johas.go.jp/,www.johas.go.jp,0,https://www.johas.go.jp/procurement/,https://www2.njss.info/organizations/proc/9586,2026-07-09
+男女共同参画機構(JGEPA),0,https://www.jgepa.go.jp/,www.jgepa.go.jp,0,https://www.jgepa.go.jp/about/procure/index.html,https://www2.njss.info/organizations/proc/9792,2026-07-09
+国立高等専門学校機構 東京工業高等専門学校,0,https://www.kosen-k.go.jp/,www.kosen-k.go.jp,0,https://www.kosen-k.go.jp/wp/wp-content/uploads/2025/04/chotatsuhoushin.pdf,https://www2.njss.info/organizations/proc/9797,2026-07-09
+水資源機構 筑後川局 筑後川下流総合管理所,6,https://www.water.go.jp/,www.water.go.jp,0,https://www.water.go.jp/honsya/honsya/keiyaku/,https://www2.njss.info/organizations/proc/7860,2026-07-09
