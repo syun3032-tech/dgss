@@ -2,6 +2,39 @@
 
 > このファイルを見れば、次回ここから再開できる。最終更新の状態をまとめる。
 
+## ★最新（2026-07-09）: 監視機関を全9,041機関に拡大（上西さん要望）
+
+NJSS「発注機関を探す」の全9,041機関を取得・URL解決し、**6,886機関を監視機関に追加**
+（本番反映済み・監視機関 1,000→6,891）。受付中案件ベースのカバレッジ98.2%。
+
+- **仕組み**（すべてコミット済み）:
+  - `njss_org_scraper.py` — NJSS機関一覧の取得（Playwright・レジューム式）。
+    未ログインは1日数ページで閲覧上限 → **`--login` で実ブラウザを開き人がログイン**
+    →セッションを `njss_session.json`（gitignore・秘密）に保存→以降は上限なし。
+    `--category 114`=独法のみ / `--category ""`=全件。
+  - `njss_org_resolver.py` — 公式サイトURL解決＋調達ページ自動探索＋理由分類。
+    ルーティング: 確定リスト(KNOWN_BID_PAGES)→既存シート→独法親法人(PARENT_SITES)
+    →都道府県庁(PREF_SITES・県警含む)→市区町村(research/localgovjp.json)
+    →府省庁(MINISTRY_SITES)→大学(UNIV_SITES＋research/public_univ_sites.json)
+    →特殊法人等(EXTRA_ORG_SITES)。403/406=Bot遮断は「要確認」扱い。
+    **注意: 自分が取り込んだagencies行(sample_urlがNJSS機関ページ)は「既存シート」
+    と誤認しないこと（自己汚染ガード実装済み・触るとき注意）**
+  - `njss_org_daily.py` — 毎朝7時のlaunchd(run_daily.sh)から実行。差分取得→再解決
+    →CSV再生成→ローカルcommit（pushは人）。
+  - `agency_import.load_extra()` — `research/njss_dokuho_agencies.csv` をagenciesに
+    マージ取り込み（スプシ既載は上書きせず・自分の行は毎回更新）。update.py両経路に組込済。
+- **成果物**: `research/njss_dokuho_report.csv`（全9,041件の可否・理由・URL）、
+  Excel版 `research/監視機関_全9041件_追加可否リスト.xlsx`（~/Downloads/にもコピー済み、
+  **上西さんへ送付予定**）。生成は `/usr/bin/python3`（venvはpyexpat破損でopenpyxl不可）。
+- **数字**: 追加済み5,890＋要確認996＝追加可6,886 / 追加不可2,155
+  （閉鎖335・URL不明1,790=広域行政組合や小規模公社等・到達不可30）。
+- **残タスク（次の再開ポイント）**:
+  1. 上西さんへExcelと報告を送る（松本さんの操作。返信文案はセッション記録にあり）
+  2. URL不明1,790件のうち受付中案件が多い機関（甲賀広域行政組合44件など）を
+     人力 or 個別検索で潰す（上西さん側で人力確認する合意あり）
+  3. NJSSログインセッション失効時: `.venv/bin/python njss_org_scraper.py --login`
+  4. 要確認996件（調達ページ未発見）の深掘り改善（任意）
+
 ## 1. 何ができているか（現在地）
 
 - **公開URL**: https://kawano-njss-modoki.onrender.com （Render無料プラン）
