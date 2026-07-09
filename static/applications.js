@@ -256,6 +256,19 @@
         '<div class="kcol-body">' + (list.map(card).join("") || '<div class="kempty">—</div>') + "</div></div>";
     }).join("");
 
+    // 安全網: このシートの列に無い状況の案件も必ず表示する。
+    // （例: 民間フロー化以前に登録された民間案件は「参加申請準備前」等の公共状況の
+    //   ままで、どの列にも一致せず“消えて”いた。開いて状況を選び直せば正しい列に入る）
+    var knownSt = {}; SL.forEach(function (s) { knownSt[s.id] = 1; });
+    var stray = rows.filter(function (c) { return !knownSt[c.status]; });
+    if (stray.length && !state.statuses.length) {
+      cols += '<div class="kcol">' +
+        '<div class="kcol-head" style="border-top:3px solid #dc2626">' +
+          '<span>状況の選び直し待ち</span><span class="kcnt">' + stray.length + "</span></div>" +
+        '<div class="kcol-note" style="font-size:11px;color:#b45309;padding:4px 8px">旧シートの状況のままの案件です。開いて状況を選び直すと各列に入ります。</div>' +
+        '<div class="kcol-body">' + stray.map(card).join("") + "</div></div>";
+    }
+
     var html = chips + cards + warn + '<div class="kanban">' + cols + "</div>";
     if (!sectorCases.length) {
       var emptyMsg = sector === "民間"
