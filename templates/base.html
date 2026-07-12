@@ -17,7 +17,8 @@
       <a href="{{ url_for('matches') }}" class="{{ 'active' if request.endpoint == 'matches' }}">マッチ案件</a>
       <a href="{{ url_for('competitors') }}" class="{{ 'active' if request.endpoint in ['competitors','competitor_detail'] }}">競合企業</a>
       <a href="{{ url_for('agencies') }}" class="{{ 'active' if request.endpoint == 'agencies' }}">監視機関</a>
-      <a href="{{ url_for('applications', sheet='公共') }}" class="{{ 'active' if request.endpoint == 'applications' and request.args.get('sheet') != '民間' }}">公共 管理シート</a>
+      <a href="{{ url_for('applications', sheet='公共') }}" class="{{ 'active' if request.endpoint == 'applications' and request.args.get('sheet') not in ['民間', '公共役務'] }}">公共案件【建設業】</a>
+      <a href="{{ url_for('applications', sheet='公共役務') }}" class="{{ 'active' if request.endpoint == 'applications' and request.args.get('sheet') == '公共役務' }}">公共案件【役務】</a>
       <a href="{{ url_for('applications', sheet='民間') }}" class="{{ 'active' if request.endpoint == 'applications' and request.args.get('sheet') == '民間' }}">民間 管理シート</a>
     </nav>
     <div class="spacer"></div>

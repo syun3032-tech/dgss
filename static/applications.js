@@ -17,7 +17,19 @@
   STATUSES.forEach(function (s) { ACCENT[s.id] = s.accent; });
   STATUSES_PRIVATE.forEach(function (s) { ACCENT[s.id] = s.accent; });
   // シート区分(公共/民間)に応じた状況リストを返す。民間だけ見積フローの列を使う。
+  // 公共役務(役務)は公共と同じ入札フロー。
   function statusesFor(sector) { return sector === "民間" ? STATUSES_PRIVATE : STATUSES; }
+
+  /* ---------- シート定義（川野さん要望 2026-07: 公共を建設業/役務に分割） ----------
+     公共ページは【建設業】【役務】の2シート、民間は独立ページ（混在させない）。 */
+  var SHEETS = [
+    { id: "公共",     label: "公共案件【建設業】", col: "#2563eb" },
+    { id: "公共役務", label: "公共案件【役務】",   col: "#0d9488" },
+    { id: "民間",     label: "民間 管理シート",     col: "#d97706" }
+  ];
+  function sheetDef(id) { return SHEETS.filter(function (s) { return s.id === id; })[0] || SHEETS[0]; }
+  // 協力会社の区分は公共/民間の2値のまま（役務シートは公共の会社リストを共用）
+  function coSectorOf(sheetOrSector) { return sheetOrSector === "民間" ? "民間" : "公共"; }
   var ASSIGNEES = CFG.assignees || [];                     // [{id,color}]
   var ACOLOR = {}; ASSIGNEES.forEach(function (a) { ACOLOR[a.id] = a.color; });
   var WORK = CFG.works || {};                              // {name:color}
@@ -170,7 +182,7 @@
     // 旧版はタブがシートを兼ねていた（公共/民間/会社/もうけ/レポート）。新構造へ読み替える。
     if (state.tab === "公共" || state.tab === "民間") { state.sheet = state.tab; state.tab = "案件"; }
     if (["案件", "会社", "もうけ", "レポート"].indexOf(state.tab) < 0) state.tab = "案件";
-    if (state.sheet !== "民間") state.sheet = "公共";
+    if (["公共", "公共役務", "民間"].indexOf(state.sheet) < 0) state.sheet = "公共";
   }
 
   /* ============================================================
@@ -179,23 +191,23 @@
   function renderTabs() {
     // 公共・民間は完全分離の管理シート。上段でシートを選び、下段のタブ
     // （案件・協力会社・利益計算・月次レポート）は選択中シートの内容だけを出す。
-    var pubN = CASES.filter(function (c) { return (c.sector || "公共") === "公共"; }).length;
-    var privN = CASES.filter(function (c) { return (c.sector || "公共") === "民間"; }).length;
-    var sheets = [
-      { id: "公共", n: pubN, col: "#2563eb" },
-      { id: "民間", n: privN, col: "#d97706" }
-    ];
+    // 公共ページは【建設業】【役務】の2枚だけを出し、民間ページには民間だけを出す
+    // （公共管理シートに民間を混ぜない・川野さん要望 2026-07）。
+    var byS = {};
+    CASES.forEach(function (c) { var s = c.sector || "公共"; byS[s] = (byS[s] || 0) + 1; });
+    var isPriv = state.sheet === "民間";
+    var sheets = SHEETS.filter(function (s) { return (s.id === "民間") === isPriv; });
     var sheetBtns = sheets.map(function (s) {
       var on = state.sheet === s.id;
       return '<button class="sheettab" data-sheet="' + s.id + '" style="display:flex;align-items:center;gap:6px;' +
         'padding:8px 18px;border-radius:10px;cursor:pointer;font-weight:700;font-size:14px;' +
         (on ? "background:" + s.col + ";color:#fff;border:1px solid " + s.col
             : "background:" + s.col + "14;color:" + s.col + ";border:1px solid " + s.col + "44") + '">' +
-        s.id + ' 管理シート <span style="font-size:11px;font-weight:600;opacity:.85">' + s.n + "件</span></button>";
+        s.label + ' <span style="font-size:11px;font-weight:600;opacity:.85">' + (byS[s.id] || 0) + "件</span></button>";
     }).join("");
-    var coN = COMPANIES.filter(function (co) { return (co.sector || "公共") === state.sheet; }).length;
+    var coN = COMPANIES.filter(function (co) { return (co.sector || "公共") === coSectorOf(state.sheet); }).length;
     var tabs = [
-      { id: "案件", label: "案件・工程", sub: (state.sheet === "公共" ? pubN : privN) + "件" },
+      { id: "案件", label: "案件・工程", sub: (byS[state.sheet] || 0) + "件" },
       { id: "会社", label: "協力会社", sub: coN + "社" },
       { id: "もうけ", label: "利益計算", sub: "落札−発注" },
       { id: "レポート", label: "月次レポート", sub: "月別" }
@@ -272,7 +284,7 @@
       sumCard(active.length, "進行中の案件") +
       sumCard(soon.length, "1週間以内の締切", soon.length ? "warn" : "") +
       sumCard(over, "期限超過・要対応", over ? "danger" : "") +
-      '<button class="addcase" id="addCaseBtn" data-sec="' + sector + '">＋ 案件を追加<small>' + sector + 'の案件をその場で</small></button>' +
+      '<button class="addcase" id="addCaseBtn" data-sec="' + sector + '">＋ 案件を追加<small>' + sheetDef(sector).label + 'の案件をその場で</small></button>' +
       "</div>";
 
     var warn = "";
@@ -315,6 +327,8 @@
     if (!sectorCases.length) {
       var emptyMsg = sector === "民間"
         ? 'まだ民間の管理案件がありません。<b>＋案件を追加</b>で民間案件をその場で登録できます。'
+        : sector === "公共役務"
+        ? 'まだ役務（点検・保守・委託など）の管理案件がありません。<b>＋案件を追加</b>で役務案件をその場で登録できます。'
         : 'まだ公共の管理案件がありません。<b>＋案件を追加</b>で公共案件をその場で登録するか、<a href="/">案件を探す</a>から公共案件を開いて登録できます。';
       html = chips + cards + '<p class="empty">' + emptyMsg + "</p>";
     }
@@ -325,12 +339,13 @@
     return '<div class="sumc ' + (cls || "") + '"><span class="n">' + num + '</span><span class="l">' + label + "</span></div>";
   }
 
-  // 案件カードの区分バッジ（公共=青/民間=橙）。CSS追加不要のインライン指定。
+  // 案件カードの区分バッジ（公共=青/役務=青緑/民間=橙）。CSS追加不要のインライン指定。
   function secBadge(sec) {
     sec = sec || "公共";
-    var col = sec === "民間" ? "#d97706" : "#2563eb";
+    var col = sec === "民間" ? "#d97706" : sec === "公共役務" ? "#0d9488" : "#2563eb";
+    var label = sec === "公共役務" ? "役務" : sec;
     return '<span class="kc-sec" style="font-size:10px;line-height:1;padding:2px 5px;border-radius:8px;color:' +
-      col + ';border:1px solid ' + col + '55;background:' + col + '14">' + sec + "</span>";
+      col + ';border:1px solid ' + col + '55;background:' + col + '14">' + label + "</span>";
   }
 
   function card(c) {
@@ -361,7 +376,7 @@
     var q = state.q.trim();
     // 協力業者リストは公共/民間で完全分離。選択中シートの会社だけを出す。
     var list = COMPANIES.filter(function (c) {
-      if ((c.sector || "公共") !== state.sheet) return false;
+      if ((c.sector || "公共") !== coSectorOf(state.sheet)) return false;
       if (state.coPartner && !c.partner) return false;
       if (state.coTag && (c.tags || []).indexOf(state.coTag) < 0) return false;
       if (!q) return true;
@@ -675,7 +690,13 @@
           '<span class="tl-label">' + s.label + '</span><span class="tl-date">' + (s.date ? md(s.date) : "—") + '</span>' +
           '<span class="tl-days" style="color:' + (d == null ? "#a8a29e" : b.fg) + '">' + (d == null ? "" : daysLabel(d)) + "</span></div>";
       }).join("");
+      // 手動追加の案件は案件名を後から編集できる（川野さん要望 2026-07。
+      // スクレイプ案件は毎日の更新で上書きされるため対象外）。
+      var titleFld = c.source === "manual"
+        ? fld("案件名", '<input name="title" value="' + esc(c.title || "") + '" placeholder="案件名（修正可）">', "full")
+        : "";
       return summaryPanel() + specSection() + '<div class="m-grid">' +
+        titleFld +
         fld("元機関（発注機関）", '<input name="agency_override" value="' + esc(c.agency || "") + '" placeholder="発注機関名（修正可）">', "full") +
         fld("状況", '<select name="status">' + opt(statusesFor(c.sector).map(function (s) { return s.id; }), c.status) + "</select>") +
         fld("担当者", '<select name="assignee" class="assignee-sel" data-prev="' + esc(c.assignee || "未割当") + '">' + assigneeOptions(c.assignee || "未割当") + "</select>") +
@@ -731,8 +752,9 @@
         if (c.prefecture && co.area && co.area.indexOf(c.prefecture) >= 0) s += 3;
         return s;
       }
-      // 協力業者リストは公共/民間で分割管理。この案件の区分に属する会社だけ候補に出す。
-      var caseSec = c.sector || "公共";
+      // 協力業者リストは公共/民間で分割管理。この案件の区分に属する会社だけ候補に出す
+      // （役務案件は公共の会社リストを共用）。
+      var caseSec = coSectorOf(c.sector || "公共");
       var POOL = COMPANIES.filter(function (co) { return (co.sector || "公共") === caseSec; });
       var clist = chQ ? POOL.filter(function (co) { return ([co.name, co.area].concat(co.tags || []).join(" ")).indexOf(chQ) >= 0; })
         : POOL.filter(function (co) { return (co.tags || []).indexOf(work) >= 0 || co.partner || (suited.length && (co.tags || []).some(function (t) { return suited.indexOf(t) >= 0; })); });
@@ -795,7 +817,8 @@
       return aiPanel() + links + tabs + (mtab === "情報" ? infoHtml() : quoteHtml());
     }
     function pullInfo(root) {
-      ["status", "assignee", "work", "submit_method", "apply_deadline", "bid_deadline", "open_date", "materials", "flag", "note", "agency_override"].forEach(function (n) {
+      // title は手動案件のときだけ入力欄が出る（無ければ querySelector が null で素通り）
+      ["status", "assignee", "work", "submit_method", "apply_deadline", "bid_deadline", "open_date", "materials", "flag", "note", "agency_override", "title"].forEach(function (n) {
         var e = root.querySelector('[name="' + n + '"]'); if (e) c[n] = e.value;
       });
     }
@@ -953,7 +976,7 @@
           var work2 = c.work || c.work_eff;
           fetch("/companies", {
             method: "POST", headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ name: q.company.trim(), tel: q.tel || "", tags: work2 ? [work2] : [], sector: c.sector || "公共" })
+            body: JSON.stringify({ name: q.company.trim(), tel: q.tel || "", tags: work2 ? [work2] : [], sector: coSectorOf(c.sector || "公共") })
           }).then(function (r) { return r.json(); }).then(function (d) {
             if (d.error) { alert(d.error); b.disabled = false; b.textContent = "会社登録→"; return; }
             COMPANIES = d.companies || COMPANIES; mirrorCompanies();
@@ -1010,6 +1033,11 @@
       "materials,partner,flag,note,needs_check,bid_plan,win_amount,win_company,award_called,partners,agency_override,cost_items";
     var fd = new URLSearchParams();
     fd.append("ajax", "1");
+    // 手動案件は案件名の変更も一緒に保存する（スクレイプ案件は対象外）
+    if (c.source === "manual" && (c.title || "").trim()) {
+      MANAGED += ",title";
+      fd.append("title", c.title.trim());
+    }
     fd.append("managed", MANAGED);
     fd.append("mtime", String(mtime));
     ["status", "assignee", "work", "submit_method", "apply_deadline", "bid_deadline",
@@ -1042,11 +1070,10 @@
 
   /* ---------- 案件を追加（手動・民間/公共）モーダル ---------- */
   function openNewCaseModal(initialSector) {
-    var sector = (initialSector === "民間" || initialSector === "公共") ? initialSector : "公共";
+    var sector = ["公共", "公共役務", "民間"].indexOf(initialSector) >= 0 ? initialSector : "公共";
     var opt = function (arr, sel) { return arr.map(function (v) { return '<option value="' + esc(v) + '"' + (v === sel ? " selected" : "") + ">" + esc(v) + "</option>"; }).join(""); };
-    var secPick = ["公共", "民間"].map(function (s) {
-      var col = s === "民間" ? "#d97706" : "#2563eb";
-      return '<button type="button" class="tagpick' + (s === sector ? " on" : "") + '" data-s="' + s + '" style="--c:' + col + '">' + s + "</button>";
+    var secPick = SHEETS.map(function (s) {
+      return '<button type="button" class="tagpick' + (s.id === sector ? " on" : "") + '" data-s="' + s.id + '" style="--c:' + s.col + '">' + s.label + "</button>";
     }).join("");
     var body = '<div class="m-grid">' +
       fld("案件名 <span style=\"color:#dc2626\">*</span>", '<input name="title" placeholder="例: ○○ビル 電気設備改修工事">', "full") +
@@ -1125,7 +1152,7 @@
   /* ---------- 協力会社 編集モーダル ---------- */
   function openCompanyModal(c) {
     // 新規登録は今開いているシート（公共/民間）の会社として登録する。
-    c = c || { tags: [], reviews: [], rating: 0, sector: state.sheet };
+    c = c || { tags: [], reviews: [], rating: 0, sector: coSectorOf(state.sheet) };
     var parsedArea = parseArea(c.area);
     var regionBtns = REGION_NAMES.map(function (r) {
       var on = parsedArea.regions.indexOf(r) >= 0;
@@ -1278,7 +1305,7 @@
     var m = /[?&]sheet=([^&]+)/.exec(location.search);
     if (!m) return;
     var sheet = decodeURIComponent(m[1]);
-    if (sheet === "公共" || sheet === "民間") { state.sheet = sheet; state.tab = "案件"; }
+    if (["公共", "公共役務", "民間"].indexOf(sheet) >= 0) { state.sheet = sheet; state.tab = "案件"; }
   })();
   // 描画の安全網: 端末ごとの保存状態が壊れていると画面が真っ白のまま「動かない」ため、
   // 初回描画が落ちたら保存状態を初期化して一度だけ再試行し、それでも駄目なら

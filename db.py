@@ -371,10 +371,31 @@ def add_manual_case(title: str, agency: str = "", sector: str = "公共",
         "source": "manual", "external_id": ext,
         "title": (title or "").strip() or "（無題の案件）",
         "agency": (agency or "").strip(), "category": (category or "").strip(),
-        "sector": sector if sector in ("公共", "民間") else "公共",
+        "sector": sector if sector in ("公共", "公共役務", "民間") else "公共",
     }])
     cid = get_case_id_by_external(ext)
     return (cid, ext)
+
+
+def update_case_title(case_id: int, title: str) -> bool:
+    """手動案件(source='manual')の案件名を変更する。
+
+    スクレイプ案件は毎日の更新で元の名称に戻ってしまうため対象外。
+    変更があればSupabaseスナップショット（_case_title）も更新する。
+    """
+    title = (title or "").strip()
+    if not title:
+        return False
+    with _connect() as conn:
+        cur = conn.execute(
+            "UPDATE cases SET title = ? WHERE id = ? AND source = 'manual' AND title != ?",
+            (title, case_id, title),
+        )
+        conn.commit()
+        changed = cur.rowcount > 0
+    if changed:
+        _push_applications()
+    return changed
 
 
 def _as_list(v: Any) -> list[str]:

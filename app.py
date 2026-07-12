@@ -647,6 +647,12 @@ def apply_case(case_id: int):
         client_mtime = 0
     fields["client_mtime"] = client_mtime if client_mtime > 0 else int(time.time() * 1000)
     is_ajax = bool(f.get("ajax") or request.headers.get("X-Requested-With") == "fetch")
+    # 手動追加の案件は案件名も変更できる（川野さん要望 2026-07）。
+    # スクレイプ案件は日次更新で上書きされるため db 側で manual のみに制限。
+    if managed is not None and "title" in managed:
+        new_title = f.get("title", "").strip()
+        if new_title:
+            db.update_case_title(case_id, new_title)
     try:
         db.set_application(case_id, status, **fields)
     except ValueError:
@@ -683,7 +689,7 @@ def application_new():
     if not title:
         return jsonify({"error": "案件名は必須です"}), 400
     sector = (f.get("sector") or "公共").strip()
-    if sector not in ("公共", "民間"):
+    if sector not in ("公共", "公共役務", "民間"):
         sector = "公共"
     work = (f.get("work") or "").strip()
     # 既定の状況はシート区分で変える（民間は見積フローの先頭「見積中」）。
