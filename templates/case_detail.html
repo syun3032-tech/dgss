@@ -283,10 +283,22 @@
     var input = document.getElementById('partnersInput');
     if (input) input.value = JSON.stringify(partners);  // サーバ送信用
 
+    // 編集時刻(世代)をサーバにも送る。restoreが古いミラーでこの保存を巻き戻さないため。
+    var mtime = Date.now();
+    var hid = form.querySelector('[name="mtime"]');
+    if (!hid) {
+      hid = document.createElement('input');
+      hid.type = 'hidden'; hid.name = 'mtime';
+      form.appendChild(hid);
+    }
+    hid.value = String(mtime);
+
     var KEY = 'kawanoApplications';
     var map;
     try { map = JSON.parse(localStorage.getItem(KEY)) || {}; } catch (e) { map = {}; }
-    map[ext] = {
+    // このフォームは一部項目しか扱わない。既存ミラーの他項目（入札予定額・
+    // 原価内訳・落札額など）を消さないよう、必ずマージで上書きする。
+    var next = {
       external_id: ext,
       status: val('status'),
       applied_date: val('applied_date'),
@@ -296,8 +308,12 @@
       bid_deadline: val('bid_deadline'),
       submit_method: val('submit_method'),
       needs_check: form.querySelector('[name="needs_check"]').checked ? 1 : 0,
-      partners: partners
+      partners: partners,
+      mtime: mtime
     };
+    var prev = map[ext] || {};
+    for (var k in prev) { if (!(k in next)) next[k] = prev[k]; }
+    map[ext] = next;
     try { localStorage.setItem(KEY, JSON.stringify(map)); } catch (e) {}
   });
 })();

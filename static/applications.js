@@ -107,12 +107,24 @@
     return "あと" + days + "日";
   }
 
+  /* ---------- 保存フィードバック（トースト） ---------- */
+  var toastTimer = null;
+  function toast(msg) {
+    var el = document.getElementById("appToast");
+    if (!el) { el = document.createElement("div"); el.id = "appToast"; document.body.appendChild(el); }
+    el.textContent = msg; el.className = "show";
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function () { el.className = ""; }, 2200);
+  }
+
   /* ---------- localStorage ミラー ---------- */
-  function mirrorCase(c) {
+  function mirrorCase(c, mtime) {
     var KEY = "kawanoApplications", map;
     try { map = JSON.parse(localStorage.getItem(KEY)) || {}; } catch (e) { map = {}; }
     if (!c.external_id) return;
     map[c.external_id] = {
+      // 世代(編集時刻)。restoreはこれとサーバ側 client_mtime を比べ、新しい方だけ残す。
+      mtime: mtime || Date.now(),
       external_id: c.external_id, status: c.status, assignee: c.assignee,
       flag: c.flag, applied_date: c.applied_date || "", note: c.note || "",
       apply_deadline: c.apply_deadline || "", bid_deadline: c.bid_deadline || "",
@@ -515,7 +527,11 @@
       btn.addEventListener("click", function (e) {
         e.stopPropagation();
         var c = CASES.filter(function (x) { return String(x.case_id) === btn.getAttribute("data-ng"); })[0];
-        if (c && confirm("「" + c.title + "」をNG（不参加）に移動しますか？")) { c.status = "NG"; saveCase(c); }
+        if (c && confirm("「" + c.title + "」をNG（不参加）に移動しますか？")) {
+          var prev = c.status;
+          c.status = "NG";
+          saveCase(c, function (ok) { if (!ok) { c.status = prev; render(); } });
+        }
       });
     });
     // 直近の締切アラート→クリックで該当案件を開く（要望⑩）
@@ -803,7 +819,19 @@
         bindSpec(root);
       }
       bindAi(root);
-      root.querySelector(".m-save").onclick = function () { if (mtab === "情報") pullInfo(root); else pullMoney(root); saveCase(c); };
+      root.querySelector(".m-save").onclick = function () {
+        var btn = this;
+        if (btn.disabled) return;  // 二度押し防止
+        if (mtab === "情報") pullInfo(root); else pullMoney(root);
+        btn.disabled = true;
+        var orig = btn.textContent;
+        btn.textContent = "保存中…";
+        saveCase(c, function (ok) {
+          btn.disabled = false;
+          btn.textContent = orig;
+          if (ok) closeModal();  // 失敗時は入力を保持したまま開いておく（再試行できる）
+        });
+      };
     }
     // 要望⑦STEP1: 仕様書の追加/削除/添付を束ねる。
     function bindSpec(root) {
@@ -868,10 +896,15 @@
         var memo = "【AI判定: 参加不可】" + (reasons.length ? reasons.join(" / ") : first);
         if (mtab === "情報") pullInfo(root); else pullMoney(root);  // フォーム現在値を取り込む
         // 何が足りなかったかを理由メモ(note)に残し、NG列へ振り分ける
+        var prev = { status: c.status, flag: c.flag, note: c.note };
         c.status = "NG";
         c.flag = "AI: " + String(first).slice(0, 40);
         c.note = memo + (c.note ? " ／ " + c.note : "");
-        saveCase(c);
+        saveCase(c, function (ok) {
+          if (ok) { closeModal(); return; }
+          c.status = prev.status; c.flag = prev.flag; c.note = prev.note;
+          render();
+        });
       };
     }
     function bindQuote(root) {
@@ -956,23 +989,29 @@
           } catch (e) {}
           fetch("/applications/" + c.case_id + "/delete", {
             method: "POST", headers: { "X-Requested-With": "fetch" }
-          }).then(function () { location.reload(); }).catch(function () { location.reload(); });
+          }).then(function (r) {
+            if (!r.ok) throw new Error("HTTP " + r.status);
+            location.reload();
+          }).catch(function () {
+            alert("削除できませんでした。通信状態を確認して、もう一度お試しください。");
+          });
         }
       }
     });
   }
-  function saveCase(c) {
+  function saveCase(c, done) {
     // 採用(selected)した見積があり発注先が未入力なら、その会社名を自動セット（擦り合わせ）。
     if (!c.partner) {
       var sel = (c.partners || []).filter(function (p) { return p.selected; })[0];
       if (sel) c.partner = sel.company;
     }
-    mirrorCase(c);
+    var mtime = Date.now();
     var MANAGED = "status,assignee,work,submit_method,apply_deadline,bid_deadline,open_date," +
       "materials,partner,flag,note,needs_check,bid_plan,win_amount,win_company,award_called,partners,agency_override,cost_items";
     var fd = new URLSearchParams();
     fd.append("ajax", "1");
     fd.append("managed", MANAGED);
+    fd.append("mtime", String(mtime));
     ["status", "assignee", "work", "submit_method", "apply_deadline", "bid_deadline",
       "open_date", "materials", "partner", "flag", "note", "agency_override"].forEach(function (k) { fd.append(k, c[k] || ""); });
     fd.append("bid_plan", c.bid_plan || 0); fd.append("win_amount", c.win_amount || 0);
@@ -980,9 +1019,25 @@
     if (c.award_called) fd.append("award_called", "1");
     fd.append("partners", JSON.stringify(c.partners || []));
     fd.append("cost_items", JSON.stringify(c.cost_items || []));
+    // 保存の成否を必ず伝える。成功時はリロードせず盤面だけ描き直す（軽い・速い）。
+    // 失敗時はミラーも更新しない（未保存の値が「保存済み」として復元されるのを防ぐ）。
     fetch("/case/" + c.case_id + "/apply", {
       method: "POST", headers: { "Content-Type": "application/x-www-form-urlencoded", "X-Requested-With": "fetch" }, body: fd.toString()
-    }).then(function () { location.reload(); }).catch(function () { location.reload(); });
+    }).then(function (r) {
+      if (!r.ok) {
+        return r.json().catch(function () { return {}; }).then(function (d) {
+          throw new Error((d && d.error) || ("サーバーエラー (HTTP " + r.status + ")"));
+        });
+      }
+      mirrorCase(c, mtime);
+      render();
+      toast("保存しました");
+      if (done) done(true);
+    }).catch(function (e) {
+      alert("保存できませんでした。通信状態を確認して、もう一度「保存」を押してください。\n" +
+        (e && e.message ? "詳細: " + e.message : ""));
+      if (done) done(false);
+    });
   }
 
   /* ---------- 案件を追加（手動・民間/公共）モーダル ---------- */

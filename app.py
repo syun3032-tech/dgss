@@ -637,6 +637,15 @@ def apply_case(case_id: int):
         "partners": partners,
         "cost_items": cost_items,
     }
+    # 端末側の編集時刻。restore（localStorage→サーバ復元）が古いミラーで
+    # この保存を上書きしないよう、行に世代として刻む。未送信の旧クライアントは
+    # サーバ時刻で代用する（0のままだと直後のrestoreに巻き戻され得るため）。
+    import time
+    try:
+        client_mtime = int(f.get("mtime") or 0)
+    except (ValueError, TypeError):
+        client_mtime = 0
+    fields["client_mtime"] = client_mtime if client_mtime > 0 else int(time.time() * 1000)
     is_ajax = bool(f.get("ajax") or request.headers.get("X-Requested-With") == "fetch")
     try:
         db.set_application(case_id, status, **fields)
@@ -733,27 +742,54 @@ def applications_restore():
                 case_id = db.get_case_id_by_external(ext)
             if case_id is None:
                 continue  # 現在のDBに該当案件が無い（公開終了等）→スキップ
+        # サーバ行の方が新しい（＝別端末や案件詳細で編集済み）なら復元しない。
+        # ミラーが世代(mtime)を持たない旧形式でも、行が既にあれば上書きしない
+        # （復元が本当に必要なのはDB差し替えで行ごと消えた時だけ）。
+        cur = db.get_application(case_id)
+        try:
+            mtime = int(it.get("mtime") or 0)
+        except (ValueError, TypeError):
+            mtime = 0
+        if cur is not None and int(cur.get("client_mtime") or 0) >= mtime:
+            continue
+
+        # ミラーに無い項目は現在のサーバ値を残す（部分ミラーで金額等を消さない）。
+        cur = cur or {}
+
+        def _tx(key: str) -> str:
+            v = it.get(key) if key in it else cur.get(key)
+            return str(v or "").strip()
+
+        def _yen(key: str) -> int:
+            if key in it:
+                return db.yen_to_int(str(it.get(key) or "")) or 0
+            return int(cur.get(key) or 0)
+
+        def _flag(key: str) -> bool:
+            return bool(it.get(key)) if key in it else bool(cur.get(key))
+
         fields = dict(
-            applied_date=(it.get("applied_date") or "").strip(),
-            note=(it.get("note") or "").strip(),
-            assignee=(it.get("assignee") or "").strip(),
-            apply_deadline=(it.get("apply_deadline") or "").strip(),
-            bid_deadline=(it.get("bid_deadline") or "").strip(),
-            open_date=(it.get("open_date") or "").strip(),
-            submit_method=(it.get("submit_method") or "").strip(),
-            work=(it.get("work") or "").strip(),
-            materials=(it.get("materials") or "").strip(),
-            flag=(it.get("flag") or "").strip(),
-            needs_check=bool(it.get("needs_check")),
-            bid_plan=db.yen_to_int(str(it.get("bid_plan") or "")) or 0,
-            win_amount=db.yen_to_int(str(it.get("win_amount") or "")) or 0,
-            win_company=(it.get("win_company") or "").strip(),
-            award_called=bool(it.get("award_called")),
-            partner=(it.get("partner") or "").strip(),
-            partners=it.get("partners") or [],
-            cost_items=it.get("cost_items") or [],
+            applied_date=_tx("applied_date"),
+            note=_tx("note"),
+            assignee=_tx("assignee"),
+            apply_deadline=_tx("apply_deadline"),
+            bid_deadline=_tx("bid_deadline"),
+            open_date=_tx("open_date"),
+            submit_method=_tx("submit_method"),
+            work=_tx("work"),
+            materials=_tx("materials"),
+            flag=_tx("flag"),
+            needs_check=_flag("needs_check"),
+            bid_plan=_yen("bid_plan"),
+            win_amount=_yen("win_amount"),
+            win_company=_tx("win_company"),
+            award_called=_flag("award_called"),
+            partner=_tx("partner"),
+            partners=it.get("partners") if "partners" in it else (cur.get("partners") or []),
+            cost_items=it.get("cost_items") if "cost_items" in it else (cur.get("cost_items") or []),
+            client_mtime=mtime,
         )
-        # localStorage を真の保存先として上書き復元する（揮発DB対策）。
+        # localStorage を真の保存先として復元する（揮発DB対策）。
         db.set_application(case_id, status, **fields)
         restored += 1
     return jsonify({"restored": restored})

@@ -300,6 +300,7 @@ def init_db() -> None:
             ("spec_files",     "TEXT DEFAULT '[]'"),  # 仕様書の紐付け（URL/添付ファイル・要望⑦STEP1）
             ("win_company",    "TEXT DEFAULT ''"),    # 落札会社名（自社・他社問わず最終落札先）
             ("cost_items",     "TEXT DEFAULT '[]'"),  # 自社原価の内訳（[{label,amount}]・JSON）
+            ("client_mtime",   "INTEGER DEFAULT 0"),  # 端末側の編集時刻(ms)。restoreの新旧判定に使う
         ):
             if col not in app_cols:
                 conn.execute(f"ALTER TABLE applications ADD COLUMN {col} {ddl}")
@@ -954,7 +955,10 @@ def restore_from_supa() -> dict[str, int]:
                 fields = {k: it.get(k) for k in (
                     "applied_date", "note", "assignee", "apply_deadline", "bid_deadline",
                     "open_date", "submit_method", "work", "materials", "flag",
-                    "needs_check", "bid_plan", "win_amount", "award_called", "partner", "partners")}
+                    "needs_check", "bid_plan", "win_amount", "award_called", "partner", "partners",
+                    # 以下が欠けると再起動のたびに落札会社名・原価内訳・機関上書き・
+                    # 編集世代が消える（保存ロールバックの一因だった）
+                    "win_company", "cost_items", "agency_override", "client_mtime")}
                 try:
                     set_application(cid, it.get("status") or "参加申請準備前", **fields)
                     # 仕様書の紐付けは set_application では書かないので個別に復元（要望⑦STEP1）
@@ -1029,6 +1033,10 @@ def set_application(case_id: int, status: str, **fields: Any) -> None:
     vals.append(_normalize_partners(fields.get("partners", [])))
     cols.append("cost_items")
     vals.append(_normalize_cost_items(fields.get("cost_items", [])))
+    # client_mtime は渡された時だけ更新する（未指定の保存経路で 0 に戻さない）
+    if "client_mtime" in fields:
+        cols.append("client_mtime")
+        vals.append(_int(fields.get("client_mtime", 0)))
 
     set_clause = ", ".join(f"{c}=excluded.{c}" for c in cols)
     placeholders = ", ".join(["?"] * (len(cols) + 1))  # +case_id
