@@ -11,12 +11,20 @@
 """
 from __future__ import annotations
 
+import os
 import sys
 import tempfile
 from pathlib import Path
 from typing import Any
 
-import db
+# 最重要: 本テストは一時DBに書き込むたび _push_applications が走る。
+# CI/ビルド環境に本番の SUPABASE_DB_URL があると、テストデータで本番KVを
+# 上書きしてしまうため、db を import する前に必ず無効化する。
+os.environ.pop("SUPABASE_DB_URL", None)
+
+import db  # noqa: E402
+
+assert not db.supa.enabled(), "supa must be disabled during tests"
 
 db.DB_PATH = Path(tempfile.mkdtemp()) / "test_apps.db"
 db.init_db()
