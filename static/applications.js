@@ -776,18 +776,26 @@
 
     function quoteHtml() {
       var sel = c.partners.filter(function (q) { return q.selected; })[0];
-      var exp = (toYen(c.bid_plan) && sel && toYen(sel.amount)) ? toYen(c.bid_plan) - toYen(sel.amount) : null;
       var ch = cheapestQ(c.partners);
+      // 自社原価の内訳（項目＋金額を行で追加→自動合計。メモに埋もれないデータとして残す）
+      var costs = c.cost_items || [];
+      var costTot = costs.reduce(function (s, it) { return s + (toYen(it.amount) || 0); }, 0);
+      var gross = (toYen(c.bid_plan) && costTot) ? toYen(c.bid_plan) - costTot : null;
+      // 想定利益（議事録合意: 入札予定額 − 依頼先への工事費）。
+      // 依頼先への工事費 = ★採用した依頼先の見積額。まだ採用が無い時は原価合計で代用する。
+      var fee = (sel && toYen(sel.amount)) ? toYen(sel.amount) : 0;
+      var expCost = fee || costTot;
+      var expBase = fee ? "依頼先への工事費" : "原価合計で代用";
+      var exp = (toYen(c.bid_plan) && expCost) ? toYen(c.bid_plan) - expCost : null;
+      // 確定利益（落札後）: 落札額 − 依頼先への工事費（無ければ原価合計）
+      var fin = (toYen(c.win_amount) && expCost) ? toYen(c.win_amount) - expCost : null;
       // 落札額は「自社・他社を問わず案件の最終落札金額」。落札会社名も残してデータ取りに使う。
       var money = '<div class="mq-money">' +
         '<label class="mb"><span>入札予定額</span><input name="bid_plan" value="' + (c.bid_plan || "") + '" placeholder="3000000"></label>' +
         '<label class="mb"><span>落札額(自社・他社問わず)</span><input name="win_amount" value="' + (c.win_amount || "") + '" placeholder="最終落札金額"></label>' +
         '<label class="mb"><span>落札会社名</span><input name="win_company" value="' + esc(c.win_company || "") + '" placeholder="自社 / ○○電気 等"></label>' +
-        '<div class="mb exp ' + (exp == null ? "" : exp < 0 ? "neg" : "pos") + '"><span>想定利益</span><b>' + (exp == null ? "—" : fmtMan(exp)) + "</b><small>入札−採用見積</small></div></div>";
-      // 自社原価の内訳（項目＋金額を行で追加→自動合計。メモに埋もれないデータとして残す）
-      var costs = c.cost_items || [];
-      var costTot = costs.reduce(function (s, it) { return s + (toYen(it.amount) || 0); }, 0);
-      var gross = (toYen(c.bid_plan) && costTot) ? toYen(c.bid_plan) - costTot : null;
+        '<div class="mb exp ' + (exp == null ? "" : exp < 0 ? "neg" : "pos") + '"><span>想定利益</span><b>' + (exp == null ? "—" : fmtMan(exp)) + "</b><small>入札予定額−" + (exp == null ? "依頼先への工事費" : expBase) + "</small></div>" +
+        '<div class="mb exp ' + (fin == null ? "" : fin < 0 ? "neg" : "pos") + '"><span>確定利益(落札後)</span><b>' + (fin == null ? "—" : fmtMan(fin)) + "</b><small>落札額−" + (fee ? "依頼先への工事費" : "原価合計") + "</small></div></div>";
       var costRows = costs.map(function (it, i) {
         return '<div class="mq-row"><div class="mq-r1">' +
           '<input class="mq-co q-clabel" data-i="' + i + '" value="' + esc(it.label || "") + '" placeholder="例: 照明器具 材料費 / LED 60台">' +
