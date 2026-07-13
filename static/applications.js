@@ -241,6 +241,13 @@
     // この管理シート(公共/民間)に属する案件だけを母集団にする。タブ自体が区分を兼ねる。
     var sectorCases = CASES.filter(function (c) { return (c.sector || "公共") === sector; });
     var SL = statusesFor(sector);   // このシートの状況リスト（公共/民間で列が異なる）
+    // このシートに無い状況の絞り込みが残っていると列が1本も表示されず
+    // 「データが消えた」ように見えるため、シートに合わない選択は自動で外す
+    // （例: 公共でNG絞り込み→サイドバーから民間へ移動した時）。
+    if (state.statuses.length) {
+      var validSt = {}; SL.forEach(function (s) { validSt[s.id] = 1; });
+      state.statuses = state.statuses.filter(function (id) { return validSt[id]; });
+    }
     // 担当者で絞り込み
     var rows = state.assignee ? sectorCases.filter(function (c) { return (c.assignee || "未割当") === state.assignee; }) : sectorCases;
 
@@ -1367,7 +1374,12 @@
     var m = /[?&]sheet=([^&]+)/.exec(location.search);
     if (!m) return;
     var sheet = decodeURIComponent(m[1]);
-    if (["公共", "公共役務", "民間"].indexOf(sheet) >= 0) { state.sheet = sheet; state.tab = "案件"; }
+    if (["公共", "公共役務", "民間"].indexOf(sheet) >= 0) {
+      // シート移動時は状況の絞り込みを解除（シートごとに状況が違うため、残したまま
+      // だと移動先で列が0本になり「データが消えた」ように見える）。
+      if (state.sheet !== sheet) state.statuses = [];
+      state.sheet = sheet; state.tab = "案件";
+    }
   })();
   // 描画の安全網: 端末ごとの保存状態が壊れていると画面が真っ白のまま「動かない」ため、
   // 初回描画が落ちたら保存状態を初期化して一度だけ再試行し、それでも駄目なら
