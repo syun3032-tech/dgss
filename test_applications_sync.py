@@ -181,5 +181,42 @@ r = client.post(f"/case/{cid}/apply", data={
 rowk = next((a for a in db.list_applications(None) if a.get("case_id") == cid), {})
 check("スクレイプ案件の案件名は変わらない", rowk.get("title") == "テスト照明改修工事")
 
+# ---------- 6. NG理由のAI集計エンドポイント（AI呼び出しはスタブ） ----------
+client.post(f"/case/{cid}/apply", data={
+    "ajax": "1", "mtime": "8000000", "managed": "status,note",
+    "status": "NG", "note": "実績がないため参加できない",
+})
+
+_real_can_use = appmod.auth.can_use_ai
+_real_enabled = appmod.ai_assist.is_enabled
+_real_sum = appmod.ai_assist.summarize_ng_reasons
+_seen_items: list[Any] = []
+
+
+def _fake_sum(items):
+    _seen_items.extend(items)
+    return {"enabled": True, "total": len(items), "model": "stub",
+            "categories": [{"reason": "実績不足", "count": len(items),
+                            "examples": [items[0]["title"]]}],
+            "insight": "実績づくりが有効"}
+
+
+appmod.auth.can_use_ai = lambda: True
+appmod.ai_assist.is_enabled = lambda: True
+appmod.ai_assist.summarize_ng_reasons = _fake_sum
+try:
+    r = client.post("/reports/ng-reasons?sheet=公共")
+    d = r.get_json() or {}
+    check("NG集計が返る", (d.get("categories") or [{}])[0].get("reason") == "実績不足")
+    check("NGメモが渡っている", any("実績がない" in (i.get("note") or "") for i in _seen_items))
+    # 同じ内容なら2回目はキャッシュ（AIを呼ばない）
+    n_before = len(_seen_items)
+    r2 = client.post("/reports/ng-reasons?sheet=公共")
+    check("2回目はキャッシュ命中", (r2.get_json() or {}).get("cached") is True and len(_seen_items) == n_before)
+finally:
+    appmod.auth.can_use_ai = _real_can_use
+    appmod.ai_assist.is_enabled = _real_enabled
+    appmod.ai_assist.summarize_ng_reasons = _real_sum
+
 print(f"\n{_ok}/{_ok + _ng} passed")
 sys.exit(1 if _ng else 0)

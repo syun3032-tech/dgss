@@ -395,6 +395,60 @@ def _autoattach_spec(case: dict) -> list:
     return files
 
 
+@app.route("/reports/ng-reasons", methods=["POST"])
+def reports_ng_reasons():
+    """NG案件の理由メモをAIで固定カテゴリに集計する（月次レポート・打合せ合意事項）。
+
+    メモはフリー記述のまま、AIが「実績不足/地域要件/等級不足…」の固定カテゴリに
+    分類して件数を返す。結果は内容ハッシュでキャッシュし、同じNG一覧なら再課金しない。
+    """
+    import hashlib
+    import json
+    if not auth.can_use_ai():
+        return jsonify({"enabled": False,
+                        "reason": "このアカウントではAIモードが有効化されていません。"})
+    sheet = (request.args.get("sheet") or "").strip()
+    items = []
+    for a in db.list_applications("NG"):
+        sec = a.get("sector") or "公共"
+        if sheet and sec != sheet:
+            continue
+        items.append({
+            "title": a.get("title") or "",
+            "agency": a.get("agency") or "",
+            "month": (a.get("updated_at") or "")[:7],
+            "note": a.get("note") or "",
+            "flag": a.get("flag") or "",
+        })
+    if not items:
+        return jsonify({"enabled": True, "total": 0, "categories": [], "insight": ""})
+
+    digest = hashlib.sha256(json.dumps(
+        [(i["title"], i["note"], i["flag"]) for i in items],
+        ensure_ascii=False, sort_keys=True).encode("utf-8")).hexdigest()[:16]
+    cache_key = f"ngsum:{sheet or '全'}:{digest}"
+    refresh = request.args.get("refresh") == "1"
+    if not refresh:
+        cached = db.get_ai_assist(cache_key)
+        if cached:
+            data = json.loads(cached["payload"])
+            data["cached"] = True
+            return jsonify(data)
+
+    if not ai_assist.is_enabled():
+        return jsonify({"enabled": False})
+    try:
+        result = ai_assist.summarize_ng_reasons(items)
+    except Exception as e:  # noqa: BLE001 — AI失敗で500にせず画面で案内
+        logging.getLogger(__name__).warning("ng reasons failed", exc_info=True)
+        return jsonify({"enabled": True, "error": str(e)[:200]}), 200
+    if result.get("enabled") and not result.get("error"):
+        db.set_ai_assist(cache_key, json.dumps(result, ensure_ascii=False),
+                         result.get("model", ""))
+    result["cached"] = False
+    return jsonify(result)
+
+
 @app.route("/case/<int:case_id>/ai-assist", methods=["POST"])
 def case_ai_assist(case_id: int):
     """【課金プラン・オンデマンド】AI応募アシストを生成して返す（タップ時のみ課金）。

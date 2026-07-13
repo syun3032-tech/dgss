@@ -454,6 +454,45 @@
   /* ============================================================
      タブ4: 月次レポート
   ============================================================ */
+  // NG理由のAI集計（打合せ合意: メモはフリー記述のまま、AIが固定カテゴリに分類・集計）
+  var ngSum = null, ngBusy = false;
+  function ngPanelHtml() {
+    var ngCases = CASES.filter(function (c) { return (c.sector || "公共") === state.sheet && c.status === "NG"; });
+    var h = '<div class="rep rep-ng"><div class="rep-h"><b>NG理由の集計（AI）</b><span>' + ngCases.length + "件のNG案件</span></div>";
+    if (!ngCases.length) {
+      return h + '<p class="dim">NG（不参加）にした案件がまだありません。</p></div>';
+    }
+    if (ngBusy) {
+      return h + '<p class="dim">AIがNG理由のメモを読んで集計中…（10〜30秒ほどお待ちください）</p></div>';
+    }
+    if (ngSum && ngSum.sheet === state.sheet) {
+      if (ngSum.enabled === false) {
+        h += '<p class="dim">' + esc(ngSum.reason || "AI集計はAIプラン（GEMINI_API_KEY設定）で使えます。") + "</p>";
+      } else if (ngSum.error) {
+        h += '<p class="dim">集計に失敗しました。時間をおいて再度お試しください。</p>' +
+          '<div class="rep-save"><button type="button" class="btn primary small" id="ngSumBtn">もう一度集計</button></div>';
+      } else {
+        var cats = (ngSum.categories || []).filter(function (x) { return (x.count || 0) > 0; });
+        cats.sort(function (a, b) { return (b.count || 0) - (a.count || 0); });
+        var maxC = cats.reduce(function (m, x) { return Math.max(m, x.count || 0); }, 1);
+        h += cats.map(function (x) {
+          var w = Math.max(4, Math.round(((x.count || 0) / maxC) * 100));
+          return '<div class="ngr"><div class="ngr-h"><b>' + esc(x.reason || "") + "</b><span>" + (x.count || 0) + "件</span></div>" +
+            '<div class="ngr-bar"><i style="width:' + w + '%"></i></div>' +
+            ((x.examples || []).length ? '<div class="ngr-ex">例: ' + x.examples.slice(0, 2).map(esc).join(" ／ ") + "</div>" : "") +
+            "</div>";
+        }).join("");
+        if (ngSum.insight) h += '<p class="ngr-insight">💡 ' + esc(ngSum.insight) + "</p>";
+        h += '<div class="rep-save"><button type="button" class="btn ghost small" id="ngSumBtn" data-refresh="1">再集計</button></div>';
+      }
+      return h + "</div>";
+    }
+    h += '<p class="dim">NG案件の理由メモをAIが読み、「実績不足」「地域要件」などの固定カテゴリで件数を集計します。' +
+      "（例: 実績なしだけで年間100件逃しているなら、実績づくりを計画する材料になります）</p>" +
+      '<div class="rep-save"><button type="button" class="btn primary small" id="ngSumBtn">AIでNG理由を集計</button></div>';
+    return h + "</div>";
+  }
+
   function renderReports() {
     // 選択中シートの案件だけを月別集計。民間は開札日が無いので見積提出期限で束ねる。
     var months = {};
@@ -480,7 +519,7 @@
     var emptyRep = state.sheet === "民間"
       ? '<p class="empty">見積提出期限が入った民間案件がまだありません（編集で期限を入力すると月別に集計されます）。</p>'
       : '<p class="empty">開札日が入った案件がまだありません（編集で開札日を入力すると月別に集計されます）。</p>';
-    return (blocks || emptyRep) + savedHtml;
+    return ngPanelHtml() + (blocks || emptyRep) + savedHtml;
   }
 
   /* ============================================================
@@ -559,7 +598,14 @@
     // 案件を追加（開いている管理シートの区分を初期値にする）
     var ac = $("addCaseBtn"); if (ac) ac.addEventListener("click", function () { openNewCaseModal(ac.getAttribute("data-sec") || "公共"); });
     // 協力会社
-    var s = $("coSearch"); if (s) s.addEventListener("input", function () { state.q = s.value; var p = s.selectionStart; render(); var n = $("coSearch"); if (n) { n.focus(); try { n.setSelectionRange(p, p); } catch (e) {} } });
+    // 会社検索: 日本語入力(IME)の変換中に再描画すると1文字目がアルファベットのまま
+    // 確定されてしまうため、変換中は再描画せず、確定(compositionend)でまとめて反映する。
+    var s = $("coSearch");
+    if (s) {
+      var syncCo = function () { state.q = s.value; var p = s.selectionStart; render(); var n = $("coSearch"); if (n) { n.focus(); try { n.setSelectionRange(p, p); } catch (e) {} } };
+      s.addEventListener("input", function (e) { if (e.isComposing) return; syncCo(); });
+      s.addEventListener("compositionend", syncCo);
+    }
     var pf = document.querySelector(".co-pf"); if (pf) pf.addEventListener("click", function () { state.coPartner = !state.coPartner; render(); });
     var sf = document.querySelector(".co-sf"); if (sf) sf.addEventListener("click", function () { state.coSort = !state.coSort; render(); });
     Array.prototype.forEach.call(document.querySelectorAll(".co-tagf"), function (b) {
@@ -574,6 +620,16 @@
         fetch("/companies/" + id + "/delete", { method: "POST" }).then(function (r) { return r.json(); })
           .then(function (d) { COMPANIES = d.companies || []; mirrorCompanies(); render(); });
       });
+    });
+    // NG理由のAI集計（月次レポート）
+    var ngb = $("ngSumBtn");
+    if (ngb) ngb.addEventListener("click", function () {
+      var refresh = ngb.getAttribute("data-refresh") === "1";
+      ngBusy = true; render();
+      fetch("/reports/ng-reasons?sheet=" + encodeURIComponent(state.sheet) + (refresh ? "&refresh=1" : ""), { method: "POST" })
+        .then(function (r) { return r.json(); })
+        .then(function (d) { d = d || {}; d.sheet = state.sheet; ngSum = d; ngBusy = false; render(); })
+        .catch(function () { ngSum = { error: true, sheet: state.sheet }; ngBusy = false; render(); });
     });
     // 月次レポート保存
     Array.prototype.forEach.call(document.querySelectorAll(".rep-btn"), function (b) {
@@ -933,7 +989,13 @@
     function bindQuote(root) {
       pullMoney(root);
       var ct = root.querySelector("#chToggle"); if (ct) ct.onclick = function () { pullMoney(root); chOpen = !chOpen; redraw(root); };
-      var cs = root.querySelector("#chSearch"); if (cs) cs.oninput = function () { chQ = cs.value; var p = cs.selectionStart; redraw(root); var n = root.querySelector("#chSearch"); if (n) { n.focus(); try { n.setSelectionRange(p, p); } catch (e) {} } };
+      // 依頼先を選ぶ内の会社検索も同様にIME変換中の再描画を止める（1文字目バグ対策）
+      var cs = root.querySelector("#chSearch");
+      if (cs) {
+        var syncCh = function () { chQ = cs.value; var p = cs.selectionStart; redraw(root); var n = root.querySelector("#chSearch"); if (n) { n.focus(); try { n.setSelectionRange(p, p); } catch (e) {} } };
+        cs.oninput = function (e) { if (e.isComposing) return; syncCh(); };
+        cs.addEventListener("compositionend", syncCh);
+      }
       var cp = root.querySelector("#chPartner"); if (cp) cp.onclick = function () { chPartner = cp.checked; redraw(root); };
       Array.prototype.forEach.call(root.querySelectorAll(".mq-chitem"), function (b) {
         b.onclick = function () {

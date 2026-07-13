@@ -386,6 +386,70 @@ def extract_company(url: str) -> dict[str, Any]:
     return data
 
 
+_NG_REASONS_SCHEMA: dict[str, Any] = {
+    "type": "object",
+    "properties": {
+        "categories": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "reason": {"type": "string",
+                               "description": "固定カテゴリ名: 実績不足/等級・ランク不足/地域要件/保有資格の不足/工期・体制が合わない/金額が合わない/情報不足・その他"},
+                    "count": {"type": "integer", "description": "このカテゴリに該当するNG案件の件数"},
+                    "examples": {"type": "array", "items": {"type": "string"},
+                                 "description": "該当する案件名の例（最大3件）"},
+                },
+                "required": ["reason", "count"],
+            },
+        },
+        "insight": {"type": "string",
+                    "description": "集計から言える示唆を1〜2文で（例: 実績不足だけで年間◯件逃しているので実績づくりが有効 等）"},
+    },
+    "required": ["categories"],
+}
+_NG_REASONS_SYSTEM = (
+    "あなたは建設業（電気工事）の入札管理アシスタントです。"
+    "入札に参加しなかった(NG)案件の理由メモを読み、次の固定カテゴリに分類して集計します: "
+    "実績不足 / 等級・ランク不足 / 地域要件 / 保有資格の不足 / 工期・体制が合わない / "
+    "金額が合わない / 情報不足・その他。"
+    "カテゴリ名は必ずこの表記のみを使うこと。メモが空・理由が読み取れない案件は"
+    "『情報不足・その他』に入れること。各案件は必ずどれか1カテゴリに入れ、"
+    "count の合計が案件数と一致するようにすること。日本語で出力。"
+)
+
+
+def summarize_ng_reasons(items: list[dict]) -> dict[str, Any]:
+    """NG案件の理由メモを固定カテゴリに分類・集計する（月次レポート用・打合せ合意）。
+
+    items: [{title, agency, month, note, flag}] の一覧。
+    """
+    if not is_enabled():
+        return {"enabled": False}
+    if not items:
+        return {"enabled": True, "categories": [], "insight": ""}
+    lines = []
+    for it in items:
+        lines.append(
+            f"- 案件: {it.get('title', '')} ／ 発注: {it.get('agency', '')}"
+            f" ／ 時期: {it.get('month', '')}\n"
+            f"  理由メモ: {it.get('note', '') or '(記載なし)'}"
+            f"{(' ／ 一言: ' + it['flag']) if it.get('flag') else ''}"
+        )
+    user_text = (
+        f"以下は入札に参加しなかった(NG)案件 {len(items)}件の一覧です。"
+        "理由メモを読んで固定カテゴリに分類・集計してください。\n\n" + "\n".join(lines)
+    )
+    try:
+        data = _call_gemini_schema(user_text, _NG_REASONS_SCHEMA, _NG_REASONS_SYSTEM)
+    except Exception:  # noqa: BLE001
+        return {"enabled": True, "error": "AI集計に失敗しました。時間をおいて再度お試しください。"}
+    data["enabled"] = True
+    data["model"] = _model()
+    data["total"] = len(items)
+    return data
+
+
 _SUMMARY_SCHEMA: dict[str, Any] = {
     "type": "object",
     "properties": {
