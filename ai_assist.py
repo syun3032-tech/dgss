@@ -303,7 +303,8 @@ def assist(case: dict, profile: dict | None = None,
 import re as _re
 
 
-def _call_gemini_schema(user_text: str, schema: dict, system: str) -> dict[str, Any]:
+def _call_gemini_schema(user_text: str, schema: dict, system: str,
+                        timeout: int = 60) -> dict[str, Any]:
     """任意のスキーマ・システム指示で Gemini を呼ぶ汎用版（_call_gemini の一般化）。"""
     key, model = _api_key(), _model()
     url = f"{_API_BASE}/{model}:generateContent?key={key}"
@@ -319,7 +320,7 @@ def _call_gemini_schema(user_text: str, schema: dict, system: str) -> dict[str, 
     req = urllib.request.Request(
         url, data=json.dumps(body).encode("utf-8"),
         headers={"Content-Type": "application/json"}, method="POST")
-    with urllib.request.urlopen(req, timeout=60) as res:
+    with urllib.request.urlopen(req, timeout=timeout) as res:
         data = json.loads(res.read().decode("utf-8"))
     cand = (data.get("candidates") or [{}])[0]
     parts = (cand.get("content") or {}).get("parts") or [{}]
@@ -453,7 +454,9 @@ def summarize_ng_reasons(items: list[dict]) -> dict[str, Any]:
         "理由メモを読んで固定カテゴリに分類・集計してください。\n\n" + "\n".join(lines)
     )
     try:
-        data = _call_gemini_schema(user_text, _NG_REASONS_SCHEMA, _NG_REASONS_SYSTEM)
+        # NG件数が多いと内訳つき生成に時間がかかるため長めのタイムアウト
+        data = _call_gemini_schema(user_text, _NG_REASONS_SCHEMA, _NG_REASONS_SYSTEM,
+                                   timeout=120)
     except Exception:  # noqa: BLE001
         return {"enabled": True, "error": "AI集計に失敗しました。時間をおいて再度お試しください。"}
     data["enabled"] = True
