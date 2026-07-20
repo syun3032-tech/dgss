@@ -259,10 +259,22 @@
     var active = rows.filter(function (c) { return ["自社落札", "他社落札", "NG", "見積集まらず"].indexOf(c.status) < 0; });
     var soon = [], over = 0;
     rows.forEach(function (c) {
-      var ms = milestone(c); if (!ms) return;
-      var d = dUntil(ms.date); if (d == null) return;
-      if (d < 0) over++;
-      if (d >= 0 && d <= 7) soon.push({ c: c, ms: ms, d: d });
+      // 期限超過は従来どおり「今の状況に対応する次の期限」で数える
+      var ms = milestone(c);
+      if (ms) { var d0 = dUntil(ms.date); if (d0 != null && d0 < 0) over++; }
+      // 直近アラートは【参加申請】【入札書提出】【開札】の3種それぞれで出す（要望⑯）。
+      // 完了・NGの案件は対象外。民間は見積提出のみ。
+      if (["自社落札", "他社落札", "NG", "見積集まらず"].indexOf(c.status) >= 0) return;
+      var kinds = (c.sector || "公共") === "民間"
+        ? [{ label: "見積提出", date: c.apply_deadline || c.deadline }]
+        : [{ label: "参加申請", date: c.apply_deadline || c.deadline },
+           { label: "入札書提出", date: c.bid_deadline },
+           { label: "開札", date: c.open_date }];
+      kinds.forEach(function (k) {
+        if (!k.date) return;
+        var d = dUntil(k.date); if (d == null) return;
+        if (d >= 0 && d <= 7) soon.push({ c: c, ms: k, d: d });
+      });
     });
     soon.sort(function (a, b) { return a.d - b.d; });
 
@@ -297,7 +309,7 @@
     var warn = "";
     if (soon.length) {
       warn = '<div class="warnbar"><span class="wb-title">直近の締切（入札1週間前〜）</span>' +
-        soon.slice(0, 6).map(function (x) {
+        soon.slice(0, 9).map(function (x) {
           var b = band(x.d);
           // クリックで該当案件を開く（要望⑩）。どの案件のアラートか分かるよう案件名も添える。
           return '<button type="button" class="wb-item" data-case="' + x.c.case_id + '" title="クリックで案件を開く" style="background:' + b.bg + ";color:" + b.fg + '">' +
@@ -428,33 +440,42 @@
     if (sel.length) return sel.reduce(function (s, p) { return s + toYen(p.amount); }, 0);
     return 0;
   }
+  function costTotal(c) {
+    return (c.cost_items || []).reduce(function (s, it) { return s + (toYen(it.amount) || 0); }, 0);
+  }
   function renderProfit() {
-    // 選択中シート（公共/民間）の案件だけで集計する（シート完全分離）。
+    // 自社落札の案件だけで集計する（要望⑭: 他社落札や未落札は利益計算に入れない）。
+    // 利益＝落札額−(自社原価＋依頼先への発注)（要望⑮の式に統一）。
     var rows = CASES.filter(function (c) {
-      return (c.sector || "公共") === state.sheet && (c.win_amount > 0 || c.status === "自社落札");
+      return (c.sector || "公共") === state.sheet && c.status === "自社落札";
     });
     var byCo = {};
     var body = rows.map(function (c) {
-      var cost = partnerCost(c), win = c.win_amount || 0, profit = win - cost;
+      var cost = partnerCost(c), own = costTotal(c), win = c.win_amount || 0;
+      var profit = win - cost - own;
       var rate = win ? Math.round(profit / win * 100) : 0;
       if (c.partner) { byCo[c.partner] = byCo[c.partner] || { order: 0, profit: 0, cnt: 0 }; byCo[c.partner].order += cost; byCo[c.partner].profit += profit; byCo[c.partner].cnt++; }
       return "<tr><td>" + esc(c.title) + "</td><td>" + esc(c.partner || "—") + "</td>" +
         '<td class="num">' + (cost ? fmtMan(cost) : "—") + "</td>" +
+        '<td class="num">' + (own ? fmtMan(own) : "—") + "</td>" +
         '<td class="num">' + (win ? fmtMan(win) : "—") + "</td>" +
         '<td class="num" style="color:' + (profit < 0 ? "#dc2626" : "#16a34a") + '">' + fmtMan(profit) + "</td>" +
         '<td class="num">' + rate + "%</td></tr>";
     }).join("");
     var totWin = rows.reduce(function (s, c) { return s + (c.win_amount || 0); }, 0);
     var totCost = rows.reduce(function (s, c) { return s + partnerCost(c); }, 0);
+    var totOwn = rows.reduce(function (s, c) { return s + costTotal(c); }, 0);
+    var totProfit = totWin - totCost - totOwn;
     var coRows = Object.keys(byCo).map(function (k) {
       var v = byCo[k];
       return "<tr><td>" + esc(k) + "</td><td class=num>" + v.cnt + "</td><td class=num>" + fmtMan(v.order) + "</td><td class=num>" + fmtMan(v.profit) + "</td></tr>";
     }).join("");
     return '<div class="sumrow">' + sumCard(fmtMan(totWin), "落札 合計") + sumCard(fmtMan(totCost), "発注 合計") +
-        sumCard(fmtMan(totWin - totCost), "利益 合計", (totWin - totCost) < 0 ? "danger" : "") + "</div>" +
-      "<h3>案件ごとの内訳</h3>" +
-      '<table class="list"><thead><tr><th>案件名</th><th>発注先</th><th>発注</th><th>落札</th><th>利益</th><th>利益率</th></tr></thead><tbody>' +
-        (body || '<tr><td colspan="6" class="dim">落札済みの案件がまだありません（編集で落札額を入力）。</td></tr>') + "</tbody></table>" +
+        sumCard(fmtMan(totOwn), "自社原価 合計") +
+        sumCard(fmtMan(totProfit), "利益 合計", totProfit < 0 ? "danger" : "") + "</div>" +
+      "<h3>案件ごとの内訳（自社落札のみ）</h3>" +
+      '<table class="list"><thead><tr><th>案件名</th><th>発注先</th><th>発注</th><th>自社原価</th><th>落札</th><th>利益</th><th>利益率</th></tr></thead><tbody>' +
+        (body || '<tr><td colspan="7" class="dim">自社落札の案件がまだありません（状況を「自社落札」にして落札額を入力）。</td></tr>') + "</tbody></table>" +
       (coRows ? '<h3>会社ごとの発注・利益</h3><table class="list"><thead><tr><th>協力会社</th><th>件数</th><th>発注</th><th>利益</th></tr></thead><tbody>' + coRows + "</tbody></table>" : "");
   }
 
@@ -484,8 +505,16 @@
         var maxC = cats.reduce(function (m, x) { return Math.max(m, x.count || 0); }, 1);
         h += cats.map(function (x) {
           var w = Math.max(4, Math.round(((x.count || 0) / maxC) * 100));
+          // 要望⑰: 何の資格が不足か・どの地域が何件かの内訳を数字で出す
+          var bd = (x.breakdown || []).filter(function (b) { return b && b.item && (b.count || 0) > 0; });
+          var bdHtml = bd.length
+            ? '<div class="ngr-bd">内訳: ' + bd.map(function (b) {
+                return "<b>" + esc(b.item) + "</b> " + b.count + "件";
+              }).join(" ／ ") + "</div>"
+            : "";
           return '<div class="ngr"><div class="ngr-h"><b>' + esc(x.reason || "") + "</b><span>" + (x.count || 0) + "件</span></div>" +
             '<div class="ngr-bar"><i style="width:' + w + '%"></i></div>' +
+            bdHtml +
             ((x.examples || []).length ? '<div class="ngr-ex">例: ' + x.examples.slice(0, 2).map(esc).join(" ／ ") + "</div>" : "") +
             "</div>";
         }).join("");
@@ -781,21 +810,16 @@
       var costs = c.cost_items || [];
       var costTot = costs.reduce(function (s, it) { return s + (toYen(it.amount) || 0); }, 0);
       var gross = (toYen(c.bid_plan) && costTot) ? toYen(c.bid_plan) - costTot : null;
-      // 想定利益（議事録合意: 入札予定額 − 依頼先への工事費）。
-      // 依頼先への工事費 = ★採用した依頼先の見積額。まだ採用が無い時は原価合計で代用する。
+      // 想定利益＝落札額−(自社原価＋依頼先への工事費)（要望⑮のご指定式）。
+      // 依頼先への工事費 = ★採用した依頼先の見積額。落札額が入るまでは「—」。
       var fee = (sel && toYen(sel.amount)) ? toYen(sel.amount) : 0;
-      var expCost = fee || costTot;
-      var expBase = fee ? "依頼先への工事費" : "原価合計で代用";
-      var exp = (toYen(c.bid_plan) && expCost) ? toYen(c.bid_plan) - expCost : null;
-      // 確定利益（落札後）: 落札額 − 依頼先への工事費（無ければ原価合計）
-      var fin = (toYen(c.win_amount) && expCost) ? toYen(c.win_amount) - expCost : null;
+      var exp = toYen(c.win_amount) ? toYen(c.win_amount) - costTot - fee : null;
       // 落札額は「自社・他社を問わず案件の最終落札金額」。落札会社名も残してデータ取りに使う。
       var money = '<div class="mq-money">' +
         '<label class="mb"><span>入札予定額</span><input name="bid_plan" value="' + (c.bid_plan || "") + '" placeholder="3000000"></label>' +
         '<label class="mb"><span>落札額(自社・他社問わず)</span><input name="win_amount" value="' + (c.win_amount || "") + '" placeholder="最終落札金額"></label>' +
         '<label class="mb"><span>落札会社名</span><input name="win_company" value="' + esc(c.win_company || "") + '" placeholder="自社 / ○○電気 等"></label>' +
-        '<div class="mb exp ' + (exp == null ? "" : exp < 0 ? "neg" : "pos") + '"><span>想定利益</span><b>' + (exp == null ? "—" : fmtMan(exp)) + "</b><small>入札予定額−" + (exp == null ? "依頼先への工事費" : expBase) + "</small></div>" +
-        '<div class="mb exp ' + (fin == null ? "" : fin < 0 ? "neg" : "pos") + '"><span>確定利益(落札後)</span><b>' + (fin == null ? "—" : fmtMan(fin)) + "</b><small>落札額−" + (fee ? "依頼先への工事費" : "原価合計") + "</small></div></div>";
+        '<div class="mb exp ' + (exp == null ? "" : exp < 0 ? "neg" : "pos") + '"><span>想定利益</span><b>' + (exp == null ? "—" : fmtMan(exp)) + "</b><small>落札額−(自社原価+依頼先)</small></div></div>";
       var costRows = costs.map(function (it, i) {
         return '<div class="mq-row"><div class="mq-r1">' +
           '<input class="mq-co q-clabel" data-i="' + i + '" value="' + esc(it.label || "") + '" placeholder="例: 照明器具 材料費 / LED 60台">' +
@@ -859,9 +883,10 @@
           '<button type="button" class="stp' + (q.replied ? " on" : "") + '" data-act="rep"' + (q.requested ? "" : " disabled") + ">②返信</button>" +
           (q.replied ? '<span class="yn"><button type="button" class="ynb' + (q.feasible === 1 ? " yes" : "") + '" data-act="yes">可</button><button type="button" class="ynb' + (q.feasible === -1 ? " no" : "") + '" data-act="no">否</button></span>' : "") +
           (q.feasible === 1 ? '<span class="mq-amt">¥<input class="q-amt" data-i="' + i + '" value="' + esc(q.amount) + '" placeholder="金額"></span>' : "") +
-          // 入札予定額とこの会社の見積をリンクして想定利益を行内に出す（会議要望）
+          // 入札予定額とこの会社の見積をリンクして差額を行内に出す（会議要望）。
+          // ※「想定利益」は⑮で落札額基準に変わったため、行内は「入札との差額」と表記。
           (q.feasible === 1 && toYen(q.amount) && toYen(c.bid_plan)
-            ? '<span class="dim">想定利益 ' + fmtMan(toYen(c.bid_plan) - toYen(q.amount)) + "</span>" : "") +
+            ? '<span class="dim">入札との差額 ' + fmtMan(toYen(c.bid_plan) - toYen(q.amount)) + "</span>" : "") +
           // 手入力の新規業者は、その場で協力会社リストへ登録できる（会議要望）
           (editable && (q.company || "").trim()
             ? '<button type="button" class="stp q-reg" data-i="' + i + '" title="協力会社リストへ登録">会社登録→</button>' : "") +

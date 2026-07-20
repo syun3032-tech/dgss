@@ -426,7 +426,7 @@ def reports_ng_reasons():
     digest = hashlib.sha256(json.dumps(
         [(i["title"], i["note"], i["flag"]) for i in items],
         ensure_ascii=False, sort_keys=True).encode("utf-8")).hexdigest()[:16]
-    cache_key = f"ngsum:{sheet or '全'}:{digest}"
+    cache_key = f"ngsum2:{sheet or '全'}:{digest}"
     refresh = request.args.get("refresh") == "1"
     if not refresh:
         cached = db.get_ai_assist(cache_key)
