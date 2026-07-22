@@ -426,7 +426,8 @@ def reports_ng_reasons():
     digest = hashlib.sha256(json.dumps(
         [(i["title"], i["note"], i["flag"]) for i in items],
         ensure_ascii=False, sort_keys=True).encode("utf-8")).hexdigest()[:16]
-    cache_key = f"ngsum2:{sheet or '全'}:{digest}"
+    # ngsum3: 内訳の指示を変更（資格・許可の正式名称／等級の機関別内訳）したため版上げ
+    cache_key = f"ngsum3:{sheet or '全'}:{digest}"
     refresh = request.args.get("refresh") == "1"
     if not refresh:
         cached = db.get_ai_assist(cache_key)
@@ -447,6 +448,44 @@ def reports_ng_reasons():
                          result.get("model", ""))
     result["cached"] = False
     return jsonify(result)
+
+
+@app.route("/reports/ng-history", methods=["GET"])
+def reports_ng_history():
+    """保存済みNG集計の記録一覧（シート別・新しい順）。"""
+    import json
+    sheet = (request.args.get("sheet") or "").strip()
+    out = []
+    for r in db.list_ng_reports(sheet):
+        try:
+            data = json.loads(r["payload"])
+        except (ValueError, TypeError):
+            continue
+        out.append({"id": r["id"], "created_at": r["created_at"],
+                    "sheet": r["sheet"], "data": data})
+    return jsonify({"reports": out})
+
+
+@app.route("/reports/ng-history/save", methods=["POST"])
+def reports_ng_history_save():
+    """画面に表示中のNG集計をその時点の記録として保存する（川野さん要望: 集計を記録に残す）。"""
+    import json
+    body = request.get_json(silent=True) or {}
+    data = body.get("data")
+    if not isinstance(data, dict) or not data.get("categories"):
+        return jsonify({"error": "保存する集計結果がありません"}), 400
+    payload = json.dumps(data, ensure_ascii=False)
+    if len(payload) > 200_000:
+        return jsonify({"error": "集計結果が大きすぎます"}), 400
+    sheet = (body.get("sheet") or "公共").strip() or "公共"
+    db.add_ng_report(sheet, payload)
+    return jsonify({"ok": True})
+
+
+@app.route("/reports/ng-history/<int:report_id>/delete", methods=["POST"])
+def reports_ng_history_delete(report_id: int):
+    db.delete_ng_report(report_id)
+    return jsonify({"ok": True})
 
 
 @app.route("/case/<int:case_id>/ai-assist", methods=["POST"])

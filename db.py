@@ -124,6 +124,15 @@ CREATE TABLE IF NOT EXISTS ai_assist (
     created_at  TEXT DEFAULT (datetime('now'))
 );
 
+-- NG理由集計の保存記録（月次レポートのスナップショット）。
+-- ai_assist のキャッシュと違い「その時点の記録」として残す。Supabase KVにも write-through。
+CREATE TABLE IF NOT EXISTS ng_reports (
+    id         INTEGER PRIMARY KEY AUTOINCREMENT,
+    created_at TEXT DEFAULT (datetime('now', '+9 hours')),  -- JST表示用
+    sheet      TEXT DEFAULT '公共',
+    payload    TEXT NOT NULL          -- 集計結果(JSON)
+);
+
 CREATE TABLE IF NOT EXISTS agencies (
     name        TEXT PRIMARY KEY,    -- 発注機関名
     njss_count  INTEGER DEFAULT 0,   -- NJSS案件数（規模の目安）
@@ -569,6 +578,34 @@ def set_ai_assist(external_id: str, payload: str, model: str = "") -> None:
         conn.commit()
 
 
+def list_ng_reports(sheet: str = "") -> list[dict[str, Any]]:
+    """保存したNG集計の記録（新しい順）。payload はJSON文字列のまま返す。"""
+    with _connect() as conn:
+        if sheet:
+            rows = conn.execute(
+                "SELECT * FROM ng_reports WHERE sheet = ? ORDER BY id DESC",
+                (sheet,)).fetchall()
+        else:
+            rows = conn.execute("SELECT * FROM ng_reports ORDER BY id DESC").fetchall()
+        return [dict(r) for r in rows]
+
+
+def add_ng_report(sheet: str, payload: str) -> None:
+    """NG集計の結果をその時点の記録として保存する。"""
+    with _connect() as conn:
+        conn.execute("INSERT INTO ng_reports (sheet, payload) VALUES (?, ?)",
+                     (sheet or "公共", payload))
+        conn.commit()
+    _push_ng_reports()
+
+
+def delete_ng_report(report_id: int) -> None:
+    with _connect() as conn:
+        conn.execute("DELETE FROM ng_reports WHERE id = ?", (report_id,))
+        conn.commit()
+    _push_ng_reports()
+
+
 def get_case_id_by_external(external_id: str) -> int | None:
     """external_id（取得元の安定ID）から現在の案件id を引く。
 
@@ -939,6 +976,12 @@ def _push_exclusions() -> None:
     supa.save("agency_exclusions", sorted(list_agency_exclusions()))
 
 
+def _push_ng_reports() -> None:
+    if _restoring:
+        return
+    supa.save("ng_reports", list_ng_reports())
+
+
 def restore_from_supa() -> dict[str, int]:
     """起動時：Supabaseの保存内容を SQLite へ流し込む（Supabaseが真の保存先）。
 
@@ -1016,6 +1059,22 @@ def restore_from_supa() -> dict[str, int]:
         if isinstance(exc, list) and exc:
             replace_agency_exclusions(exc)
             counts["exclusions"] = len(exc)
+        # NG集計の保存記録。空/欠損のときは消さない（既存を守る）。
+        reps = supa.load("ng_reports")
+        if isinstance(reps, list) and reps:
+            with _connect() as conn:
+                conn.execute("DELETE FROM ng_reports")
+                # list_ng_reports は新しい順で保存しているので、古い順に挿入し直す
+                for r in reversed(reps):
+                    if not isinstance(r, dict) or not r.get("payload"):
+                        continue
+                    conn.execute(
+                        "INSERT INTO ng_reports (created_at, sheet, payload)"
+                        " VALUES (?, ?, ?)",
+                        (r.get("created_at") or "", r.get("sheet") or "公共",
+                         r["payload"]))
+                conn.commit()
+            counts["ng_reports"] = len(reps)
     except Exception as e:  # noqa: BLE001 — 復元失敗でアプリを落とさない
         import logging
         logging.getLogger(__name__).warning("supa restore failed: %s", e)

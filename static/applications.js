@@ -484,14 +484,70 @@
   ============================================================ */
   // NG理由のAI集計（打合せ合意: メモはフリー記述のまま、AIが固定カテゴリに分類・集計）
   var ngSum = null, ngBusy = false;
+  // 集計の保存記録（サーバ保存・シート別）。null=未取得（レポートタブ表示時に遅延ロード）
+  var ngReports = null, ngReportsSheet = "", ngViewId = null;
+
+  function ngCatsHtml(d) {
+    var cats = (d.categories || []).filter(function (x) { return (x.count || 0) > 0; });
+    cats.sort(function (a, b) { return (b.count || 0) - (a.count || 0); });
+    var maxC = cats.reduce(function (m, x) { return Math.max(m, x.count || 0); }, 1);
+    var h = cats.map(function (x) {
+      var w = Math.max(4, Math.round(((x.count || 0) / maxC) * 100));
+      // 要望⑰: 何の資格が不足か・どの地域が何件かの内訳を数字で出す
+      var bd = (x.breakdown || []).filter(function (b) { return b && b.item && (b.count || 0) > 0; });
+      var bdHtml = bd.length
+        ? '<div class="ngr-bd">内訳: ' + bd.map(function (b) {
+            return "<b>" + esc(b.item) + "</b> " + b.count + "件";
+          }).join(" ／ ") + "</div>"
+        : "";
+      return '<div class="ngr"><div class="ngr-h"><b>' + esc(x.reason || "") + "</b><span>" + (x.count || 0) + "件</span></div>" +
+        '<div class="ngr-bar"><i style="width:' + w + '%"></i></div>' +
+        bdHtml +
+        ((x.examples || []).length ? '<div class="ngr-ex">例: ' + x.examples.slice(0, 2).map(esc).join(" ／ ") + "</div>" : "") +
+        "</div>";
+    }).join("");
+    if (d.insight) h += '<p class="ngr-insight">💡 ' + esc(d.insight) + "</p>";
+    return h;
+  }
+
+  function ngHistoryHtml() {
+    if (!ngReports || !ngReports.length) return "";
+    var h = '<div class="ngr-hist" style="margin-top:12px;border-top:1px solid #e2e8f0;padding-top:8px">' +
+      '<div style="font-weight:600;margin-bottom:2px">保存した記録</div>';
+    h += ngReports.map(function (r) {
+      var label = (r.created_at || "").slice(0, 16).replace("T", " ");
+      var total = (r.data || {}).total || 0;
+      return '<div style="display:flex;gap:8px;align-items:center;padding:4px 0;border-bottom:1px dotted #e2e8f0">' +
+        '<span style="flex:1">' + esc(label) + " 時点 ／ NG " + total + "件</span>" +
+        '<button type="button" class="btn ghost small ngr-view" data-id="' + r.id + '">' +
+        (ngViewId === r.id ? "表示中" : "表示") + "</button>" +
+        '<button type="button" class="btn ghost small ngr-del" data-id="' + r.id + '">削除</button>' +
+        "</div>";
+    }).join("");
+    return h + "</div>";
+  }
+
   function ngPanelHtml() {
     var ngCases = CASES.filter(function (c) { return (c.sector || "公共") === state.sheet && c.status === "NG"; });
     var h = '<div class="rep rep-ng"><div class="rep-h"><b>NG理由の集計（AI）</b><span>' + ngCases.length + "件のNG案件</span></div>";
+    // 保存した記録の閲覧モード（その時点のスナップショットを表示）
+    if (ngViewId && ngReports) {
+      var rep = null;
+      ngReports.forEach(function (r) { if (r.id === ngViewId) rep = r; });
+      if (rep) {
+        h += '<p class="dim">' + esc((rep.created_at || "").slice(0, 16).replace("T", " ")) +
+          " 時点の記録（NG " + ((rep.data || {}).total || 0) + "件）</p>" +
+          ngCatsHtml(rep.data || {}) +
+          '<div class="rep-save"><button type="button" class="btn ghost small" id="ngBackBtn">← 最新の集計に戻る</button></div>';
+        return h + ngHistoryHtml() + "</div>";
+      }
+      ngViewId = null;
+    }
     if (!ngCases.length) {
-      return h + '<p class="dim">NG（不参加）にした案件がまだありません。</p></div>';
+      return h + '<p class="dim">NG（不参加）にした案件がまだありません。</p>' + ngHistoryHtml() + "</div>";
     }
     if (ngBusy) {
-      return h + '<p class="dim">AIがNG理由のメモを読んで集計中…（10〜30秒ほどお待ちください）</p></div>';
+      return h + '<p class="dim">AIがNG理由のメモを読んで集計中…（件数が多いと1〜2分かかります）</p></div>';
     }
     if (ngSum && ngSum.sheet === state.sheet) {
       if (ngSum.enabled === false) {
@@ -500,33 +556,18 @@
         h += '<p class="dim">集計に失敗しました。時間をおいて再度お試しください。</p>' +
           '<div class="rep-save"><button type="button" class="btn primary small" id="ngSumBtn">もう一度集計</button></div>';
       } else {
-        var cats = (ngSum.categories || []).filter(function (x) { return (x.count || 0) > 0; });
-        cats.sort(function (a, b) { return (b.count || 0) - (a.count || 0); });
-        var maxC = cats.reduce(function (m, x) { return Math.max(m, x.count || 0); }, 1);
-        h += cats.map(function (x) {
-          var w = Math.max(4, Math.round(((x.count || 0) / maxC) * 100));
-          // 要望⑰: 何の資格が不足か・どの地域が何件かの内訳を数字で出す
-          var bd = (x.breakdown || []).filter(function (b) { return b && b.item && (b.count || 0) > 0; });
-          var bdHtml = bd.length
-            ? '<div class="ngr-bd">内訳: ' + bd.map(function (b) {
-                return "<b>" + esc(b.item) + "</b> " + b.count + "件";
-              }).join(" ／ ") + "</div>"
-            : "";
-          return '<div class="ngr"><div class="ngr-h"><b>' + esc(x.reason || "") + "</b><span>" + (x.count || 0) + "件</span></div>" +
-            '<div class="ngr-bar"><i style="width:' + w + '%"></i></div>' +
-            bdHtml +
-            ((x.examples || []).length ? '<div class="ngr-ex">例: ' + x.examples.slice(0, 2).map(esc).join(" ／ ") + "</div>" : "") +
-            "</div>";
-        }).join("");
-        if (ngSum.insight) h += '<p class="ngr-insight">💡 ' + esc(ngSum.insight) + "</p>";
-        h += '<div class="rep-save"><button type="button" class="btn ghost small" id="ngSumBtn" data-refresh="1">再集計</button></div>';
+        h += ngCatsHtml(ngSum);
+        h += '<p class="dim" style="font-size:11px">内訳はNG理由メモの記載から抽出します（推測はしません）。メモに資格名・等級・地域を書くほど内訳が細かく出ます。</p>';
+        h += '<div class="rep-save">' +
+          '<button type="button" class="btn primary small" id="ngRecBtn">この集計を記録に残す</button> ' +
+          '<button type="button" class="btn ghost small" id="ngSumBtn" data-refresh="1">再集計</button></div>';
       }
-      return h + "</div>";
+      return h + ngHistoryHtml() + "</div>";
     }
     h += '<p class="dim">NG案件の理由メモをAIが読み、「実績不足」「地域要件」などの固定カテゴリで件数を集計します。' +
       "（例: 実績なしだけで年間100件逃しているなら、実績づくりを計画する材料になります）</p>" +
       '<div class="rep-save"><button type="button" class="btn primary small" id="ngSumBtn">AIでNG理由を集計</button></div>';
-    return h + "</div>";
+    return h + ngHistoryHtml() + "</div>";
   }
 
   function renderReports() {
@@ -666,6 +707,52 @@
         .then(function (r) { return r.json(); })
         .then(function (d) { d = d || {}; d.sheet = state.sheet; ngSum = d; ngBusy = false; render(); })
         .catch(function () { ngSum = { error: true, sheet: state.sheet }; ngBusy = false; render(); });
+    });
+    // NG集計の保存記録: 遅延ロード（レポートタブを開いたとき・シート切替時のみ）
+    if (document.querySelector(".rep-ng") && (ngReports === null || ngReportsSheet !== state.sheet)) {
+      ngReportsSheet = state.sheet; ngReports = [];
+      fetch("/reports/ng-history?sheet=" + encodeURIComponent(state.sheet))
+        .then(function (r) { return r.json(); })
+        .then(function (d) { ngReports = (d && d.reports) || []; render(); })
+        .catch(function () {});
+    }
+    // NG集計を記録として保存（川野さん要望: 集計を記録に残す）
+    var ngRec = $("ngRecBtn");
+    if (ngRec) ngRec.addEventListener("click", function () {
+      if (!ngSum || !(ngSum.categories || []).length) return;
+      ngRec.disabled = true; ngRec.textContent = "保存中…";
+      fetch("/reports/ng-history/save", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ sheet: state.sheet, data: ngSum }),
+      }).then(function (r) { return r.json(); })
+        .then(function (d) {
+          if (d && d.ok) { ngReports = null; render(); }
+          else {
+            ngRec.disabled = false; ngRec.textContent = "この集計を記録に残す";
+            alert((d && d.error) || "保存に失敗しました");
+          }
+        })
+        .catch(function () {
+          ngRec.disabled = false; ngRec.textContent = "この集計を記録に残す";
+          alert("保存に失敗しました。通信環境をご確認ください。");
+        });
+    });
+    var ngBack = $("ngBackBtn");
+    if (ngBack) ngBack.addEventListener("click", function () { ngViewId = null; render(); });
+    Array.prototype.forEach.call(document.querySelectorAll(".ngr-view"), function (b) {
+      b.addEventListener("click", function () { ngViewId = Number(b.getAttribute("data-id")); render(); });
+    });
+    Array.prototype.forEach.call(document.querySelectorAll(".ngr-del"), function (b) {
+      b.addEventListener("click", function () {
+        if (!confirm("この記録を削除しますか？")) return;
+        fetch("/reports/ng-history/" + b.getAttribute("data-id") + "/delete", { method: "POST" })
+          .then(function (r) { return r.json(); })
+          .then(function () {
+            if (ngViewId === Number(b.getAttribute("data-id"))) ngViewId = null;
+            ngReports = null; render();
+          });
+      });
     });
     // 月次レポート保存
     Array.prototype.forEach.call(document.querySelectorAll(".rep-btn"), function (b) {
