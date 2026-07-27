@@ -570,6 +570,50 @@
     return h + ngHistoryHtml() + "</div>";
   }
 
+  function renderMonthlySummary() {
+    // 月別の 案件数・入札数・落札数・NG数 の一覧表（川野さん要望）。
+    // 月は開札日（民間は見積提出期限）で決めるが、日付が無い案件は更新日の月で数える。
+    // NG案件は開札日が入らないまま終わることが多く、開札日だけだと集計から漏れるため。
+    var cols = state.sheet === "民間"
+      ? [{ h: "提出完了", st: { "提出完了": 1 } },
+         { h: "失注/受注 保留", st: { "失注か受注か保留中": 1 } },
+         { h: "NG", st: { "NG": 1 } }]
+      : [{ h: "入札", st: { "入札書提出済み": 1, "自社落札": 1, "他社落札": 1 } },
+         { h: "自社落札", st: { "自社落札": 1 } },
+         { h: "他社落札", st: { "他社落札": 1 } },
+         { h: "NG", st: { "NG": 1 } }];
+    var months = {};
+    CASES.forEach(function (c) {
+      if ((c.sector || "公共") !== state.sheet) return;
+      var d = state.sheet === "民間" ? (c.open_date || c.apply_deadline || c.deadline) : c.open_date;
+      var m = ((d || c.updated_at || "")).slice(0, 7);
+      if (!m) return;
+      var t = months[m] = months[m] || cols.map(function () { return 0; }).concat([0]);
+      t[cols.length]++;   // 末尾は案件数（合計）
+      cols.forEach(function (col, i) { if (col.st[c.status]) t[i]++; });
+    });
+    var keys = Object.keys(months).sort();
+    if (!keys.length) return "";
+    var sum = cols.map(function () { return 0; }).concat([0]);
+    var body = keys.map(function (m) {
+      var t = months[m];
+      t.forEach(function (v, i) { sum[i] += v; });
+      return "<tr><td><b>" + m + "</b></td><td>" + t[cols.length] + "</td>" +
+        cols.map(function (_, i) { return "<td>" + t[i] + "</td>"; }).join("") + "</tr>";
+    }).join("");
+    return '<div class="rep"><div class="rep-h"><b>月別サマリー</b><span>入札・落札・NGの件数</span></div>' +
+      '<table class="list"><thead><tr><th>月</th><th>案件数</th>' +
+      cols.map(function (c) { return "<th>" + c.h + "</th>"; }).join("") + "</tr></thead><tbody>" +
+      body +
+      '<tr><td><b>合計</b></td><td><b>' + sum[cols.length] + "</b></td>" +
+      cols.map(function (_, i) { return "<td><b>" + sum[i] + "</b></td>"; }).join("") + "</tr>" +
+      "</tbody></table>" +
+      '<p class="dim" style="font-size:11px">月は開札日' +
+      (state.sheet === "民間" ? "・見積提出期限" : "") +
+      "の月、日付が無い案件（NGなど）は最終更新日の月で数えています。" +
+      (state.sheet === "民間" ? "" : "「入札」は入札書提出済み・自社落札・他社落札の合計です。") + "</p></div>";
+  }
+
   function renderReports() {
     // 選択中シートの案件だけを月別集計。民間は開札日が無いので見積提出期限で束ねる。
     var months = {};
@@ -596,7 +640,7 @@
     var emptyRep = state.sheet === "民間"
       ? '<p class="empty">見積提出期限が入った民間案件がまだありません（編集で期限を入力すると月別に集計されます）。</p>'
       : '<p class="empty">開札日が入った案件がまだありません（編集で開札日を入力すると月別に集計されます）。</p>';
-    return ngPanelHtml() + (blocks || emptyRep) + savedHtml;
+    return renderMonthlySummary() + ngPanelHtml() + (blocks || emptyRep) + savedHtml;
   }
 
   /* ============================================================
