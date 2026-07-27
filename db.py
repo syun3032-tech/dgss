@@ -387,6 +387,13 @@ def upsert_cases(rows: list[dict[str, Any]]) -> int:
 # 添付サイズ表記など、案件名に混入する飾りの除去（突合キー用）
 _TITLE_NOISE_RE = re.compile(r"[（(]\d+(?:\.\d+)?\s*(?:kb|kbyte|mb|kバイト|キロバイト)[）)]",
                              re.IGNORECASE)
+# 再公告マーカー（同一案件のやり直し公告。突合時は締切が変わっていても同一とみなす）
+# 書き方の揺れ: （再公告）（再度公告）（再再度公告）（再再再度公告）（再々公告）
+# （再入札）（再度）、および【再度公告】のような【】書き
+_REPOST_RE = re.compile(r"[（(【](再入札|再+々?度*公告|再度)[）)】]")
+# 先頭の飾り【…】。地区名などを消さないよう、状態・案内系の語を含むものだけ除去する
+# （例:【終了しました】【入札公告】【お知らせ】。【A地区】等は別案件の識別子なので残す）
+_LEAD_BRACKET_RE = re.compile(r"^【[^】]*(終了|公告|入札|お知らせ|案内|募集|受付)[^】]*】")
 
 
 def _norm_key(text: str) -> str:
@@ -395,6 +402,20 @@ def _norm_key(text: str) -> str:
     t = unicodedata.normalize("NFKC", str(text or "")).lower()
     t = _TITLE_NOISE_RE.sub("", t)
     return re.sub(r"\s+", "", t)
+
+
+def _norm_title_key(title: str) -> str:
+    """案件名の突合キー。_norm_key に加え、状態プレフィックスと再公告マーカーを除く。
+
+    自治体は閉札後にページ名を「【終了しました】…」へ書き換え、官公需APIがそれを
+    別記事として再収集する（同じ案件が2〜3行になる主因）。再公告(（再度公告）等)も
+    同じ案件のやり直しなので同名として束ねる。
+    """
+    import unicodedata
+    t = unicodedata.normalize("NFKC", str(title or ""))
+    t = _LEAD_BRACKET_RE.sub("", t)
+    t = _REPOST_RE.sub("", t)
+    return _norm_key(t)
 
 
 def _parse_iso(d: str):
@@ -409,18 +430,23 @@ def _parse_iso(d: str):
 def dedupe_cases(window_days: int = 150) -> int:
     """取得元をまたいだ同一案件の重複を統合し、削除した件数を返す。
 
-    官公需API・PPI・自治体スクレイプ・調達ポータル落札実績は同じ案件を別IDで返すことが
-    多く（同じ公告の再掲・機関サイトの日次転載など）、一覧に同名案件が並んでいた。
+    実データを読んで確認した重複の発生原因と対応（2026-07-27 監査）:
+      1. 自治体が閉札後にページ名を「【終了しました】…」へ書き換え、官公需APIが
+         別記事として再収集 → _norm_title_key で状態プレフィックスを除いて突合
+      2. 再公告（（再度公告）等）は締切が変わる → マーカー付きの行は締切が
+         食い違っても同一クラスタに束ねる（新しい公告が古い公告を引き継ぐ）
+      3. 同じページを官公需APIが後日再インデックス（公告日だけ更新される）
+         → 同一の個別detail_url なら日付に関係なく同一とみなす
+      4. 同じ公告が「省庁」と「地方支分部局」の両方の機関名で二重登録される
+         （例: 法務省／法務省札幌法務局）→ 機関名が包含関係かつ締切一致等の
+         強い一致がある場合のみ同一とみなす
+      5. 調達ポータル落札実績は落札発表日が公告から数ヶ月遅れる
+         → 落札実績が絡む突合だけ日付窓を広げる（落札者の後付けを成立させる）
 
-    突合ルール（安全側に倒す）:
-      - 発注機関×案件名（_norm_key で正規化）が一致する行だけを候補にする
-      - 締切が両方入っていて食い違う行は別案件とみなす（毎年の同名案件を守る）
-      - 公告日が window_days 日より離れている行も別案件とみなす（年度をまたぐ再調達を守る）
-    統合ルール:
-      - 残す1件は「申請あり ＞ 詳細URLあり ＞ 締切あり ＞ 公告日が新しい」の優先で選ぶ
-      - 消す行にしか無い情報（締切/URL/仕様書/予定価格/落札者/説明）は残す行へ引き継ぐ
-        （調達ポータル落札実績との突合で、公告案件に落札者が後付けされる）
-      - 申請(applications)が付いた行は絶対に消さない
+    誤統合を避けるため据え置く（統合しない）と確認したもの:
+      - 同名で締切が異なるシリーズ工事（例: 福島県「道路橋りょう維持工事」。
+        工期・公告PDFが異なる別契約が同名で多数発注される）
+      - 公告日が年度をまたぐ同名案件（毎年の再調達）
     """
     cols = ("id", "external_id", "source", "title", "agency", "deadline",
             "announced_date", "detail_url", "spec_status", "spec_reason", "spec_url",
@@ -430,11 +456,18 @@ def dedupe_cases(window_days: int = 150) -> int:
             f"SELECT {', '.join(cols)} FROM cases WHERE source != 'manual'")]
         app_ids = {r[0] for r in conn.execute("SELECT case_id FROM applications")}
 
-    groups: dict[tuple[str, str], list[dict]] = {}
+    import procurement  # 汎用URL判定（procurementはdb非依存＝循環しない）
+
+    groups: dict[str, list[dict]] = {}
     for r in rows:
-        key = (_norm_key(r["title"]), _norm_key(r["agency"]))
-        if not key[0]:
+        key = _norm_title_key(r["title"])
+        if not key:
             continue
+        r["_na"] = _norm_key(r["agency"])                       # 機関名の突合キー
+        r["_marker"] = bool(_REPOST_RE.search(r["title"] or "")) # 再公告マーカー
+        r["_award"] = r["source"] == "調達ポータル落札実績"
+        u = (r["detail_url"] or "").strip()
+        r["_url"] = u if procurement.is_real_link(u) else ""     # 個別ページのURLのみ
         groups.setdefault(key, []).append(r)
 
     # 引き継ぎ対象（残す行の値が空/0のときだけ消す行から補完する）
@@ -443,36 +476,86 @@ def dedupe_cases(window_days: int = 150) -> int:
     to_delete: list[int] = []
     keeper_updates: dict[int, dict[str, Any]] = {}
 
-    for group in groups.values():
+    def _agency_compat(na: str, cl: dict) -> tuple[bool, bool]:
+        """(互換か, 包含関係による互換か)。同一機関 or 片方が他方を含む機関名なら互換。"""
+        for a in cl["agencies"]:
+            if na == a:
+                return True, False
+            if na and a and (na in a or a in na):
+                return True, True
+        return False, False
+
+    for key, group in groups.items():
         if len(group) < 2:
             continue
-        # 公告日順に並べ、締切の矛盾なし＆公告日が近い行を同一クラスタに束ねる
+        # 公告日順に並べ、同一案件と判断できる行を同一クラスタに束ねる
         group.sort(key=lambda r: (r["announced_date"] or "9999-12-31", r["id"]))
-        clusters: list[dict] = []   # {rows, deadline, last_date}
+        clusters: list[dict] = []
         for r in group:
             d, ad = (r["deadline"] or "").strip()[:10], _parse_iso(r["announced_date"])
             placed = False
             for cl in clusters:
-                if d and cl["deadline"] and d != cl["deadline"]:
-                    continue
-                if ad and cl["last_date"] and (ad - cl["last_date"]).days > window_days:
-                    continue
-                cl["rows"].append(r)
-                cl["deadline"] = cl["deadline"] or d
-                cl["last_date"] = max(cl["last_date"] or ad, ad) if ad else cl["last_date"]
-                placed = True
-                break
+                # 原因3: 同一の個別URLは日付・機関表記に関係なく同一案件
+                if r["_url"] and r["_url"] in cl["urls"]:
+                    placed = True
+                else:
+                    ag_ok, ag_contain = _agency_compat(r["_na"], cl)
+                    if not ag_ok:
+                        continue
+                    # 原因4: 省庁と支分部局が同じ公告を同日に二重登録し、ページ差で
+                    # 締切の読み取りだけズレるパターン。案件名が十分固有（正規化20字
+                    # 以上）なら同一とみなす。短い汎用名は別組織の同名調達があり得る
+                    # ので対象外
+                    same_day = bool(r["announced_date"]) and r["announced_date"] in cl["ann_dates"]
+                    dual_reg = same_day and ag_contain and len(key) >= 20
+                    # 原因2: 再公告（または上記の二重登録）の場合のみ締切の食い違いを許す
+                    if d and cl["deadline"] and d != cl["deadline"] \
+                            and not (r["_marker"] or cl["has_marker"] or dual_reg):
+                        continue
+                    # 原因5: 落札実績が絡む場合は日付窓を広げる（発表が数ヶ月遅れる）
+                    win = 270 if (r["_award"] or cl["has_award"]) else window_days
+                    if ad and cl["last_date"] and (ad - cl["last_date"]).days > win:
+                        continue
+                    # 機関名が包含関係どまり（完全一致でない）のときは強い一致＝
+                    # 締切一致／落札実績／同日二重登録／同日の再公告 が無い限り
+                    # 別案件とみなす（別組織の同名調達を守る）
+                    if ag_contain and not (
+                            (d and cl["deadline"] and d == cl["deadline"])
+                            or (r["_award"] or cl["has_award"]) or dual_reg
+                            or (same_day and (r["_marker"] or cl["has_marker"]))):
+                        continue
+                    placed = True
+                if placed:
+                    cl["rows"].append(r)
+                    cl["deadline"] = cl["deadline"] or d
+                    if ad:
+                        cl["last_date"] = max(cl["last_date"] or ad, ad)
+                    cl["agencies"].add(r["_na"])
+                    if r["announced_date"]:
+                        cl["ann_dates"].add(r["announced_date"])
+                    if r["_url"]:
+                        cl["urls"].add(r["_url"])
+                    cl["has_marker"] = cl["has_marker"] or r["_marker"]
+                    cl["has_award"] = cl["has_award"] or r["_award"]
+                    break
             if not placed:
-                clusters.append({"rows": [r], "deadline": d, "last_date": ad})
+                clusters.append({"rows": [r], "deadline": d, "last_date": ad,
+                                 "agencies": {r["_na"]}, "urls": {r["_url"]} - {""},
+                                 "ann_dates": {r["announced_date"]} - {""},
+                                 "has_marker": r["_marker"], "has_award": r["_award"]})
 
         for cl in clusters:
             crows = cl["rows"]
             if len(crows) < 2:
                 continue
-            # 残す1件: 申請あり＞詳細URLあり＞締切あり＞公告日が新しい＞id大
+            # 残す1件: 申請あり＞詳細URLあり＞締切あり＞「終了」表記でない＞
+            # 公告日が新しい＞再公告＞id大
+            # （「【終了しました】…」の書き換え版ではなく元の綺麗な題名を残す。
+            #   同日なら再公告側＝最新のやり直し公告を残す）
             keeper = max(crows, key=lambda r: (
                 r["id"] in app_ids, bool(r["detail_url"]), bool(r["deadline"]),
-                r["announced_date"] or "", r["id"]))
+                "終了" not in (r["title"] or ""),
+                r["announced_date"] or "", r["_marker"], r["id"]))
             fills = keeper_updates.setdefault(keeper["id"], {})
             for r in crows:
                 if r["id"] == keeper["id"]:
@@ -489,6 +572,11 @@ def dedupe_cases(window_days: int = 150) -> int:
                 if not keeper["budget_yen"] and r["budget_yen"]:
                     fills["budget_yen"] = r["budget_yen"]
                 to_delete.append(r["id"])
+            # 原因4（省庁/支分部局の二重登録）を束ねた場合は、より具体的な機関名を残す
+            best_ag = max((r["agency"] or "" for r in crows), key=len)
+            if best_ag and keeper["agency"] and best_ag != keeper["agency"] \
+                    and _norm_key(keeper["agency"]) in _norm_key(best_ag):
+                fills["agency"] = best_ag
             if not fills:
                 keeper_updates.pop(keeper["id"], None)
 

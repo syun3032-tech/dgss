@@ -106,8 +106,8 @@ db.upsert_cases([
     case("E1", title="変電設備更新工事", announced_date="2026-05-01",
          detail_url="https://example.com/e1", deadline="2026-06-01"),
     case("E2", title="変電設備更新工事", source="調達ポータル落札実績",
-         announced_date="2026-05-20", winner="株式会社テスト電工",
-         win_price="12,000,000"),
+         announced_date="2026-10-01",  # 公告から153日後の落札発表（広い日付窓で突合）
+         winner="株式会社テスト電工", win_price="12,000,000"),
 ])
 db.dedupe_cases()
 rows = db.list_cases(q="変電設備更新工事")
@@ -115,6 +115,50 @@ check("1件に統合される", len(rows) == 1)
 check("公告行に落札者が付く",
       rows[0]["detail_url"] == "https://example.com/e1"
       and rows[0]["winner"] == "株式会社テスト電工")
+
+print("[5b] 実データ監査で見つけた重複原因の統合（2026-07-27）")
+db.upsert_cases([
+    # 原因1+3: 閉札後の「【終了しました】」再収集（同一ページURL・公告日だけ更新）
+    case("F1", title="一般競争入札の実施（合同庁舎ソーラー設置工事）",
+         announced_date="2025-09-01", deadline="2025-09-05",
+         detail_url="https://example.jp/f/232789.html"),
+    case("F2", title="【終了しました】一般競争入札の実施（合同庁舎ソーラー設置工事）",
+         announced_date="2025-09-25", detail_url="https://example.jp/f/232789.html"),
+    case("F3", title="【終了しました】一般競争入札の実施（合同庁舎ソーラー設置工事）",
+         announced_date="2026-07-01", detail_url="https://example.jp/f/232789.html"),
+    # 原因2: 再公告（締切が変わる）
+    case("G1", title="津波観測施設基礎等設置工事", announced_date="2026-07-01",
+         deadline="2026-07-20", detail_url="https://example.jp/g1"),
+    case("G2", title="津波観測施設基礎等設置工事（再度公告）", announced_date="2026-07-22",
+         deadline="2026-08-08", detail_url="https://example.jp/g2"),
+    # 原因4: 省庁/地方支分部局の二重登録（締切一致なら統合・具体名を残す）
+    case("H1", title="法務局高圧設備改修他工事", agency="法務省",
+         announced_date="2026-06-01", deadline="2026-07-01"),
+    case("H2", title="法務局高圧設備改修他工事", agency="法務省札幌法務局",
+         announced_date="2026-06-01", deadline="2026-07-01"),
+    # 機関名が包含関係でも締切が違えば別案件（別組織の同名調達を守る）
+    case("H3", title="保守点検業務", agency="大阪府",
+         announced_date="2026-06-01", deadline="2026-06-20"),
+    case("H4", title="保守点検業務", agency="大阪府警察本部",
+         announced_date="2026-06-01", deadline="2026-07-20"),
+    # 【地区名】は案件の識別子なので統合しない
+    case("I1", title="【A地区】外構電気工事", announced_date="2026-06-01"),
+    case("I2", title="【B地区】外構電気工事", announced_date="2026-06-01"),
+])
+db.dedupe_cases()
+rows = db.list_cases(q="合同庁舎ソーラー設置工事")
+check("【終了しました】3行→1行・元タイトルと締切が残る",
+      len(rows) == 1 and rows[0]["title"].startswith("一般競争")
+      and rows[0]["deadline"] == "2025-09-05")
+rows = db.list_cases(q="津波観測施設基礎等設置工事")
+check("再公告は締切違いでも統合され新しい公告が残る",
+      len(rows) == 1 and "再度公告" in rows[0]["title"]
+      and rows[0]["deadline"] == "2026-08-08")
+rows = db.list_cases(q="法務局高圧設備改修他工事")
+check("省庁/支分部局の二重登録は統合され具体的な機関名になる",
+      len(rows) == 1 and rows[0]["agency"] == "法務省札幌法務局")
+check("機関包含でも締切が違えば別案件のまま", len(db.list_cases(q="保守点検業務")) == 2)
+check("【A地区】/【B地区】は別案件のまま", len(db.list_cases(q="外構電気工事")) == 2)
 
 print("[6] AI使用量の加算（月×機能×モデル）＋押した回数")
 db.add_ai_usage("応募アシスト", "gemini-2.5-flash", 1000, 200)
