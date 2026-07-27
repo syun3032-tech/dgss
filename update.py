@@ -180,6 +180,13 @@ def run(reset: bool = False, koukai_instances: list[str] | None = None,
     except Exception as e:  # noqa: BLE001
         print(f"[監視機関リスト] 取得失敗（スキップ）: {str(e)[:80]}")
 
+    # 5) 取得元をまたいだ同一案件の重複を統合（官公需API/PPI/自治体/落札実績の突合）
+    try:
+        nd = db.dedupe_cases()
+        print(f"[重複統合] {nd} 件を統合")
+    except Exception as e:  # noqa: BLE001 — 統合失敗でも更新自体は成立させる
+        print(f"[重複統合] 失敗（スキップ）: {str(e)[:80]}")
+
     print(f"=== 更新完了: 案件 {db.count_cases()} 件 / 監視機関 {db.count_agencies()} 機関 ===")
 
 

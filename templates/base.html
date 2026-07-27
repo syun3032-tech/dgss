@@ -9,7 +9,7 @@
 <body>
 <div class="app">
   <aside class="sidebar">
-    <div class="logo">DGSS</div>
+    <div class="logo" id="logoBtn" title="設定・AI使用量" style="cursor:pointer">DGSS</div>
     <nav>
       <a href="{{ url_for('cases') }}" class="{{ 'active' if nav_active == 'cases' }}">案件を探す</a>
       <a href="{{ url_for('cases', open=1, budget_min=10000000, sort='budget') }}" class="{{ 'active' if nav_active == 'budget' }}">今応募できる1000万↑</a>
@@ -52,6 +52,98 @@
   </main>
 </div>
 {% block scripts %}{% endblock %}
+<!-- DGSSロゴ→設定モーダル（AI使用量＝従量請求の根拠を表示） -->
+<div id="dgssModal" style="display:none;position:fixed;inset:0;background:rgba(15,23,42,.45);z-index:1000;align-items:flex-start;justify-content:center;overflow:auto;padding:24px 12px">
+  <div style="background:#fff;border-radius:12px;max-width:640px;width:100%;padding:20px 22px;box-shadow:0 10px 40px rgba(0,0,0,.2)">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px">
+      <h2 style="margin:0;font-size:18px">DGSS 設定</h2>
+      <button type="button" id="dgssClose" style="border:0;background:none;font-size:22px;cursor:pointer;line-height:1">×</button>
+    </div>
+    <h3 style="margin:14px 0 6px;font-size:15px">AI使用量</h3>
+    <p style="margin:0 0 10px;color:#64748b;font-size:12px">
+      AI機能（応募アシスト・案件AI概要・NG理由集計・会社サイト取込）の利用集計です。
+      「押した回数」はAI機能を使った全回数、「課金回数」は実際にAIを呼んだ回数。
+      同じ案件の2回目以降は保存済みの結果を返すため課金されません。
+    </p>
+    <div id="dgssUsage" style="font-size:13px"><p style="color:#64748b">読み込み中…</p></div>
+  </div>
+</div>
+<script>
+(function () {
+  var modal = document.getElementById('dgssModal');
+  var btn = document.getElementById('logoBtn');
+  if (!modal || !btn) return;
+  function esc(s) {
+    return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c];
+    });
+  }
+  function num(n) { return (n || 0).toLocaleString('ja-JP'); }
+  function yen(n) { return '約' + (Math.round((n || 0) * 10) / 10).toLocaleString('ja-JP') + '円'; }
+  var TBL = 'width:100%;border-collapse:collapse;margin-bottom:14px';
+  var TH = 'text-align:right;padding:4px 8px;border-bottom:1px solid #e2e8f0;white-space:nowrap';
+  var TD = 'text-align:right;padding:4px 8px;border-bottom:1px solid #f1f5f9;white-space:nowrap';
+  function render(d) {
+    var box = document.getElementById('dgssUsage');
+    var rows = (d && d.rows) || [];
+    if (!rows.length) {
+      box.innerHTML = '<p style="color:#64748b">まだAIの使用記録がありません（AI機能を使うとここに集計されます）。</p>';
+      return;
+    }
+    // 月別合計＋全期間累計（taps=押した回数（キャッシュ応答含む）／calls=課金対象のAPI呼び出し）
+    var byMonth = {}, byKind = {}, order = [];
+    var tot = { taps: 0, calls: 0, pt: 0, ot: 0, jpy: 0 };
+    rows.forEach(function (r) {
+      if (!byMonth[r.month]) { byMonth[r.month] = { taps: 0, calls: 0, pt: 0, ot: 0, jpy: 0 }; order.push(r.month); }
+      var m = byMonth[r.month];
+      m.taps += r.taps || 0; m.calls += r.calls; m.pt += r.prompt_tokens; m.ot += r.output_tokens; m.jpy += r.cost_jpy;
+      tot.taps += r.taps || 0; tot.calls += r.calls; tot.pt += r.prompt_tokens; tot.ot += r.output_tokens; tot.jpy += r.cost_jpy;
+      var k = byKind[r.kind] = byKind[r.kind] || { taps: 0, calls: 0, jpy: 0 };
+      k.taps += r.taps || 0; k.calls += r.calls; k.jpy += r.cost_jpy;
+    });
+    var h = '<div style="font-weight:600;margin-bottom:4px">月別</div>' +
+      '<table style="' + TBL + '"><thead><tr>' +
+      '<th style="' + TH + ';text-align:left">月</th><th style="' + TH + '">押した回数</th>' +
+      '<th style="' + TH + '">課金回数</th>' +
+      '<th style="' + TH + '">入力トークン</th><th style="' + TH + '">出力トークン</th>' +
+      '<th style="' + TH + '">利用料</th></tr></thead><tbody>';
+    order.forEach(function (mo) {
+      var m = byMonth[mo];
+      h += '<tr><td style="' + TD + ';text-align:left"><b>' + esc(mo) + '</b></td><td style="' + TD + '">' + num(m.taps) +
+        '</td><td style="' + TD + '">' + num(m.calls) +
+        '</td><td style="' + TD + '">' + num(m.pt) + '</td><td style="' + TD + '">' + num(m.ot) +
+        '</td><td style="' + TD + '"><b>' + yen(m.jpy) + '</b></td></tr>';
+    });
+    h += '<tr><td style="' + TD + ';text-align:left"><b>累計（今まで）</b></td><td style="' + TD + '"><b>' + num(tot.taps) +
+      '</b></td><td style="' + TD + '"><b>' + num(tot.calls) +
+      '</b></td><td style="' + TD + '"><b>' + num(tot.pt) + '</b></td><td style="' + TD + '"><b>' + num(tot.ot) +
+      '</b></td><td style="' + TD + '"><b>' + yen(tot.jpy) + '</b></td></tr>';
+    h += '</tbody></table>';
+    // 機能別（全期間）
+    h += '<div style="font-weight:600;margin-bottom:4px">機能別（全期間）</div>' +
+      '<table style="' + TBL + '"><thead><tr><th style="' + TH + ';text-align:left">機能</th>' +
+      '<th style="' + TH + '">押した回数</th><th style="' + TH + '">課金回数</th><th style="' + TH + '">利用料</th></tr></thead><tbody>';
+    Object.keys(byKind).forEach(function (k) {
+      h += '<tr><td style="' + TD + ';text-align:left">' + esc(k) + '</td><td style="' + TD + '">' + num(byKind[k].taps) +
+        '</td><td style="' + TD + '">' + num(byKind[k].calls) +
+        '</td><td style="' + TD + '">' + yen(byKind[k].jpy) + '</td></tr>';
+    });
+    h += '</tbody></table>' +
+      '<p style="color:#94a3b8;font-size:11px;margin:0">' + esc(d.note || '') + '</p>';
+    box.innerHTML = h;
+  }
+  btn.addEventListener('click', function () {
+    modal.style.display = 'flex';
+    fetch('/ai-usage').then(function (r) { return r.json(); }).then(render)
+      .catch(function () {
+        document.getElementById('dgssUsage').innerHTML =
+          '<p style="color:#dc2626">使用量を取得できませんでした。時間をおいて再度お試しください。</p>';
+      });
+  });
+  document.getElementById('dgssClose').addEventListener('click', function () { modal.style.display = 'none'; });
+  modal.addEventListener('click', function (e) { if (e.target === modal) modal.style.display = 'none'; });
+})();
+</script>
 <script>window.__KAWANO_PROFILE_SET = {{ 'true' if profile_set else 'false' }};</script>
 <script>
 /* マイ条件のブラウザ保存→自動復元（無料ホストでディスクが揮発しても消えないように）。

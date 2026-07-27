@@ -34,8 +34,11 @@ import procurement
 
 _ENV_PATH = Path(__file__).parent / ".env"
 _API_BASE = "https://generativelanguage.googleapis.com/v1beta/models"
-# 全文PDFを読ませる最大文字数（Geminiの入力。3〜7千字が普通なので余裕を持たせる）。
-_PDF_MAX_CHARS = 14000
+# 全文PDF・仕様書を読ませる最大文字数。実質「最後まで読む」ための安全上限
+# （長大な図面付き仕様書などの暴走防止。10万字≒Gemini入力15万トークン程度で1Mの枠内）。
+_PDF_MAX_CHARS = 100_000
+# 会社サイト本文の最大文字数（同じく実質上限なしの安全弁）。
+_HTML_MAX_CHARS = 100_000
 
 
 def _fetch_pdf_text(url: str, timeout: int = 25) -> str:
@@ -248,8 +251,26 @@ def _build_user_text(case: dict, profile: dict | None, req: dict | None,
     )
 
 
-def _call_gemini(user_text: str) -> dict[str, Any]:
-    """Gemini に構造化出力で問い合わせ、JSON dict を返す（依存はstdlibのみ）。"""
+def _record_usage(kind: str, model: str, api_response: dict) -> None:
+    """API応答の usageMetadata を月次使用量へ記録する（従量請求の根拠）。
+
+    記録に失敗してもAI機能自体は止めない。キャッシュ応答はここを通らないので
+    「実際に課金されたAPI呼び出し」だけが数えられる。
+    """
+    try:
+        import db
+        um = api_response.get("usageMetadata") or {}
+        db.add_ai_usage(
+            kind, model,
+            um.get("promptTokenCount") or 0,
+            (um.get("candidatesTokenCount") or 0) + (um.get("thoughtsTokenCount") or 0))
+    except Exception:  # noqa: BLE001
+        import logging
+        logging.getLogger(__name__).warning("ai usage record failed", exc_info=True)
+
+
+def _call_gemini(user_text: str, kind: str = "応募アシスト") -> dict[str, Any]:
+    """Gemini に構造化出力で問い合わせ、JSON dict を返す(依存はstdlibのみ)。"""
     key, model = _api_key(), _model()
     url = f"{_API_BASE}/{model}:generateContent?key={key}"
     body = {
@@ -266,6 +287,7 @@ def _call_gemini(user_text: str) -> dict[str, Any]:
         headers={"Content-Type": "application/json"}, method="POST")
     with urllib.request.urlopen(req, timeout=60) as res:
         data = json.loads(res.read().decode("utf-8"))
+    _record_usage(kind, model, data)
     cand = (data.get("candidates") or [{}])[0]
     parts = (cand.get("content") or {}).get("parts") or [{}]
     text = parts[0].get("text", "{}")
@@ -304,7 +326,7 @@ import re as _re
 
 
 def _call_gemini_schema(user_text: str, schema: dict, system: str,
-                        timeout: int = 60) -> dict[str, Any]:
+                        timeout: int = 60, kind: str = "その他") -> dict[str, Any]:
     """任意のスキーマ・システム指示で Gemini を呼ぶ汎用版（_call_gemini の一般化）。"""
     key, model = _api_key(), _model()
     url = f"{_API_BASE}/{model}:generateContent?key={key}"
@@ -322,6 +344,7 @@ def _call_gemini_schema(user_text: str, schema: dict, system: str,
         headers={"Content-Type": "application/json"}, method="POST")
     with urllib.request.urlopen(req, timeout=timeout) as res:
         data = json.loads(res.read().decode("utf-8"))
+    _record_usage(kind, model, data)
     cand = (data.get("candidates") or [{}])[0]
     parts = (cand.get("content") or {}).get("parts") or [{}]
     return json.loads(parts[0].get("text", "{}"))
@@ -346,7 +369,7 @@ def _fetch_html_text(url: str, timeout: int = 20) -> str:
     text = _re.sub(r"(?s)<[^>]+>", " ", html)
     text = _re.sub(r"&[a-z]+;", " ", text)
     text = _re.sub(r"\s+", " ", text).strip()
-    return text[:8000]
+    return text[:_HTML_MAX_CHARS]
 
 
 _COMPANY_SCHEMA: dict[str, Any] = {
@@ -380,7 +403,8 @@ def extract_company(url: str) -> dict[str, Any]:
     if not text:
         return {"enabled": True, "error": "ページ本文を取得できませんでした。URLをご確認ください。"}
     try:
-        data = _call_gemini_schema("会社ホームページ本文:\n" + text, _COMPANY_SCHEMA, _COMPANY_SYSTEM)
+        data = _call_gemini_schema("会社ホームページ本文:\n" + text, _COMPANY_SCHEMA,
+                                   _COMPANY_SYSTEM, kind="会社サイト取込")
     except Exception:  # noqa: BLE001
         return {"enabled": True, "error": "AI抽出に失敗しました。時間をおいて再度お試しください。"}
     data["enabled"] = True
@@ -462,7 +486,7 @@ def summarize_ng_reasons(items: list[dict]) -> dict[str, Any]:
     try:
         # NG件数が多いと内訳つき生成に時間がかかるため長めのタイムアウト
         data = _call_gemini_schema(user_text, _NG_REASONS_SCHEMA, _NG_REASONS_SYSTEM,
-                                   timeout=120)
+                                   timeout=120, kind="NG理由集計")
     except Exception:  # noqa: BLE001
         return {"enabled": True, "error": "AI集計に失敗しました。時間をおいて再度お試しください。"}
     data["enabled"] = True
@@ -512,7 +536,8 @@ def summarize_case(case: dict, spec_text: str = "") -> dict[str, Any]:
     if spec_text:
         lines.append("\n【紐付けた仕様書（抜粋）】\n" + spec_text[:_PDF_MAX_CHARS])
     try:
-        data = _call_gemini_schema("\n".join(lines), _SUMMARY_SCHEMA, _SUMMARY_SYSTEM)
+        data = _call_gemini_schema("\n".join(lines), _SUMMARY_SCHEMA, _SUMMARY_SYSTEM,
+                                   kind="案件AI概要")
     except Exception:  # noqa: BLE001
         return {"enabled": True, "error": "AI概要の生成に失敗しました。時間をおいて再度お試しください。"}
     data["enabled"] = True

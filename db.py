@@ -133,6 +133,19 @@ CREATE TABLE IF NOT EXISTS ng_reports (
     payload    TEXT NOT NULL          -- 集計結果(JSON)
 );
 
+-- AI使用量の集計（月×機能×モデル）。従量請求の根拠を明瞭化するために保持する。
+-- 生イベントではなく月次集計で持つ（サイズが伸びない）。Supabase KVにも write-through。
+CREATE TABLE IF NOT EXISTS ai_usage (
+    month         TEXT NOT NULL,            -- 'YYYY-MM'（JST）
+    kind          TEXT NOT NULL,            -- 機能名（応募アシスト/案件AI概要/NG理由集計 等）
+    model         TEXT NOT NULL DEFAULT '', -- 使用モデル（押した回数の行は ''）
+    calls         INTEGER DEFAULT 0,        -- API呼び出し回数（キャッシュ応答は数えない）
+    prompt_tokens INTEGER DEFAULT 0,        -- 入力トークン累計
+    output_tokens INTEGER DEFAULT 0,        -- 出力トークン累計（思考トークン含む）
+    taps          INTEGER DEFAULT 0,        -- ボタンを押した回数（キャッシュ応答も含む）
+    PRIMARY KEY (month, kind, model)
+);
+
 CREATE TABLE IF NOT EXISTS agencies (
     name        TEXT PRIMARY KEY,    -- 発注機関名
     njss_count  INTEGER DEFAULT 0,   -- NJSS案件数（規模の目安）
@@ -317,6 +330,10 @@ def init_db() -> None:
         co_cols = [r[1] for r in conn.execute("PRAGMA table_info(companies)")]
         if "sector" not in co_cols:
             conn.execute("ALTER TABLE companies ADD COLUMN sector TEXT DEFAULT '公共'")
+        # ai_usage: 押した回数（キャッシュ応答含む）の後付け列
+        au_cols = [r[1] for r in conn.execute("PRAGMA table_info(ai_usage)")]
+        if au_cols and "taps" not in au_cols:
+            conn.execute("ALTER TABLE ai_usage ADD COLUMN taps INTEGER DEFAULT 0")
         # 仕様書ファイルの実体（BLOB）。案件JSONを軽く保つため別テーブルに保管。
         conn.execute(
             "CREATE TABLE IF NOT EXISTS spec_blobs ("
@@ -365,6 +382,127 @@ def upsert_cases(rows: list[dict[str, Any]]) -> int:
         conn.executemany(sql, [tuple(_val(r, c) for c in cols) for r in rows])
         conn.commit()
     return len(rows)
+
+
+# 添付サイズ表記など、案件名に混入する飾りの除去（突合キー用）
+_TITLE_NOISE_RE = re.compile(r"[（(]\d+(?:\.\d+)?\s*(?:kb|kbyte|mb|kバイト|キロバイト)[）)]",
+                             re.IGNORECASE)
+
+
+def _norm_key(text: str) -> str:
+    """重複突合用の正規化キー（全半角・空白・括弧・添付サイズ表記の揺れを吸収）。"""
+    import unicodedata
+    t = unicodedata.normalize("NFKC", str(text or "")).lower()
+    t = _TITLE_NOISE_RE.sub("", t)
+    return re.sub(r"\s+", "", t)
+
+
+def _parse_iso(d: str):
+    """ISO日付文字列 → date（不正・空は None）。"""
+    from datetime import date as _date
+    try:
+        return _date.fromisoformat((d or "")[:10])
+    except ValueError:
+        return None
+
+
+def dedupe_cases(window_days: int = 150) -> int:
+    """取得元をまたいだ同一案件の重複を統合し、削除した件数を返す。
+
+    官公需API・PPI・自治体スクレイプ・調達ポータル落札実績は同じ案件を別IDで返すことが
+    多く（同じ公告の再掲・機関サイトの日次転載など）、一覧に同名案件が並んでいた。
+
+    突合ルール（安全側に倒す）:
+      - 発注機関×案件名（_norm_key で正規化）が一致する行だけを候補にする
+      - 締切が両方入っていて食い違う行は別案件とみなす（毎年の同名案件を守る）
+      - 公告日が window_days 日より離れている行も別案件とみなす（年度をまたぐ再調達を守る）
+    統合ルール:
+      - 残す1件は「申請あり ＞ 詳細URLあり ＞ 締切あり ＞ 公告日が新しい」の優先で選ぶ
+      - 消す行にしか無い情報（締切/URL/仕様書/予定価格/落札者/説明）は残す行へ引き継ぐ
+        （調達ポータル落札実績との突合で、公告案件に落札者が後付けされる）
+      - 申請(applications)が付いた行は絶対に消さない
+    """
+    cols = ("id", "external_id", "source", "title", "agency", "deadline",
+            "announced_date", "detail_url", "spec_status", "spec_reason", "spec_url",
+            "budget", "budget_yen", "winner", "win_price", "description")
+    with _connect() as conn:
+        rows = [dict(zip(cols, r)) for r in conn.execute(
+            f"SELECT {', '.join(cols)} FROM cases WHERE source != 'manual'")]
+        app_ids = {r[0] for r in conn.execute("SELECT case_id FROM applications")}
+
+    groups: dict[tuple[str, str], list[dict]] = {}
+    for r in rows:
+        key = (_norm_key(r["title"]), _norm_key(r["agency"]))
+        if not key[0]:
+            continue
+        groups.setdefault(key, []).append(r)
+
+    # 引き継ぎ対象（残す行の値が空/0のときだけ消す行から補完する）
+    fill_cols = ("deadline", "announced_date", "detail_url", "spec_url",
+                 "budget", "winner", "win_price", "description")
+    to_delete: list[int] = []
+    keeper_updates: dict[int, dict[str, Any]] = {}
+
+    for group in groups.values():
+        if len(group) < 2:
+            continue
+        # 公告日順に並べ、締切の矛盾なし＆公告日が近い行を同一クラスタに束ねる
+        group.sort(key=lambda r: (r["announced_date"] or "9999-12-31", r["id"]))
+        clusters: list[dict] = []   # {rows, deadline, last_date}
+        for r in group:
+            d, ad = (r["deadline"] or "").strip()[:10], _parse_iso(r["announced_date"])
+            placed = False
+            for cl in clusters:
+                if d and cl["deadline"] and d != cl["deadline"]:
+                    continue
+                if ad and cl["last_date"] and (ad - cl["last_date"]).days > window_days:
+                    continue
+                cl["rows"].append(r)
+                cl["deadline"] = cl["deadline"] or d
+                cl["last_date"] = max(cl["last_date"] or ad, ad) if ad else cl["last_date"]
+                placed = True
+                break
+            if not placed:
+                clusters.append({"rows": [r], "deadline": d, "last_date": ad})
+
+        for cl in clusters:
+            crows = cl["rows"]
+            if len(crows) < 2:
+                continue
+            # 残す1件: 申請あり＞詳細URLあり＞締切あり＞公告日が新しい＞id大
+            keeper = max(crows, key=lambda r: (
+                r["id"] in app_ids, bool(r["detail_url"]), bool(r["deadline"]),
+                r["announced_date"] or "", r["id"]))
+            fills = keeper_updates.setdefault(keeper["id"], {})
+            for r in crows:
+                if r["id"] == keeper["id"]:
+                    continue
+                if r["id"] in app_ids:
+                    continue   # 申請つきは消さない（残す行と並存させる）
+                for c in fill_cols:
+                    if not (keeper.get(c) or fills.get(c)) and r.get(c):
+                        fills[c] = r[c]
+                        # 仕様書URLを引き継ぐ時は取得可否・理由もセットで
+                        if c == "spec_url":
+                            fills["spec_status"] = r["spec_status"]
+                            fills["spec_reason"] = r["spec_reason"]
+                if not keeper["budget_yen"] and r["budget_yen"]:
+                    fills["budget_yen"] = r["budget_yen"]
+                to_delete.append(r["id"])
+            if not fills:
+                keeper_updates.pop(keeper["id"], None)
+
+    if not to_delete:
+        return 0
+    with _connect() as conn:
+        for cid, fills in keeper_updates.items():
+            sets = ", ".join(f"{c} = ?" for c in fills)
+            conn.execute(f"UPDATE cases SET {sets} WHERE id = ?",
+                         (*fills.values(), cid))
+        conn.executemany("DELETE FROM cases WHERE id = ?",
+                         [(i,) for i in to_delete])
+        conn.commit()
+    return len(to_delete)
 
 
 def add_manual_case(title: str, agency: str = "", sector: str = "公共",
@@ -604,6 +742,64 @@ def delete_ng_report(report_id: int) -> None:
         conn.execute("DELETE FROM ng_reports WHERE id = ?", (report_id,))
         conn.commit()
     _push_ng_reports()
+
+
+# ============================================================
+# AI使用量（従量請求の根拠。月×機能×モデルで集計保持）
+# ============================================================
+
+def _jst_month() -> str:
+    """現在の年月 'YYYY-MM'（JST）。"""
+    from datetime import datetime, timedelta, timezone
+    return datetime.now(timezone(timedelta(hours=9))).strftime("%Y-%m")
+
+
+def add_ai_usage(kind: str, model: str, prompt_tokens: int, output_tokens: int) -> None:
+    """AI呼び出し1回分の使用量を月次集計へ加算する（キャッシュ応答では呼ばない）。"""
+    month = _jst_month()
+    with _connect() as conn:
+        conn.execute(
+            """INSERT INTO ai_usage (month, kind, model, calls, prompt_tokens, output_tokens)
+               VALUES (?, ?, ?, 1, ?, ?)
+               ON CONFLICT(month, kind, model) DO UPDATE SET
+                 calls = calls + 1,
+                 prompt_tokens = prompt_tokens + excluded.prompt_tokens,
+                 output_tokens = output_tokens + excluded.output_tokens""",
+            (month, kind or "その他", model or "",
+             int(prompt_tokens or 0), int(output_tokens or 0)))
+        conn.commit()
+    _push_ai_usage()
+
+
+def add_ai_tap(kind: str) -> None:
+    """AI機能のボタンを押した回数を加算する（キャッシュ応答で0円の回も含む）。
+
+    課金対象のAPI呼び出し(calls)とは別に、利用の総量を見せるための集計。
+    model='' の行に月×機能で積む。
+    """
+    month = _jst_month()
+    with _connect() as conn:
+        conn.execute(
+            """INSERT INTO ai_usage (month, kind, model, taps)
+               VALUES (?, ?, '', 1)
+               ON CONFLICT(month, kind, model) DO UPDATE SET taps = taps + 1""",
+            (month, kind or "その他"))
+        conn.commit()
+    _push_ai_usage()
+
+
+def list_ai_usage() -> list[dict[str, Any]]:
+    """AI使用量の全集計行（新しい月→機能名順）。"""
+    with _connect() as conn:
+        rows = conn.execute(
+            "SELECT * FROM ai_usage ORDER BY month DESC, kind ASC, model ASC").fetchall()
+    return [dict(r) for r in rows]
+
+
+def _push_ai_usage() -> None:
+    if _restoring:
+        return
+    supa.save("ai_usage", list_ai_usage())
 
 
 def get_case_id_by_external(external_id: str) -> int | None:
@@ -1075,6 +1271,23 @@ def restore_from_supa() -> dict[str, int]:
                          r["payload"]))
                 conn.commit()
             counts["ng_reports"] = len(reps)
+        # AI使用量の月次集計。空/欠損のときは消さない（請求根拠を守る）。
+        usage = supa.load("ai_usage")
+        if isinstance(usage, list) and usage:
+            with _connect() as conn:
+                conn.execute("DELETE FROM ai_usage")
+                for u in usage:
+                    if not isinstance(u, dict) or not u.get("month"):
+                        continue
+                    conn.execute(
+                        """INSERT OR REPLACE INTO ai_usage
+                           (month, kind, model, calls, prompt_tokens, output_tokens, taps)
+                           VALUES (?, ?, ?, ?, ?, ?, ?)""",
+                        (u.get("month"), u.get("kind") or "その他", u.get("model") or "",
+                         int(u.get("calls") or 0), int(u.get("prompt_tokens") or 0),
+                         int(u.get("output_tokens") or 0), int(u.get("taps") or 0)))
+                conn.commit()
+            counts["ai_usage"] = len(usage)
     except Exception as e:  # noqa: BLE001 — 復元失敗でアプリを落とさない
         import logging
         logging.getLogger(__name__).warning("supa restore failed: %s", e)

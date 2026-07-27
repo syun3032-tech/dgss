@@ -108,6 +108,15 @@ app.secret_key = os.environ.get("SECRET_KEY", "kawano-njss-modoki-local")  # fla
 # gunicorn 等で import された時もテーブルを用意（本番デプロイ対応）
 db.init_db()
 
+# ビルド時に取得したDB内の同名重複を起動時に統合（取得元をまたいだ突合）。
+# 日次のDB生成側(update.py)でも統合するが、生成が旧コードだった場合の安全網。
+try:
+    _n_dedup = db.dedupe_cases()
+    if _n_dedup:
+        logging.getLogger(__name__).info("dedupe_cases: %d 件を統合", _n_dedup)
+except Exception:  # noqa: BLE001 — 統合失敗で起動を妨げない
+    logging.getLogger(__name__).warning("dedupe_cases failed", exc_info=True)
+
 # 認証＋アカウント別AI権限（auth.py）。ログイン/登録/管理(/login,/signup,/admin/users)。
 auth.init_auth_db()
 app.register_blueprint(auth.auth_bp)
@@ -395,6 +404,49 @@ def _autoattach_spec(case: dict) -> list:
     return files
 
 
+# Gemini の従量単価（USD / 100万トークン）。モデル改定時はここを更新するか環境変数で上書き。
+# 出力単価は思考トークン込みの単価（2025-07改定の公表価格）。
+_AI_PRICES_USD_PER_M: dict[str, tuple[float, float]] = {
+    "gemini-2.5-flash":      (0.30, 2.50),
+    "gemini-2.5-flash-lite": (0.10, 0.40),
+    "gemini-2.5-pro":        (1.25, 10.00),
+}
+_AI_PRICE_DEFAULT = (0.30, 2.50)  # 不明モデルは flash 相当で概算
+
+
+def _env_float(name: str, default: float) -> float:
+    try:
+        return float(os.environ.get(name, str(default)))
+    except ValueError:
+        return default
+
+
+@app.route("/ai-usage")
+def ai_usage():
+    """AI使用量の月次集計（DGSSロゴ→設定モーダルで表示。従量請求の根拠）。
+
+    表示する料金は請求単価: API実費（Gemini公表単価×為替）×倍率、ただし1回あたり
+    最低額を下回らない。倍率・最低額・為替は環境変数で調整できる。
+    """
+    rate = _env_float("AI_USD_JPY", 150)          # 為替（円/ドル）
+    mult = _env_float("AI_BILL_MULTIPLIER", 15)   # 実費に掛ける請求倍率
+    min_jpy = _env_float("AI_BILL_MIN_JPY", 10)   # 1回あたりの最低請求額（円）
+    rows = []
+    for r in db.list_ai_usage():
+        pin, pout = _AI_PRICES_USD_PER_M.get(r.get("model", ""), _AI_PRICE_DEFAULT)
+        usd = (r["prompt_tokens"] * pin + r["output_tokens"] * pout) / 1_000_000
+        # 集計行は同月・同機能・同モデルの合算なので、最低額は回数×最低額で適用する
+        billed = max(usd * rate * mult, r["calls"] * min_jpy)
+        rows.append({
+            "month": r["month"], "kind": r["kind"], "model": r["model"],
+            "calls": r["calls"], "prompt_tokens": r["prompt_tokens"],
+            "output_tokens": r["output_tokens"], "taps": r.get("taps") or 0,
+            "cost_jpy": round(billed, 1),
+        })
+    return jsonify({"rows": rows,
+                    "note": f"AI利用料は従量制（1回あたり最低{min_jpy:.0f}円）の概算です。"})
+
+
 @app.route("/reports/ng-reasons", methods=["POST"])
 def reports_ng_reasons():
     """NG案件の理由メモをAIで固定カテゴリに集計する（月次レポート・打合せ合意事項）。
@@ -407,6 +459,7 @@ def reports_ng_reasons():
     if not auth.can_use_ai():
         return jsonify({"enabled": False,
                         "reason": "このアカウントではAIモードが有効化されていません。"})
+    db.add_ai_tap("NG理由集計")   # 押した回数（キャッシュ応答含む）
     sheet = (request.args.get("sheet") or "").strip()
     items = []
     for a in db.list_applications("NG"):
@@ -503,6 +556,7 @@ def case_ai_assist(case_id: int):
     case = db.get_case(case_id)
     if not case:
         abort(404)
+    db.add_ai_tap("応募アシスト")   # 押した回数（キャッシュ応答含む）
     ext = case.get("external_id", "")
     spec_files = _autoattach_spec(case)   # 公告の仕様書があれば自動で紐付け（要望）
     refresh = request.args.get("refresh") == "1"
@@ -546,6 +600,7 @@ def case_summary(case_id: int):
     case = db.get_case(case_id)
     if not case:
         abort(404)
+    db.add_ai_tap("案件AI概要")   # 押した回数（キャッシュ応答含む）
     ext = case.get("external_id", "")
     # 公告に仕様書URLがあれば自動で紐付け（要望）。手作業なしでAI概要の材料にも使う。
     _autoattach_spec(case)
@@ -596,6 +651,7 @@ def company_extract():
     url = (data.get("url") or "").strip()
     if not url:
         return jsonify({"enabled": True, "error": "URLを入力してください。"}), 200
+    db.add_ai_tap("会社サイト取込")   # 押した回数（キャッシュ応答含む）
     try:
         result = ai_assist.extract_company(url)
     except Exception as e:  # noqa: BLE001
