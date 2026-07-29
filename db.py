@@ -384,9 +384,11 @@ def upsert_cases(rows: list[dict[str, Any]]) -> int:
     return len(rows)
 
 
-# 添付サイズ表記など、案件名に混入する飾りの除去（突合キー用）
-_TITLE_NOISE_RE = re.compile(r"[（(]\d+(?:\.\d+)?\s*(?:kb|kbyte|mb|kバイト|キロバイト)[）)]",
-                             re.IGNORECASE)
+# 添付サイズ表記など、案件名に混入する飾りの除去（突合キー用）。
+# 揺れの実例: (108kbyte) (PDF:28KB) (PDF98KB) (PDF 242 KB) (28.3KB)
+_TITLE_NOISE_RE = re.compile(
+    r"[（(]\s*(?:pdf[:：]?\s*)?[\d.,]+\s*(?:kb|kbyte|mb|kバイト|キロバイト)\s*[）)]",
+    re.IGNORECASE)
 # 再公告マーカー（同一案件のやり直し公告。突合時は締切が変わっていても同一とみなす）
 # 書き方の揺れ: （再公告）（再度公告）（再再度公告）（再再再度公告）（再々公告）
 # （再入札）（再度）、および【再度公告】のような【】書き

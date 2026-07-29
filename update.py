@@ -106,6 +106,13 @@ def run(reset: bool = False, koukai_instances: list[str] | None = None,
                       "可能性があります（応募ガイドのポータル判定が弱くなります）。")
         except Exception as e:  # noqa: BLE001
             print(f"[警告] 監視機関リスト取得失敗: {str(e)[:70]}")
+        # 取得元をまたいだ同一案件の重複を統合（fast/fullはここでreturnするため、
+        # 従来の下部の統合には到達しない＝ここで必ず実行する）
+        try:
+            nd = db.dedupe_cases()
+            print(f"[重複統合] {nd} 件を統合")
+        except Exception as e:  # noqa: BLE001 — 統合失敗でも更新自体は成立させる
+            print(f"[重複統合] 失敗（スキップ）: {str(e)[:80]}")
         n_cases = db.count_cases()
         mode = "網羅更新" if full else "高速更新"
         print(f"=== {mode}完了: 案件 {n_cases} 件 / 監視機関 {db.count_agencies()} 機関 ===")

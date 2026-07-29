@@ -144,6 +144,11 @@ db.upsert_cases([
     # 【地区名】は案件の識別子なので統合しない
     case("I1", title="【A地区】外構電気工事", announced_date="2026-06-01"),
     case("I2", title="【B地区】外構電気工事", announced_date="2026-06-01"),
+    # PDFサイズ表記の揺れ＋再公告の組み合わせ（裁判所の公告で実在するパターン）
+    case("J1", title="地家裁支部庁舎電気設備等改修工事(PDF:28KB)",
+         announced_date="2026-06-01", deadline="2026-06-20"),
+    case("J2", title="地家裁支部庁舎電気設備等改修工事(再度)(28.3KB)",
+         announced_date="2026-06-25", deadline="2026-07-10"),
 ])
 db.dedupe_cases()
 rows = db.list_cases(q="合同庁舎ソーラー設置工事")
@@ -159,6 +164,9 @@ check("省庁/支分部局の二重登録は統合され具体的な機関名に
       len(rows) == 1 and rows[0]["agency"] == "法務省札幌法務局")
 check("機関包含でも締切が違えば別案件のまま", len(db.list_cases(q="保守点検業務")) == 2)
 check("【A地区】/【B地区】は別案件のまま", len(db.list_cases(q="外構電気工事")) == 2)
+rows = db.list_cases(q="地家裁支部庁舎電気設備等改修工事")
+check("PDFサイズ表記の揺れ＋再度公告も統合され再公告側が残る",
+      len(rows) == 1 and "再度" in rows[0]["title"])
 
 print("[6] AI使用量の加算（月×機能×モデル）＋押した回数")
 db.add_ai_usage("応募アシスト", "gemini-2.5-flash", 1000, 200)
