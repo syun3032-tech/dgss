@@ -499,10 +499,24 @@ tr.row-check td { background: #fffaf0; }
   padding: 10px 16px; cursor: pointer; font-size: 13px; color: var(--accent); display: flex; flex-direction: column; gap: 2px; }
 .addcase small { color: var(--text-tertiary); font-size: 10.5px; }
 
-/* 締切バー */
+/* 締切バー（種類ごとに3色: 参加申請=青 / 入札書提出=黄 / 開札=赤。民間の見積提出=緑） */
 .warnbar { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; background: #fff7ed; border: 1px solid #fed7aa;
-  border-radius: 10px; padding: 8px 12px; margin-bottom: 14px; }
+  border-radius: 10px; padding: 8px 12px; margin-bottom: 10px; }
 .warnbar .wb-title { font-size: 12.5px; font-weight: 700; color: #b45309; }
+.warnbar .wb-title small { font-weight: 500; font-size: 11px; opacity: .85; }
+.warnbar .wb-more { font-size: 11px; color: var(--text-tertiary); }
+.warnbar.wb-apply { background: #eff6ff; border-color: #bfdbfe; }
+.warnbar.wb-apply .wb-title { color: #1d4ed8; }
+.warnbar.wb-apply .wb-item { background: #dbeafe; color: #1e40af; }
+.warnbar.wb-bid { background: #fffbeb; border-color: #fde68a; }
+.warnbar.wb-bid .wb-title { color: #b45309; }
+.warnbar.wb-bid .wb-item { background: #fef3c7; color: #92400e; }
+.warnbar.wb-open { background: #fef2f2; border-color: #fecaca; }
+.warnbar.wb-open .wb-title { color: #dc2626; }
+.warnbar.wb-open .wb-item { background: #fee2e2; color: #b91c1c; }
+.warnbar.wb-quote { background: #ecfdf5; border-color: #a7f3d0; }
+.warnbar.wb-quote .wb-title { color: #047857; }
+.warnbar.wb-quote .wb-item { background: #d1fae5; color: #065f46; }
 .wb-item { font-size: 11.5px; border-radius: 999px; padding: 2px 9px; font-weight: 600; border: 0; cursor: pointer; max-width: 340px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .wb-item:hover { filter: brightness(0.95); box-shadow: 0 0 0 1px rgba(0,0,0,.08); }
 .wb-item .wb-name { font-weight: 700; margin-left: 4px; }

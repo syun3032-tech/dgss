@@ -261,20 +261,14 @@
     rows.forEach(function (c) {
       // 期限超過は従来どおり「今の状況に対応する次の期限」で数える
       var ms = milestone(c);
-      if (ms) { var d0 = dUntil(ms.date); if (d0 != null && d0 < 0) over++; }
-      // 直近アラートは【参加申請】【入札書提出】【開札】の3種それぞれで出す（要望⑯）。
-      // 完了・NGの案件は対象外。民間は見積提出のみ。
+      if (!ms) return;
+      var d0 = dUntil(ms.date); if (d0 == null) return;
+      if (d0 < 0) { over++; return; }
+      // 直近アラートは案件の状況に対応する期限だけで出す（要望⑱）:
+      //   参加申請準備前 → 参加申請期限 / 入札参加申請済み・協力会社探し中・見積取得 → 入札書提出期限
+      //   / 入札書提出済み → 開札日。民間は見積提出のみ。完了・NGの案件は対象外。
       if (["自社落札", "他社落札", "NG", "見積集まらず"].indexOf(c.status) >= 0) return;
-      var kinds = (c.sector || "公共") === "民間"
-        ? [{ label: "見積提出", date: c.apply_deadline || c.deadline }]
-        : [{ label: "参加申請", date: c.apply_deadline || c.deadline },
-           { label: "入札書提出", date: c.bid_deadline },
-           { label: "開札", date: c.open_date }];
-      kinds.forEach(function (k) {
-        if (!k.date) return;
-        var d = dUntil(k.date); if (d == null) return;
-        if (d >= 0 && d <= 7) soon.push({ c: c, ms: k, d: d });
-      });
+      if (d0 <= 7) soon.push({ c: c, ms: ms, d: d0 });
     });
     soon.sort(function (a, b) { return a.d - b.d; });
 
@@ -306,16 +300,24 @@
       '<button class="addcase" id="addCaseBtn" data-sec="' + sector + '">＋ 案件を追加<small>' + sheetDef(sector).label + 'の案件をその場で</small></button>' +
       "</div>";
 
-    var warn = "";
-    if (soon.length) {
-      warn = '<div class="warnbar"><span class="wb-title">直近の締切（入札1週間前〜）</span>' +
-        soon.slice(0, 9).map(function (x) {
-          var b = band(x.d);
+    // アラートは種類ごとに別のバー・別の色で表示（要望⑱＋3色化）。
+    var ALERT_BARS = [
+      { label: "参加申請",   cls: "wb-apply", title: "入札参加申請期限 1週間前", sub: "参加申請準備前の案件" },
+      { label: "入札書提出", cls: "wb-bid",   title: "入札書提出期限 1週間前",   sub: "入札参加申請済み・協力会社探し中・見積取得の案件" },
+      { label: "開札",       cls: "wb-open",  title: "開札日 1週間前",           sub: "入札書提出済みの案件" },
+      { label: "見積提出",   cls: "wb-quote", title: "見積提出期限 1週間前",     sub: "民間の案件" }
+    ];
+    var warn = ALERT_BARS.map(function (k) {
+      var items = soon.filter(function (x) { return x.ms.label === k.label; });
+      if (!items.length) return "";
+      return '<div class="warnbar ' + k.cls + '"><span class="wb-title">' + k.title + '<small>（' + k.sub + '）</small></span>' +
+        items.slice(0, 9).map(function (x) {
           // クリックで該当案件を開く（要望⑩）。どの案件のアラートか分かるよう案件名も添える。
-          return '<button type="button" class="wb-item" data-case="' + x.c.case_id + '" title="クリックで案件を開く" style="background:' + b.bg + ";color:" + b.fg + '">' +
-            esc(x.ms.label) + " " + md(x.ms.date) + "・" + daysLabel(x.d) + ' <b class="wb-name">' + esc(x.c.title) + "</b></button>";
-        }).join("") + "</div>";
-    }
+          return '<button type="button" class="wb-item" data-case="' + x.c.case_id + '" title="クリックで案件を開く">' +
+            md(x.ms.date) + "・" + daysLabel(x.d) + ' <b class="wb-name">' + esc(x.c.title) + "</b></button>";
+        }).join("") +
+        (items.length > 9 ? '<span class="wb-more">ほか' + (items.length - 9) + "件</span>" : "") + "</div>";
+    }).join("");
 
     // カンバン列（状態フィルタ時は選んだ状態の列だけ表示・複数可）
     var shownStatuses = state.statuses.length
