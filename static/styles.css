@@ -521,6 +521,18 @@ tr.row-check td { background: #fffaf0; }
 .wb-item:hover { filter: brightness(0.95); box-shadow: 0 0 0 1px rgba(0,0,0,.08); }
 .wb-item .wb-name { font-weight: 700; margin-left: 4px; }
 
+/* AIで応募できる案件を探す（一覧バッチ判定） */
+.ai-batch-bar { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin: 0 0 12px;
+  padding: 8px 12px; border: 1px solid #bfdbfe; background: #eff6ff; border-radius: 10px; font-size: 12.5px; }
+.ai-batch-bar .ai-batch-now { color: var(--text-tertiary); font-size: 11.5px;
+  max-width: 420px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ai-batch-bar .onlyok-label { font-weight: 600; }
+.tag.ai-verdict.ok   { background: var(--success-soft); color: var(--success); font-weight: 700; }
+.tag.ai-verdict.warn { background: var(--warning-soft); color: var(--warning); font-weight: 700; }
+.tag.ai-verdict.ng   { background: var(--danger-soft); color: var(--danger); font-weight: 700; }
+.tag.ai-verdict.unk  { background: var(--bg-hover); color: var(--text-tertiary); font-weight: 700; }
+.case-row.not-ok-hidden { display: none; }
+
 /* カンバン */
 .kanban { display: flex; gap: 12px; overflow-x: auto; padding-bottom: 12px; align-items: flex-start; }
 .kcol { flex: 0 0 232px; background: var(--bg-subtle); border: 1px solid var(--border); border-radius: 10px; }

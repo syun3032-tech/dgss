@@ -330,6 +330,8 @@ def cases():
         rows=rows,
         added_eids=added_eids,
         ng_eids=ng_eids,
+        # 一覧バッチ判定「AIで応募できる案件を探す」ボタンの表示可否
+        ai_on=bool(auth.can_use_ai() and ai_assist.is_enabled()),
         regions=REGIONS,
         # 選択中の地方に応じた都道府県候補（未選択なら全国）
         pref_options=prefectures_in(region) if region else [],
@@ -673,6 +675,34 @@ def case_ai_saved(case_id: int):
             out["summary"] = data
         except (ValueError, TypeError):
             pass
+    return jsonify(out)
+
+
+@app.route("/ai/verdicts")
+def ai_verdicts():
+    """判定済み（キャッシュ）のAI応募可否だけをまとめて返す。AIは呼ばず課金もしない。
+
+    案件一覧のバッチ判定（AIで応募できる案件を探す）が付けた〇△✕を、
+    ページを開き直しても表示するための読み出し口。
+    """
+    import json
+    ids = [int(s) for s in (request.args.get("ids") or "").split(",")
+           if s.strip().isdigit()][:400]
+    out: dict[str, str] = {}
+    for cid in ids:
+        case = db.get_case(cid)
+        ext = (case or {}).get("external_id") or ""
+        if not ext:
+            continue
+        cached = db.get_ai_assist(ext)
+        if not cached:
+            continue
+        try:
+            v = (json.loads(cached["payload"]).get("eligibility") or {}).get("verdict") or ""
+        except (ValueError, TypeError):
+            continue
+        if v:
+            out[str(cid)] = v
     return jsonify(out)
 
 

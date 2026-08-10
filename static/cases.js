@@ -137,4 +137,98 @@
   if (ha) { ha.checked = !!tools.hideAdded; ha.addEventListener("change", function () { tools.hideAdded = ha.checked; lsSet(TOOLS_KEY, tools); applyTools(); }); }
   if (hn) { hn.checked = !!tools.hideNg; hn.addEventListener("change", function () { tools.hideNg = hn.checked; lsSet(TOOLS_KEY, tools); applyTools(); }); }
   applyTools();
+
+  /* ---------- AIで応募できる案件を探す（一覧バッチ判定） ----------
+     表示中の募集中案件を上から順にAI応募可否判定（/case/<id>/ai-assist）にかけ、
+     行に〇/△/✕バッジを付けてピックアップする。判定はサーバにキャッシュされ、
+     2回目以降・再表示は無料。1件ごとにAI利用料が発生するため実行前に件数を確認する。 */
+  (function () {
+    var btn = $("aiBatch"), bar = $("aiBatchBar");
+    if (!btn || !bar) return;
+    var running = false, stopFlag = false;
+
+    function verdictBadge(row, v) {
+      var meta = row.querySelector(".cr-meta");
+      if (!meta) return;
+      var old = meta.querySelector(".ai-verdict"); if (old) old.remove();
+      var cls = v === "〇" ? "ok" : v === "△" ? "warn" : v === "✕" ? "ng" : "unk";
+      var s = document.createElement("span");
+      s.className = "tag ai-verdict " + cls;
+      s.textContent = "AI " + v;
+      meta.insertBefore(s, meta.firstChild);
+      row.setAttribute("data-verdict", v);
+    }
+
+    // 判定済み（キャッシュ）をページ表示時に復元（AI呼び出しなし＝無料）
+    var idsAll = rows.map(function (r) { return r.getAttribute("data-id"); }).filter(Boolean);
+    if (idsAll.length) {
+      fetch("/ai/verdicts?ids=" + idsAll.join(","))
+        .then(function (r) { return r.ok ? r.json() : {}; })
+        .then(function (map) {
+          rows.forEach(function (r) { var v = map[r.getAttribute("data-id")]; if (v) verdictBadge(r, v); });
+        }).catch(function () {});
+    }
+
+    function targets() {
+      return rows.filter(function (r) {
+        if (r.classList.contains("closed")) return false;                          // 終了
+        if (r.classList.contains("is-added") || r.classList.contains("is-ng")) return false;  // 判断済み
+        if (r.offsetParent === null) return false;                                 // 非表示（隠す設定）
+        return !r.getAttribute("data-verdict");                                    // 既に判定済み
+      });
+    }
+    function setBar(html) { bar.hidden = false; bar.innerHTML = html; }
+    function counterHtml(counts) {
+      return ' ・ 〇' + counts["〇"] + " △" + counts["△"] + " ✕" + counts["✕"] +
+        (counts["？"] ? " ？" + counts["？"] : "");
+    }
+
+    btn.addEventListener("click", function () {
+      if (running) return;
+      var list = targets();
+      if (!list.length) {
+        alert("判定対象がありません。\n（表示中の募集中案件は、すべて判定済みか管理シートで判断済みです）");
+        return;
+      }
+      if (!confirm("表示中の募集中案件 " + list.length + " 件をAIで応募可否判定します。\n\n" +
+        "・1件ごとにAI利用料がかかります（目安 10〜30円/件。判定済みの案件は無料）\n" +
+        "・時間は1件あたり10〜30秒ほど。途中でいつでも中止できます\n\n実行しますか？")) return;
+      running = true; stopFlag = false; btn.disabled = true;
+      var counts = { "〇": 0, "△": 0, "✕": 0, "？": 0 }, done = 0;
+
+      function finish(msg) {
+        running = false; btn.disabled = false;
+        setBar("<b>" + msg + "</b>" + counterHtml(counts) +
+          (counts["〇"] ? ' <label class="lt-check onlyok-label"><input type="checkbox" id="onlyOk"> 〇の案件だけ表示</label>' : ""));
+        var only = $("onlyOk");
+        if (only) only.addEventListener("change", function () {
+          rows.forEach(function (r) {
+            r.classList.toggle("not-ok-hidden", only.checked && r.getAttribute("data-verdict") !== "〇");
+          });
+        });
+      }
+      function step(i) {
+        if (stopFlag) { finish("中止しました（" + done + "/" + list.length + "件）"); return; }
+        if (i >= list.length) { finish("完了（" + done + "件を判定）"); return; }
+        var row = list[i];
+        setBar("AI判定中 " + (i + 1) + "/" + list.length + counterHtml(counts) +
+          ' <button type="button" class="btn small" id="aiStop">中止</button>' +
+          '<span class="ai-batch-now">' + (row.getAttribute("data-title") || "") + "</span>");
+        var st = $("aiStop"); if (st) st.onclick = function () { stopFlag = true; st.disabled = true; st.textContent = "中止します…"; };
+        fetch("/case/" + row.getAttribute("data-id") + "/ai-assist",
+          { method: "POST", headers: { "X-Requested-With": "XMLHttpRequest" } })
+          .then(function (r) { return r.json(); })
+          .then(function (j) {
+            if (j && j.enabled === false) { stopFlag = true; alert("AIモードが使えない状態です（キー未設定またはアカウント未許可）。"); return; }
+            var v = (j && j.eligibility && j.eligibility.verdict) || "？";
+            if (!(v in counts)) v = "？";
+            counts[v]++; done++;
+            verdictBadge(row, v);
+          })
+          .catch(function () { counts["？"]++; done++; verdictBadge(row, "？"); })
+          .then(function () { step(i + 1); });
+      }
+      step(0);
+    });
+  })();
 })();

@@ -120,8 +120,14 @@
     <span class="count">0 件</span>
   {% endif %}
   {% if not show_closed %}<span class="muted">（終了は非表示）</span>{% endif %}
-  <a class="btn" style="margin-left:auto" href="{{ url_for('export_csv') }}">CSVダウンロード ↓</a>
+  {% if ai_on %}
+    <button type="button" class="btn primary" style="margin-left:auto" id="aiBatch">AIで応募できる案件を探す</button>
+    <a class="btn" href="{{ url_for('export_csv') }}">CSVダウンロード ↓</a>
+  {% else %}
+    <a class="btn" style="margin-left:auto" href="{{ url_for('export_csv') }}">CSVダウンロード ↓</a>
+  {% endif %}
 </div>
+<div class="ai-batch-bar" id="aiBatchBar" hidden></div>
 
 {# 一覧の表示コントロール（要望②・⑤）。JSが localStorage と連動して制御する。 #}
 <div class="list-tools" id="listTools">
@@ -192,7 +198,7 @@
 {% block scripts %}
 <script id="addedEids" type="application/json">{{ added_eids | tojson }}</script>
 <script id="ngEids" type="application/json">{{ ng_eids | tojson }}</script>
-<script src="{{ url_for('static', filename='cases.js') }}?v=3"></script>
+<script src="{{ url_for('static', filename='cases.js') }}?v=4"></script>
 <script>
   const regionSel = document.getElementById('region');
   const prefSel = document.getElementById('prefecture');
