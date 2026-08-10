@@ -641,6 +641,41 @@ def case_summary(case_id: int):
     return jsonify(result)
 
 
+@app.route("/case/<int:case_id>/ai/saved")
+def case_ai_saved(case_id: int):
+    """保存済みのAI結果（応募可否・案件概要）を返す。AIは呼ばず課金もしない。
+
+    モーダルを開いたとき、一度作った概要・判定をボタンを押し直さずに表示する
+    （要望: 1度取得した概要が画面を閉じると消え、再取得が必要だった）。
+    """
+    import json
+    case = db.get_case(case_id)
+    if not case:
+        abort(404)
+    ext = case.get("external_id", "")
+    out: dict = {"judge": None, "summary": None}
+    if not ext:
+        return jsonify(out)
+    cached = db.get_ai_assist(ext)
+    if cached:
+        try:
+            out["judge"] = json.loads(cached["payload"])
+        except (ValueError, TypeError):
+            pass
+    n = len(db.get_spec_files(case_id))
+    exact = db.get_ai_assist("sum:%d:%s" % (n, ext))
+    cached = exact or db.get_ai_assist_sum_latest(ext)
+    if cached:
+        try:
+            data = json.loads(cached["payload"])
+            # 仕様書の件数が概要作成時と違う＝材料が変わっている。再作成を促す。
+            data["stale_specs"] = exact is None
+            out["summary"] = data
+        except (ValueError, TypeError):
+            pass
+    return jsonify(out)
+
+
 @app.route("/companies/extract", methods=["POST"])
 def company_extract():
     """【要望⑨①】協力会社サイトのURLから会社情報をAI抽出して返す（保存前の下書き）。"""
@@ -770,6 +805,7 @@ def apply_case(case_id: int):
         "note": text("note"),
         "assignee": text("assignee"),
         "apply_deadline": text("apply_deadline"),
+        "inquiry_period": text("inquiry_period"),
         "bid_deadline": text("bid_deadline"),
         "open_date": text("open_date"),
         "submit_method": text("submit_method"),
@@ -928,6 +964,7 @@ def applications_restore():
             note=_tx("note"),
             assignee=_tx("assignee"),
             apply_deadline=_tx("apply_deadline"),
+            inquiry_period=_tx("inquiry_period"),
             bid_deadline=_tx("bid_deadline"),
             open_date=_tx("open_date"),
             submit_method=_tx("submit_method"),
@@ -970,6 +1007,8 @@ def applications():
         "submit_methods": db.SUBMIT_METHODS,
         "today": date.today().isoformat(),
         "company_name": db.get_profile().get("company", "") or "川野電気",
+        # AI機能が使える状態か（モーダルを開いたときの期限自動取得の可否判定に使う）
+        "ai_on": bool(auth.can_use_ai() and ai_assist.is_enabled()),
     }
     return render_template(
         "applications.html",

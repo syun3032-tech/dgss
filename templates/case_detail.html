@@ -157,6 +157,12 @@
 
     <form class="apply-form grid" method="post" action="{{ url_for('apply_case', case_id=c.id) }}"
           data-ext="{{ c.external_id }}">
+      {% if c.source == 'manual' %}
+      <label class="grow">
+        <span>案件名（手動追加のため修正できます）</span>
+        <input type="text" name="title" value="{{ c.title }}">
+      </label>
+      {% endif %}
       <label>
         <span>状況</span>
         <select name="status">
@@ -213,7 +219,7 @@
       </div>
 
       <input type="hidden" name="partners" id="partnersInput" value="[]">
-      <input type="hidden" name="managed" value="status,assignee,submit_method,applied_date,apply_deadline,bid_deadline,note,needs_check,partners">
+      <input type="hidden" name="managed" value="status,assignee,submit_method,applied_date,apply_deadline,bid_deadline,note,needs_check,partners{{ ',title' if c.source == 'manual' else '' }}">
       <div class="full"><button type="submit" class="btn primary">保存</button></div>
     </form>
   </section>
@@ -311,6 +317,9 @@
       partners: partners,
       mtime: mtime
     };
+    // 手動案件のみ案件名入力欄がある。ミラーにも載せて復元時の名称を最新に保つ。
+    var titleEl = form.querySelector('[name="title"]');
+    if (titleEl && titleEl.value.trim()) next.title = titleEl.value.trim();
     var prev = map[ext] || {};
     for (var k in prev) { if (!(k in next)) next[k] = prev[k]; }
     map[ext] = next;

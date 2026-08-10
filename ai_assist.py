@@ -505,14 +505,29 @@ _SUMMARY_SCHEMA: dict[str, Any] = {
                       "description": "重要な日程（公告/参加申請/入札/開札 等、分かるもの）"},
         "suited_categories": {"type": "array", "items": {"type": "string"},
                               "description": "この工事に適した工事カテゴリ（協力会社選定用・複数可）。選択肢: 電気工事/照明/LED/空調/防犯/カメラ/通信/弱電/管工事/太陽光/高圧受電/リフォーム/建築/制御盤/足場/清掃/IT/システム/商社/卸/土木"},
+        # 要望⑱-①: 管理シートの期限フィールドへ自動反映するための機械処理用日程。
+        "schedule": {
+            "type": "object",
+            "description": "公告資料に明記された日程だけを機械処理用に抽出（推測しない。不明な項目は空文字）",
+            "properties": {
+                "apply_deadline":  {"type": "string", "description": "入札参加申請（参加表明・資格確認申請）の期限。YYYY-MM-DD形式"},
+                "inquiry_period":  {"type": "string", "description": "質疑（質問書）の受付期間。例「2026-08-01〜2026-08-08 17:00」。原文の時刻表記は残してよい"},
+                "bid_deadline":    {"type": "string", "description": "入札書（見積書）の提出期限。YYYY-MM-DD形式"},
+                "open_date":       {"type": "string", "description": "開札日。YYYY-MM-DD形式"},
+                "official_title":  {"type": "string", "description": "公告に記載の正式な案件名（案件情報と同じなら空）"},
+            },
+            "required": ["apply_deadline", "inquiry_period", "bid_deadline", "open_date", "official_title"],
+        },
     },
-    "required": ["overview", "scope", "key_dates", "suited_categories"],
+    "required": ["overview", "scope", "key_dates", "suited_categories", "schedule"],
 }
 _SUMMARY_SYSTEM = (
     "あなたは公共入札（電気工事系）の案件概要を作成する専門家です。"
     "公告本文と案件情報から、担当者が一目で把握できる概要を作成します。"
     "一般論でなくこの案件の実態に即して具体的に。指定JSONスキーマで日本語出力。"
     "suited_categories は指定の語のみを使うこと。"
+    "schedule の日付は資料に明記されたものだけをYYYY-MM-DD形式で（和暦・「令和8年7月1日」等は変換、"
+    "年の記載が無い場合のみ公告日の年から補完）。記載が見つからない項目は空文字にし、推測しないこと。"
 )
 
 

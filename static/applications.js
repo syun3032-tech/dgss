@@ -139,7 +139,8 @@
       mtime: mtime || Date.now(),
       external_id: c.external_id, status: c.status, assignee: c.assignee,
       flag: c.flag, applied_date: c.applied_date || "", note: c.note || "",
-      apply_deadline: c.apply_deadline || "", bid_deadline: c.bid_deadline || "",
+      apply_deadline: c.apply_deadline || "", inquiry_period: c.inquiry_period || "",
+      bid_deadline: c.bid_deadline || "",
       open_date: c.open_date || "", submit_method: c.submit_method || "",
       work: c.work || "", materials: c.materials || "",
       needs_check: c.needs_check ? 1 : 0, award_called: c.award_called ? 1 : 0,
@@ -851,7 +852,11 @@
       var ov = (summaryResult.overview || []).map(function (x) { return "<li>" + esc(x) + "</li>"; }).join("");
       var kd = (summaryResult.key_dates || []).map(function (x) { return "<li>" + esc(x) + "</li>"; }).join("");
       var sc = (summaryResult.suited_categories || []).map(function (x) { return '<span class="sum-cat">' + esc(x) + "</span>"; }).join("");
-      return '<div class="m-ai res sum"><div class="m-ai-top"><b>AI案件概要</b><button type="button" class="btn ghost small" id="sumRedo">再作成</button></div>' +
+      var savedTag = summaryResult.saved
+        ? '<span class="dim" style="font-weight:400;font-size:11px">保存済み' +
+          (summaryResult.stale_specs ? "・仕様書が変わっています（再作成推奨）" : "") + "</span>"
+        : "";
+      return '<div class="m-ai res sum"><div class="m-ai-top"><b>AI案件概要</b>' + savedTag + '<button type="button" class="btn ghost small" id="sumRedo">再作成</button></div>' +
         (summaryResult.scope ? '<p class="sum-scope">' + esc(summaryResult.scope) + "</p>" : "") +
         (ov ? '<ul class="m-ai-rs">' + ov + "</ul>" : "") +
         (kd ? '<div class="sum-sub">重要日程</div><ul class="m-ai-rs">' + kd + "</ul>" : "") +
@@ -874,6 +879,7 @@
       var cls = ({ "〇": "ok", "△": "warn", "✕": "ng" })[v] || "unk";
       var reasons = (e.reasons || []).map(function (r) { return "<li>" + esc(r) + "</li>"; }).join("");
       return '<div class="m-ai res ' + cls + '"><div class="m-ai-top"><b>AI応募可否</b> <span class="ai-v ' + cls + '">' + esc(v) + "</span>" +
+        (aiResult.saved ? '<span class="dim" style="font-weight:400;font-size:11px">保存済み</span>' : "") +
         '<button type="button" class="btn ghost small" id="aiRedo">再判定</button></div>' +
         '<ul class="m-ai-rs">' + reasons + "</ul>" +
         (v === "〇" ? '<span class="dim">応募できそうです</span>'
@@ -928,6 +934,7 @@
         fld("工事カテゴリ", '<select name="work"><option value="">（案件の業種）</option>' + opt(Object.keys(WORK), c.work || c.work_eff) + "</select>") +
         (priv ? "" : fld("入札タイプ", '<select name="submit_method"><option value="">—</option>' + opt(METHODS, c.submit_method) + "</select>")) +
         fld(priv ? "見積提出 期限" : "参加申請 期限", '<input type="date" name="apply_deadline" value="' + esc(c.apply_deadline) + '">') +
+        (priv ? "" : fld("質疑期間", '<input name="inquiry_period" value="' + esc(c.inquiry_period || "") + '" placeholder="例: 8/1〜8/8 17:00">')) +
         (priv ? "" : fld("入札書提出 期限", '<input type="date" name="bid_deadline" value="' + esc(c.bid_deadline) + '">')) +
         (priv ? "" : fld("開札日", '<input type="date" name="open_date" value="' + esc(c.open_date) + '">')) +
         fld("資料受取", '<input name="materials" value="' + esc(c.materials) + '" placeholder="6/1以降受取 等">') +
@@ -1047,7 +1054,7 @@
     }
     function pullInfo(root) {
       // title は手動案件のときだけ入力欄が出る（無ければ querySelector が null で素通り）
-      ["status", "assignee", "work", "submit_method", "apply_deadline", "bid_deadline", "open_date", "materials", "flag", "note", "agency_override", "title"].forEach(function (n) {
+      ["status", "assignee", "work", "submit_method", "apply_deadline", "inquiry_period", "bid_deadline", "open_date", "materials", "flag", "note", "agency_override", "title"].forEach(function (n) {
         var e = root.querySelector('[name="' + n + '"]'); if (e) c[n] = e.value;
       });
     }
@@ -1122,12 +1129,31 @@
         };
       }
     }
+    // 要望⑱-①: AI概要が抽出した日程(schedule)を、空欄の期限フィールドへ取り込む。
+    // 入力済みの値は上書きしない。取り込みは画面上の値だけで、確定は「保存」ボタン。
+    function applySchedule() {
+      var s = summaryResult && summaryResult.schedule;
+      if (!s || (c.sector || "公共") === "民間") return 0;
+      var n = 0;
+      [["apply_deadline", s.apply_deadline], ["inquiry_period", s.inquiry_period],
+       ["bid_deadline", s.bid_deadline], ["open_date", s.open_date]].forEach(function (p) {
+        var k = p[0], v = (p[1] || "").trim();
+        if (v && !(c[k] || "").trim()) { c[k] = v; n++; }
+      });
+      return n;
+    }
     function runSummary(root, refresh) {
       summaryBusy = true; redraw(root);
       var url = "/case/" + c.case_id + "/summary" + (refresh ? "?refresh=1" : "");
       fetch(url, { method: "POST", headers: { "X-Requested-With": "XMLHttpRequest" } })
         .then(function (r) { if (r.status === 401 || r.status === 403) return { enabled: false }; return r.json(); })
-        .then(function (j) { summaryResult = j || { error: true }; if (j && j.spec_files) c.spec_files = j.spec_files; summaryBusy = false; redraw(root); })
+        .then(function (j) {
+          summaryResult = j || { error: true };
+          if (j && j.spec_files) c.spec_files = j.spec_files;
+          var filled = (j && !j.error && j.enabled !== false) ? applySchedule() : 0;
+          summaryBusy = false; redraw(root);
+          if (filled) toast("公告から期限を" + filled + "件取り込みました（「保存」で確定）");
+        })
         .catch(function () { summaryResult = { enabled: true, error: "AI概要の生成に失敗しました。" }; summaryBusy = false; redraw(root); });
     }
     function runAi(root, refresh) {
@@ -1235,7 +1261,40 @@
         });
       });
     }
-    showModal(esc(c.title), bodyHtml(), function (root) { bindModal(root); }, {
+    // 保存済みのAI概要・応募可否を読み込んで表示（AIは呼ばない＝無料。
+    // 要望: 1度作った概要が画面を閉じると消え、ボタンを押し直す必要があった）。
+    function loadSavedAi(root) {
+      if (!c.case_id) return;
+      fetch("/case/" + c.case_id + "/ai/saved")
+        .then(function (r) { return r.ok ? r.json() : null; })
+        .then(function (d) {
+          if (!d) return;
+          var changed = false, filled = 0;
+          if (d.summary && !summaryResult && !summaryBusy) {
+            d.summary.saved = true; summaryResult = d.summary; changed = true;
+            filled = applySchedule();   // 保存済み概要からも期限を取り込む（無料）
+          }
+          if (d.judge && !aiResult && !aiBusy) { d.judge.saved = true; aiResult = d.judge; changed = true; }
+          if (changed) {
+            // 開いた直後の再描画。入力途中の値は先に取り込んでから描き直す。
+            if (mtab === "情報") pullInfo(root); else pullMoney(root);
+            redraw(root);
+            if (filled) toast("公告から期限を" + filled + "件取り込みました（「保存」で確定）");
+            return;
+          }
+          // 要望⑱-①: 概要が未作成で期限も空の案件は、開いたときに公告資料から
+          // 自動取得する（AI1回ぶん課金・材料が無い案件では動かさない）。
+          var priv = (c.sector || "公共") === "民間";
+          var noDates = !((c.apply_deadline || "") + (c.bid_deadline || "") + (c.open_date || "") + (c.inquiry_period || "")).trim();
+          var hasMaterial = !!(c.detail_url || (c.spec_files || []).length);
+          if (CFG.ai_on && !priv && !summaryResult && !summaryBusy && noDates && hasMaterial) {
+            pullInfo(root);
+            runSummary(root, false);
+          }
+        })
+        .catch(function () {});
+    }
+    showModal(esc(c.title), bodyHtml(), function (root) { bindModal(root); loadSavedAi(root); }, {
       danger: {
         label: "申請管理から削除",
         onClick: function () {
@@ -1264,7 +1323,7 @@
       if (sel) c.partner = sel.company;
     }
     var mtime = Date.now();
-    var MANAGED = "status,assignee,work,submit_method,apply_deadline,bid_deadline,open_date," +
+    var MANAGED = "status,assignee,work,submit_method,apply_deadline,inquiry_period,bid_deadline,open_date," +
       "materials,partner,flag,note,needs_check,bid_plan,win_amount,win_company,award_called,partners,agency_override,cost_items";
     var fd = new URLSearchParams();
     fd.append("ajax", "1");
@@ -1275,7 +1334,7 @@
     }
     fd.append("managed", MANAGED);
     fd.append("mtime", String(mtime));
-    ["status", "assignee", "work", "submit_method", "apply_deadline", "bid_deadline",
+    ["status", "assignee", "work", "submit_method", "apply_deadline", "inquiry_period", "bid_deadline",
       "open_date", "materials", "partner", "flag", "note", "agency_override"].forEach(function (k) { fd.append(k, c[k] || ""); });
     fd.append("bid_plan", c.bid_plan || 0); fd.append("win_amount", c.win_amount || 0);
     fd.append("win_company", c.win_company || "");

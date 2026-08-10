@@ -118,10 +118,11 @@ check("行消失後は旧形式でも restored=1", (r.get_json() or {}).get("res
 cid2 = setup_case("kkj:sync-2", "テスト空調更新工事")
 client.post(f"/case/{cid2}/apply", data={
     "ajax": "1", "mtime": "5000000",
-    "managed": "status,bid_plan,win_company,cost_items,agency_override",
+    "managed": "status,bid_plan,win_company,cost_items,agency_override,inquiry_period",
     "status": "見積取得", "bid_plan": "3000000",
     "win_company": "往復テスト電気", "agency_override": "往復県",
     "cost_items": '[{"label":"労務","amount":50}]',
+    "inquiry_period": "8/1〜8/8 17:00",
 })
 snapshot = db._applications_for_supa()
 snap2 = next(s for s in snapshot if s.get("external_id") == "kkj:sync-2")
@@ -153,6 +154,7 @@ check("往復で win_company 残る", row2.get("win_company") == "往復テス�
 check("往復で cost_items 残る", row2.get("cost_items") == [{"label": "労務", "amount": 50}])
 check("往復で agency_override 残る", row2.get("agency_override") == "往復県")
 check("往復で client_mtime 残る", int(row2.get("client_mtime") or 0) == 5000000)
+check("往復で inquiry_period 残る", row2.get("inquiry_period") == "8/1〜8/8 17:00")
 
 # ---------- 5. 公共【役務】シートと案件名の後編集（2026-07 要望） ----------
 r = client.post("/applications/new", data={

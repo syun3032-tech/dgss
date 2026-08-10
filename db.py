@@ -323,6 +323,7 @@ def init_db() -> None:
             ("win_company",    "TEXT DEFAULT ''"),    # 落札会社名（自社・他社問わず最終落札先）
             ("cost_items",     "TEXT DEFAULT '[]'"),  # 自社原価の内訳（[{label,amount}]・JSON）
             ("client_mtime",   "INTEGER DEFAULT 0"),  # 端末側の編集時刻(ms)。restoreの新旧判定に使う
+            ("inquiry_period", "TEXT DEFAULT ''"),    # 質疑（質問書）受付期間（要望⑱-①）
         ):
             if col not in app_cols:
                 conn.execute(f"ALTER TABLE applications ADD COLUMN {col} {ddl}")
@@ -793,6 +794,19 @@ def get_ai_assist(external_id: str) -> dict[str, Any] | None:
         return dict(row) if row else None
 
 
+def get_ai_assist_sum_latest(external_id: str) -> dict[str, Any] | None:
+    """その案件の最新のAI概要キャッシュを返す（仕様書件数が変わり完全一致キーが無いとき用）。"""
+    if not external_id:
+        return None
+    with _connect() as conn:
+        row = conn.execute(
+            "SELECT payload, model, created_at FROM ai_assist "
+            "WHERE external_id LIKE 'sum:%' AND external_id LIKE ? "
+            "ORDER BY created_at DESC LIMIT 1",
+            ("%:" + external_id,)).fetchone()
+        return dict(row) if row else None
+
+
 def set_ai_assist(external_id: str, payload: str, model: str = "") -> None:
     """AI応募アシストの結果をキャッシュに保存（external_id で上書き）。"""
     with _connect() as conn:
@@ -1198,6 +1212,7 @@ _APP_TEXT_FIELDS = (
     "open_date", "submit_method", "work", "materials", "flag", "partner",
     "agency_override",  # 元機関(発注機関)の手書き上書き（案件のagencyが不正確な時に修正）
     "win_company",      # 落札会社名（自社・他社問わず最終落札先）
+    "inquiry_period",   # 質疑（質問書）受付期間（要望⑱-①）
 )
 _APP_INT_FIELDS = ("needs_check", "bid_plan", "win_amount", "award_called")
 
@@ -1308,7 +1323,8 @@ def restore_from_supa() -> dict[str, int]:
                     "needs_check", "bid_plan", "win_amount", "award_called", "partner", "partners",
                     # 以下が欠けると再起動のたびに落札会社名・原価内訳・機関上書き・
                     # 編集世代が消える（保存ロールバックの一因だった）
-                    "win_company", "cost_items", "agency_override", "client_mtime")}
+                    "win_company", "cost_items", "agency_override", "client_mtime",
+                    "inquiry_period")}
                 try:
                     set_application(cid, it.get("status") or "参加申請準備前", **fields)
                     # 仕様書の紐付けは set_application では書かないので個別に復元（要望⑦STEP1）
