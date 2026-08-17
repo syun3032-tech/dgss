@@ -127,11 +127,17 @@ def run(reset: bool = False, koukai_instances: list[str] | None = None,
         # 無いDBでも合格して公開され、本番が6週間痩せたままだった（2026-08-16発覚）。
         import data_expectations as dx
         with db._connect() as conn:
+            counts = dx.source_counts(conn)
             findings = dx.inspect(conn, full=full)
-            print(dx.format_report(findings, counts=dx.source_counts(conn)))
+            print(dx.format_report(findings, counts=counts))
         if any(f.critical for f in findings):
             print("[安全弁] 重大な指摘があるためビルドを中止（前回の正常デプロイを維持）。")
             sys.exit(1)
+        # 指摘なしのときだけ基準値を更新する。異常な値を基準にすると、毎日少しずつ
+        # 下がっても「前回と同じくらい」で通ってしまい、静かに痩せていくため。
+        if not findings:
+            dx.save_baseline("full" if full else "fast", counts)
+            print(f"[基準値] 正常だったので {dx.BASELINE_PATH.name} を更新しました。")
         return
 
     # 1) 自治体の電気工事（実データ・個別システム）— 京都府・愛知県・堺市(大阪府)

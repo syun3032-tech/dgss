@@ -12,10 +12,11 @@
 
 ## 使う側（多層で同じ期待値を参照する）
 
-  1. update.py   … 取得直後。割れていたらビルドを止める（痩せたDBを公開しない）
-  2. audit.py    … 毎日の自動監査レポートに載せる
-  3. app.py      … 画面上部の警告バナー
-  4. monitor.yml … 本番URLを外から叩いて鮮度を見る（GitHub Actionsを赤くする）
+  1. preflight.py  … 取得前。外部ソースに繋がるかを実接続で確かめる
+  2. update.py     … 取得直後。割れていたらビルドを止める（痩せたDBを公開しない）
+  3. audit.py      … 毎日の自動監査レポートに載せる
+  4. app.py        … 画面上部の警告バナー ＋ /api/data-health（重大なら HTTP 503）
+  5. watchdog.yml  … 本番URLを外から叩く（GitHub Actionsを赤くする＝メールが飛ぶ）
 
 **指摘されたズレは、その場でここに追記すること。** 同じ見落としを二度出さないため。
 """
@@ -23,6 +24,8 @@
 from __future__ import annotations
 
 import datetime
+import json
+import pathlib
 import sqlite3
 from dataclasses import dataclass
 
@@ -73,6 +76,15 @@ EXPECT: tuple[SourceExpect, ...] = (
 # 残っている。それらは取得が止まっても総件数で拾えるため個別の下限は置かない。
 
 
+# 前回の正常値に対して、ここまで減ったら異常とみなす割合。
+# 絶対値の下限だけでは「44,000件 → 21,000件」のような**半減**を見逃す（下限20,000は
+# 超えているため）。取得の一部が静かに壊れていく劣化を捕まえるための相対しきい値。
+DROP_CRITICAL = 0.60   # 前回正常値の60%未満＝重大
+DROP_WARN = 0.80       # 80%未満＝注意
+
+BASELINE_PATH = pathlib.Path(__file__).with_name("data_baseline.json")
+
+
 @dataclass(frozen=True)
 class Finding:
     """検品の指摘1件。"""
@@ -82,6 +94,26 @@ class Finding:
 
     def __str__(self) -> str:
         return f"{'【重大】' if self.critical else '【注意】'}{self.message}"
+
+
+def load_baseline(mode: str) -> dict:
+    """前回「正常」と判定できたときの件数。無ければ空 dict。"""
+    try:
+        return json.loads(BASELINE_PATH.read_text(encoding="utf-8")).get(mode, {})
+    except (OSError, ValueError):
+        return {}
+
+
+def save_baseline(mode: str, counts: dict[str, int]) -> None:
+    """正常だったときだけ呼ぶこと。異常な値を基準にすると静かに下がり続ける。"""
+    try:
+        data = json.loads(BASELINE_PATH.read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        data = {}
+    data[mode] = {"updated": _today().isoformat(), "total": sum(counts.values()),
+                  "sources": counts}
+    BASELINE_PATH.write_text(json.dumps(data, ensure_ascii=False, indent=2) + "\n",
+                             encoding="utf-8")
 
 
 def _today() -> datetime.date:
@@ -119,7 +151,7 @@ def inspect(conn: sqlite3.Connection, *, full: bool = False) -> list[Finding]:
     「ビルドは通ったのに画面には警告が出る」ようなズレが起きないようにする。
     """
     findings: list[Finding] = []
-    mode = "--full" if full else "--fast"
+    mode = "full" if full else "fast"      # 基準値ファイルのキー
     counts = source_counts(conn)
     total = sum(counts.values())
 
@@ -127,7 +159,7 @@ def inspect(conn: sqlite3.Connection, *, full: bool = False) -> list[Finding]:
     floor = TOTAL_MIN_FULL if full else TOTAL_MIN_FAST
     if total < floor:
         findings.append(Finding(
-            True, f"総件数が {total:,} 件（{mode} の下限 {floor:,} 未満）＝取得が大量に"
+            True, f"総件数が {total:,} 件（--{mode} の下限 {floor:,} 未満）＝取得が大量に"
                   "失敗している。この状態のDBを公開してはいけない"))
 
     # 2) ソース別の件数
@@ -137,7 +169,7 @@ def inspect(conn: sqlite3.Connection, *, full: bool = False) -> list[Finding]:
         if got < want:
             findings.append(Finding(
                 e.critical,
-                f"取得元「{e.name}」が {got:,} 件（{mode} の下限 {want:,} 未満）。{e.why}"))
+                f"取得元「{e.name}」が {got:,} 件（--{mode} の下限 {want:,} 未満）。{e.why}"))
 
     # 3) 鮮度（全体）
     latest = latest_announced(conn)
@@ -159,6 +191,29 @@ def inspect(conn: sqlite3.Connection, *, full: bool = False) -> list[Finding]:
             findings.append(Finding(
                 True, f"主力の「官公需API」の最新公告が {main_latest}（{d}日前）。"
                       "件数が足りていても新着が入っていない＝取得が壊れている"))
+
+    # 5) 前回の正常値との比較。下限は超えているのに半分に減っている、という
+    #    「静かな劣化」を捕まえる。絶対値だけ見ていると気づけない層。
+    base = load_baseline(mode)
+    prev_total = base.get("total", 0)
+    if prev_total:
+        ratio = total / prev_total
+        if ratio < DROP_CRITICAL:
+            findings.append(Finding(
+                True, f"総件数が前回の正常値から {ratio:.0%} に急減（{prev_total:,} → "
+                      f"{total:,} 件・前回 {base.get('updated', '不明')}）。取得の一部が"
+                      "壊れている疑いが強い"))
+        elif ratio < DROP_WARN:
+            findings.append(Finding(
+                False, f"総件数が前回の正常値の {ratio:.0%}（{prev_total:,} → {total:,} 件）。"
+                       "公告の少ない時期かもしれないが、続くようなら取得を疑うこと"))
+        for name, prev in base.get("sources", {}).items():
+            got = counts.get(name, 0)
+            if prev >= 500 and got < prev * DROP_CRITICAL:
+                is_main = any(e.name == name and e.critical for e in EXPECT)
+                findings.append(Finding(
+                    is_main, f"取得元「{name}」が前回の {got / prev:.0%} に減少"
+                             f"（{prev:,} → {got:,} 件）"))
 
     return findings
 

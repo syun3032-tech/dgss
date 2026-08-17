@@ -75,7 +75,9 @@ jobs:
           date -u +"%Y-%m-%dT%H:%M:%SZ" > .last-deploy
           git config user.name  "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add .last-deploy
+          # data_baseline.json = 「前回正常だったときの件数」。次回これと比べて
+          # 静かな半減を検知するので、正常だった回の値を必ず持ち帰る。
+          git add .last-deploy data_baseline.json
           git commit -m "chore: daily data refresh $(date -u +%Y-%m-%d)"
           # ビルド中(約30分)に人がpushしていると non-fast-forward で弾かれるため、
           # rebaseしてから押し込む（.last-deployしか触らないので衝突しない）
