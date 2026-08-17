@@ -1,0 +1,60 @@
+name: 本番データの外形監視（毎日）
+
+# 【多層防御の一番外側】本番サイトを**外から**叩いて、データが生きているかを毎日見る。
+#
+# なぜ要るか: 2026-07-07から6週間、官公需APIの取得が証明書エラーで全滅していたのに、
+# 「データ網羅更新」ワークフローは毎日 success で終わり続けた。取得が0件でも最後まで
+# 走り切る構造だったため、GitHubのどこを見ても異常が分からなかった。
+# 画面には警告バナーが出ていたが、人が見に行かないと気づけない。
+# そこで「機械が毎日、本番の実物を見る」層を足す。ここが赤くなればGitHubからメールが届く。
+#
+# /api/data-health は重大な異常のとき HTTP 503 を返す（判定基準は data_expectations.py）。
+
+on:
+  schedule:
+    # JST 9:00（UTC 0:00）。網羅更新（JST 6:00）とRenderの再デプロイが終わった後に見る。
+    - cron: "0 0 * * *"
+  workflow_dispatch: {}
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: 本番のデータ健全性を確認
+        run: |
+          URL="https://kawano-njss-modoki.onrender.com/api/data-health"
+          # Render無料プランはスリープするので、起こしてから最大3回試す
+          for i in 1 2 3; do
+            CODE=$(curl -s -o body.json -w "%{http_code}" --max-time 120 "$URL" || echo "000")
+            [ "$CODE" != "000" ] && break
+            echo "応答なし（$i回目）。スリープ復帰を待って再試行します。"
+            sleep 30
+          done
+
+          echo "HTTP $CODE"
+          cat body.json | python3 -m json.tool || cat body.json
+
+          # サマリに残す（Actionsの画面で一目で分かるように）
+          {
+            echo "### 本番データの健全性"
+            echo ""
+            echo "- HTTP: \`$CODE\`"
+            python3 - <<'PY' || true
+          import json
+          d = json.load(open("body.json"))
+          print(f"- 総件数: {d.get('total', 0):,} 件")
+          print(f"- 最新公告: {d.get('latest_announced') or '不明'}")
+          for k, v in sorted(d.get("sources", {}).items(), key=lambda kv: -kv[1]):
+              print(f"  - {k}: {v:,} 件")
+          if d.get("reason"):
+              print(f"- 指摘: {d['reason']}")
+          PY
+          } >> "$GITHUB_STEP_SUMMARY"
+
+          if [ "$CODE" = "200" ]; then
+            echo "本番データは正常です。"
+            exit 0
+          fi
+          echo "::error::本番データに異常があります（HTTP $CODE）。上のサマリと本番画面を確認してください。"
+          exit 1

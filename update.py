@@ -121,16 +121,16 @@ def run(reset: bool = False, koukai_instances: list[str] | None = None,
         n_cases = db.count_cases()
         mode = "網羅更新" if full else "高速更新"
         print(f"=== {mode}完了: 案件 {n_cases} 件 / 監視機関 {db.count_agencies()} 機関 ===")
-        # 【安全弁】案件が極端に少ない＝官公需APIが落ちていた等で生成失敗。
-        # この状態でデプロイすると「空っぽのサイト」が公開されてしまうため、
-        # 非0終了でビルドを止める→Renderは直前の正常デプロイを維持する。
-        # 網羅モード(--full)は本来数万件入る。ここを fast と同じ 500 で判定していたため、
-        # 官公需APIが全滅して 1,879 件しか無いDBが「正常」として Release に公開され、
-        # 本番が痩せたデータのまま6週間動いていた（2026-08-16 発覚）。閾値をモード別にする。
-        floor_cases = FULL_MIN_CASES if full else FAST_MIN_CASES
-        if n_cases < floor_cases:
-            print(f"[安全弁] 案件 {n_cases} 件は下限 {floor_cases} 件（{mode}）未満。"
-                  "データ生成に失敗とみなしビルドを中止（前回の正常デプロイを維持）。")
+        # 【安全弁＝成果物の検品】「エラーが出なかった」ではなく「入るべきものが
+        # 入っているか」を機械で見る。期待仕様は data_expectations.py に集約（多層で共用）。
+        # 以前はここが「総件数500件未満か」だけで、官公需APIが全滅して1,879件しか
+        # 無いDBでも合格して公開され、本番が6週間痩せたままだった（2026-08-16発覚）。
+        import data_expectations as dx
+        with db._connect() as conn:
+            findings = dx.inspect(conn, full=full)
+            print(dx.format_report(findings, counts=dx.source_counts(conn)))
+        if any(f.critical for f in findings):
+            print("[安全弁] 重大な指摘があるためビルドを中止（前回の正常デプロイを維持）。")
             sys.exit(1)
         return
 

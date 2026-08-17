@@ -16,6 +16,7 @@ API: http://www.kkj.go.jp/api/  （GET, XML, 認証不要）
 from __future__ import annotations
 
 import re
+import socket
 import ssl
 import urllib.parse
 import urllib.request
@@ -40,15 +41,64 @@ API_URL = "https://www.kkj.go.jp/api/"
 _CA_BUNDLE = Path(__file__).with_name("certs") / "kkj_intermediate.pem"
 
 
-def _ssl_context() -> ssl.SSLContext:
+def _ssl_context(extra_pem: str = "") -> ssl.SSLContext:
     """標準の信頼ストア ＋ 同梱した中間CA で検証するコンテキストを作る。"""
     ctx = ssl.create_default_context()
     if _CA_BUNDLE.exists():
         ctx.load_verify_locations(cafile=str(_CA_BUNDLE))
+    if extra_pem:
+        ctx.load_verify_locations(cadata=extra_pem)
     return ctx
 
 
 _SSL_CTX = _ssl_context()
+
+# ------------------------------------------------------------
+# 【多層防御】同梱CAが将来また合わなくなったときの自己修復
+# ------------------------------------------------------------
+# 同梱した中間CAは「今のサーバ証明書」に対する答えでしかない。kkj.go.jp が別のCAへ
+# 乗り換えれば（＝2026-07に実際に起きたこと）また同じ全滅が起きる。そこで、検証に
+# 失敗したら**サーバ証明書が指し示すAIA(CA Issuers)から正しい中間CAを取りに行き**、
+# 一度だけ再試行する。ブラウザが昔からやっている挙動と同じ。
+#
+# 安全性: 取ってきた中間CAは「信頼済みルートまで繋がるか」をOpenSSLが必ず検証する。
+# ルートは標準の信頼ストアのままなので、偽の中間CAを掴まされても検証は通らない。
+# ＝検証を無効化する回避とは根本的に違う。
+_AIA_URL_RE = re.compile(rb"https?://[\x21-\x7e]{4,180}?\.(?:cer|crt|p7c)")
+_healed_pem: str = ""
+
+
+def _aia_healed_context(host: str, port: int = 443) -> ssl.SSLContext | None:
+    """サーバ証明書のAIAから中間CAを取得し、それを足した検証コンテキストを返す。
+
+    取得できない・解析できない場合は None（＝諦めて元のエラーを出す）。
+    """
+    global _healed_pem
+    if _healed_pem:
+        return _ssl_context(_healed_pem)
+    try:
+        # 生のサーバ証明書(DER)を読むだけ。ここでは検証しない（検証したいから読む）。
+        probe = ssl._create_unverified_context()  # noqa: SLF001
+        with socket.create_connection((host, port), timeout=20) as raw, \
+                probe.wrap_socket(raw, server_hostname=host) as s:
+            der = s.getpeercert(binary_form=True)
+        if not der:
+            return None
+        m = _AIA_URL_RE.search(der)
+        if not m:
+            return None
+        url = m.group(0).decode("ascii")
+        req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0"})
+        with urllib.request.urlopen(req, timeout=20) as res:
+            ca_der = res.read()
+        pem = ssl.DER_cert_to_PEM_cert(ca_der)
+        ctx = _ssl_context(pem)          # ← ここで初めて「ルートまで繋がるか」を検証する
+        _healed_pem = pem
+        print(f"[官公需API] 同梱CAでは検証できなかったため、AIA({url}) から"
+              "中間CAを取得して復旧しました。certs/kkj_intermediate.pem の更新を推奨します。")
+        return ctx
+    except Exception:  # noqa: BLE001 — 自己修復は「できたら儲けもの」。失敗は握る
+        return None
 
 # 直近の取得失敗の理由。_fetch_retry が握り潰した例外をここに残し、呼び出し側
 # （update.py）が「0件だった本当の理由」をログに出せるようにする。
@@ -360,8 +410,19 @@ def fetch(query: str = "電気工事", category: str = "2",
         params["LG_Code"] = ",".join(lg_codes)
     url = API_URL + "?" + urllib.parse.urlencode(params, encoding="utf-8")
     req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0"})
-    with urllib.request.urlopen(req, timeout=timeout, context=_SSL_CTX) as res:
-        raw = res.read().decode("utf-8")
+    try:
+        with urllib.request.urlopen(req, timeout=timeout, context=_SSL_CTX) as res:
+            raw = res.read().decode("utf-8")
+    except urllib.error.URLError as e:
+        # 証明書検証の失敗だけは自己修復を試す（同梱CAが古くなった場合の保険）。
+        # それ以外（タイムアウト・DNS等）は素直に投げて _fetch_retry に任せる。
+        if not isinstance(getattr(e, "reason", None), ssl.SSLCertVerificationError):
+            raise
+        healed = _aia_healed_context(urllib.parse.urlsplit(API_URL).hostname or "")
+        if healed is None:
+            raise
+        with urllib.request.urlopen(req, timeout=timeout, context=healed) as res:
+            raw = res.read().decode("utf-8")
     root = ET.fromstring(raw)
     err = root.find("Error")
     if err is not None:

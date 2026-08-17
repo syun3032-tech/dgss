@@ -27,10 +27,27 @@ jobs:
         run: pip install -r requirements.txt
 
       - name: 回帰テスト（壊れていたら中止）
-        run: python test_procurement.py && python test_kkj.py && python test_applications_sync.py && python test_ng_reports.py
+        run: python test_procurement.py && python test_kkj.py && python test_applications_sync.py && python test_ng_reports.py && python test_data_expectations.py
+
+      # 【多層防御・第1層】30分の重い取得を始める前に、外部ソースへ実接続して確かめる。
+      # 証明書・DNS・API仕様変更で取れないなら、ここで即座に赤くして中止する。
+      # 2026-07-07の事故では、取れないまま最後まで走り切って空のDBを公開していた。
+      - name: 事前確認（取得元に本当に繋がるか）
+        run: python preflight.py
 
       - name: 網羅DB生成（全国・都道府県分割）
-        run: python update.py --full
+        run: |
+          set -o pipefail
+          python update.py --full 2>&1 | tee build.log
+          # 【多層防御・第2層】検品結果をActionsのサマリに残す。「成功」の一言ではなく
+          # 何件入ったかを毎回見えるようにする（痩せていく変化に気づけるように）。
+          {
+            echo "### 生成したデータ"
+            echo ""
+            echo '```'
+            grep -E "^\[|^===|^  - |^検品" build.log || true
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
 
       - name: PDF実照合でToDo精度を監査（PDCA・非ブロッキング）
         run: |
