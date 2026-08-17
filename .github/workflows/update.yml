@@ -15,7 +15,9 @@ permissions:
 jobs:
   build-and-publish-db:
     runs-on: ubuntu-latest
-    timeout-minutes: 40
+    # 正常時の実測は31〜33分（取得が壊れていた頃は13分で終わっていた＝速いのは異常のサイン）。
+    # 40分だと公告が増えた日に落ちかねないので余裕を持たせる。Actionsは無料枠内。
+    timeout-minutes: 60
     steps:
       - uses: actions/checkout@v4
 
