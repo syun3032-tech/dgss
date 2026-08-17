@@ -97,6 +97,44 @@ def test_fetch_retry_recovers_from_transient_error():
         k.fetch = orig
 
 
+def test_ssl_context_bundles_kkj_intermediate():
+    """kkj.go.jp 用の中間CAが同梱され、検証コンテキストに載っていること。
+
+    2026-07-07〜08-16、サーバが誤った中間CAを送るせいで検証に失敗し、官公需APIの
+    取得が全滅していた（本番DBが 1,879 件まで痩せた）。同梱CAが消えると同じ事故に
+    戻るため、存在と読み込みを固定する。ネットには触れないオフラインテスト。
+    """
+    assert k._CA_BUNDLE.exists(), f"同梱の中間CAが見つからない: {k._CA_BUNDLE}"
+    subjects = [dict(x for t in c["subject"] for x in t).get("commonName", "")
+                for c in k._ssl_context().get_ca_certs()]
+    assert "JPRS DV RSA CA 2024 G1" in subjects, \
+        "kkj.go.jp のサーバ証明書を発行した中間CAが信頼ストアに載っていない"
+    # 検証を切る回避（CERT_NONE）へ退行していないこと＝中間者攻撃を許さない
+    ctx = k._ssl_context()
+    assert ctx.verify_mode == __import__("ssl").CERT_REQUIRED, "証明書検証が無効化されている"
+    assert ctx.check_hostname is True, "ホスト名検証が無効化されている"
+
+
+def test_fetch_retry_records_reason_on_total_failure():
+    """全リトライ失敗時、理由を last_error() に残すこと（無言の0件を作らない）。"""
+    orig = k.fetch
+    try:
+        def always_fail(query="", category="2", lg_codes=None, count=1000, timeout=40):
+            raise OSError("証明書エラー想定")
+
+        k.fetch = always_fail  # type: ignore[assignment]
+        import time as _t
+        orig_sleep, _t.sleep = _t.sleep, lambda *_a, **_k: None
+        try:
+            out = k._fetch_retry("電気工事", "2", retries=1)
+        finally:
+            _t.sleep = orig_sleep
+        assert out == [], "失敗時は空リストを返すべき"
+        assert "証明書エラー想定" in k.last_error(), "失敗理由が記録されていない"
+    finally:
+        k.fetch = orig
+
+
 def test_parse_budget_picks_max_yen():
     """予定価格抽出：本文から円を数値化し、複数あれば最大を採る（1000万フィルタの土台）。"""
     yen, txt = k.parse_budget_from_text("予定価格 12,300,000円 ほか 参考価格 9,000,000円")
