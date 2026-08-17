@@ -42,10 +42,18 @@ def _db(rows: list[tuple[str, str]]) -> sqlite3.Connection:
     return c
 
 
-def _healthy(n_main: int = 9000) -> list[tuple[str, str]]:
+# テスト用の件数は**しきい値から自動で決める**。ここを数字べた書きにすると、
+# 期待値を実態に合わせて上げた瞬間にテストが「正常データで誤報」と落ちる
+# （姉妹アプリからこのファイルを持ってきたときに実際に起きた）。
+_FAST_OK = max(dx.TOTAL_MIN_FAST, max(e.min_fast for e in dx.EXPECT)) * 2
+_FULL_NG = min(dx.TOTAL_MIN_FULL, min(e.min_full for e in dx.EXPECT)) // 2
+
+
+def _healthy(n_main: int | None = None) -> list[tuple[str, str]]:
     """正常なデータ（主力ソースが十分な件数・公告も新しい）。"""
+    n_main = _FAST_OK if n_main is None else n_main
     rows = [("官公需API", _iso(1)) for _ in range(n_main)]
-    rows += [("調達ポータル落札実績", _iso(2)) for _ in range(200)]
+    rows += [("調達ポータル落札実績", _iso(2)) for _ in range(500)]
     return rows
 
 
@@ -57,8 +65,8 @@ def test_healthy_data_has_no_findings():
 
 def test_main_source_zero_is_critical():
     """主力ソースが0件＝重大。ここが今回の事故そのもの。"""
-    # 他ソースだけで件数を稼いだ状態（本番が1,879件になっていた形）
-    rows = [("PPI", _iso(1)) for _ in range(6000)]
+    # 他ソースだけで件数を稼いだ状態（本番が1,997件になっていた形）
+    rows = [("PPI", _iso(1)) for _ in range(_FAST_OK)]
     fs = dx.inspect(_db(rows), full=False)
     assert any(f.critical for f in fs), "主力ソース0件が重大として検知されない"
     assert any("官公需API" in f.message for f in fs), "どのソースが死んだのか分からない"
@@ -66,14 +74,14 @@ def test_main_source_zero_is_critical():
 
 def test_thin_full_build_is_blocked():
     """--full で痩せたDB（1,879件相当）は重大＝公開させない。"""
-    rows = _healthy(n_main=1_600)
+    rows = _healthy(n_main=_FULL_NG)
     fs = dx.inspect(_db(rows), full=True)
     assert any(f.critical for f in fs), "痩せた網羅DBが合格してしまう（本番へ配られる）"
 
 
 def test_stale_main_source_detected_even_with_enough_rows():
     """件数は足りているのに主力の公告が古い＝重大。一番わかりにくい壊れ方。"""
-    rows = [("官公需API", _iso(30)) for _ in range(9000)]
+    rows = [("官公需API", _iso(30)) for _ in range(_FAST_OK)]
     fs = dx.inspect(_db(rows), full=False)
     assert any(f.critical and "官公需API" in f.message for f in fs), \
         "古いデータで件数だけ埋まっている状態を見逃している"
@@ -81,8 +89,8 @@ def test_stale_main_source_detected_even_with_enough_rows():
 
 def test_weekend_does_not_cause_false_alarm():
     """金曜公告を月曜に見る（3日前）程度では警告しない＝狼少年にしない。"""
-    rows = [("官公需API", _iso(3)) for _ in range(9000)]
-    rows += [("調達ポータル落札実績", _iso(3)) for _ in range(200)]
+    rows = [("官公需API", _iso(3)) for _ in range(_FAST_OK)]
+    rows += [("調達ポータル落札実績", _iso(3)) for _ in range(500)]
     fs = dx.inspect(_db(rows), full=False)
     assert fs == [], f"3日前の公告で誤報: {[str(f) for f in fs]}"
 
@@ -105,8 +113,8 @@ def _with_baseline(mode: str, total: int, sources: dict[str, int]):
 def test_silent_halving_is_caught_even_above_floor():
     """下限は超えているのに前回の半分＝重大。絶対値だけでは見逃す「静かな劣化」。"""
     # 前回 13,000件 → 今回 6,000件（--fast の下限 5,000 は超えている）
-    rows = _healthy(n_main=5_800)
-    with _with_baseline("fast", 13_200, {"官公需API": 13_000}):
+    rows = _healthy()                      # 下限は超えている件数
+    with _with_baseline("fast", _FAST_OK * 3, {"官公需API": _FAST_OK * 3}):
         fs = dx.inspect(_db(rows), full=False)
     assert any(f.critical for f in fs), "前回比の急減を見逃している"
     assert any("急減" in f.message or "減少" in f.message for f in fs)
@@ -114,8 +122,8 @@ def test_silent_halving_is_caught_even_above_floor():
 
 def test_small_dip_is_only_a_warning():
     """1〜2割の増減は季節変動もある。重大にせず注意に留める（狼少年にしない）。"""
-    rows = _healthy(n_main=9_000)
-    with _with_baseline("fast", 11_500, {"官公需API": 11_300}):
+    rows = _healthy()
+    with _with_baseline("fast", int(_FAST_OK * 1.15), {"官公需API": int(_FAST_OK * 1.15)}):
         fs = dx.inspect(_db(rows), full=False)
     assert not any(f.critical for f in fs), f"2割減で止めてしまう: {[str(f) for f in fs]}"
 

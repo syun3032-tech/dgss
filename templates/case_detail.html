@@ -196,6 +196,17 @@
         <span>入札書提出 期限</span>
         <input type="date" name="bid_deadline" value="{{ application.bid_deadline if application else '' }}">
       </label>
+      {# 質疑期間・開札日は管理シートのモーダルにしか無く、詳細ページから運用すると
+         編集できない項目があった（入口によって触れる項目が違う状態）。両方で揃える。
+         質疑期間は「8/12〜8/15 17:00」のような期間表記なのでテキスト。 #}
+      <label>
+        <span>質疑期間</span>
+        <input type="text" name="inquiry_period" value="{{ application.inquiry_period if application else '' }}" placeholder="例: 8/1〜8/8 17:00">
+      </label>
+      <label>
+        <span>開札日</span>
+        <input type="date" name="open_date" value="{{ application.open_date if application else '' }}">
+      </label>
       <label class="grow">
         <span>メモ</span>
         <textarea name="note" rows="3" class="note-area" placeholder="必要書類・注意点など">{{ application.note if application else '' }}</textarea>
@@ -219,7 +230,9 @@
       </div>
 
       <input type="hidden" name="partners" id="partnersInput" value="[]">
-      <input type="hidden" name="managed" value="status,assignee,submit_method,applied_date,apply_deadline,bid_deadline,note,needs_check,partners{{ ',title' if c.source == 'manual' else '' }}">
+      {# managed = この画面が責任を持って送るフィールド。ここに入れ忘れると入力しても
+         保存されない（＝黙って消える）ので、欄を足したら必ずここにも足すこと。 #}
+      <input type="hidden" name="managed" value="status,assignee,submit_method,applied_date,apply_deadline,inquiry_period,bid_deadline,open_date,note,needs_check,partners{{ ',title' if c.source == 'manual' else '' }}">
       <div class="full"><button type="submit" class="btn primary">保存</button></div>
     </form>
   </section>
@@ -311,7 +324,9 @@
       note: val('note'),
       assignee: val('assignee'),
       apply_deadline: val('apply_deadline'),
+      inquiry_period: val('inquiry_period'),
       bid_deadline: val('bid_deadline'),
+      open_date: val('open_date'),
       submit_method: val('submit_method'),
       needs_check: form.querySelector('[name="needs_check"]').checked ? 1 : 0,
       partners: partners,

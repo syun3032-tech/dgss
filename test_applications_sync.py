@@ -220,5 +220,43 @@ finally:
     appmod.ai_assist.is_enabled = _real_enabled
     appmod.ai_assist.summarize_ng_reasons = _real_sum
 
+# ============================================================
+# 案件詳細ページ: 入力欄と managed の取りこぼし検査
+# ============================================================
+# apply_case は hidden の managed に載っているフィールドだけを保存する。
+# 欄を足して managed に足し忘れると、**入力できるのに保存されない**（黙って消える）。
+# 実際に質疑期間・開札日がモーダルにしか無く、詳細ページから運用すると編集できない
+# 状態になっていた（2026-08-17に追加）。同じ取りこぼしを機械で止める。
+import re  # noqa: E402
+
+_html = Path(__file__).with_name("templates").joinpath("case_detail.html").read_text(encoding="utf-8")
+def managed_gap(html: str) -> list[str]:
+    """入力欄はあるのに managed に載っていない項目名を返す（空なら取りこぼし無し）。"""
+    m = re.search(r'name="managed"\s+value="([^"]*)"', html)
+    raw = m.group(1) if m else ""
+    # 素の "a,b,c" と Jinja条件付きの {{ ',title' if ... }} の両方から名前を拾う
+    managed = set(re.findall(r"\w+", raw))
+    # フォーム機構そのものの隠しフィールドは保存対象ではないので除く
+    mechanical = {"managed", "mtime", "partners", "csrf_token"}
+    names = set(re.findall(r'<(?:input|select|textarea)[^>]*\bname="(\w+)"', html))
+    return sorted(names - managed - mechanical)
+
+
+_names = set(re.findall(r'<(?:input|select|textarea)[^>]*\bname="(\w+)"', _html))
+_managed = set(re.findall(r"\w+", re.search(r'name="managed"\s+value="([^"]*)"', _html).group(1)))
+_missing = managed_gap(_html)
+
+check("案件詳細フォームの入力欄がすべて managed に載っている（保存漏れ防止）",
+      not _missing)
+# 検査そのものが機能しているか（欄を1つ managed から抜いたら気づけるか）を確認する。
+# 「常に空リストを返すだけの検査」になっていないことの担保。
+_broken = _html.replace(",inquiry_period", "", 1)
+check("この検査自体が取りこぼしを検知できる（自己検証）",
+      "inquiry_period" in managed_gap(_broken))
+if _missing:
+    print(f"      managed に無い欄: {_missing} → 入力しても保存されません")
+check("質疑期間が案件詳細ページで編集できる", "inquiry_period" in _names and "inquiry_period" in _managed)
+check("開札日が案件詳細ページで編集できる", "open_date" in _names and "open_date" in _managed)
+
 print(f"\n{_ok}/{_ok + _ng} passed")
 sys.exit(1 if _ng else 0)

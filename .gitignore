@@ -6,7 +6,6 @@ __pycache__/
 # 監査ツール・launchd・ローカル運用の生成物（コミット対象外）
 audit_state.json
 audit_report.md
-run_daily.sh
 launchd.err.log
 launchd.out.log
 # DBはGitHub Actions(--full)で生成しReleaseに置く。gitには入れない（数十MB）。
