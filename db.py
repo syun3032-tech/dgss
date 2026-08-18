@@ -27,6 +27,23 @@ DB_PATH = Path(__file__).parent / "denki_bid.db"
 # Supabaseからの復元中は write-through を止める（書き戻しの無限ループ防止）
 _restoring = False
 
+# 【重要・データ消失防止】Supabaseから読み込んだが、案件(cases)側に該当が無くて
+# SQLiteへ復元できなかった申請。**捨てずにここへ退避する。**
+#
+# なぜ必要か（2026-08-17の事故で判明）:
+#   Renderは毎デプロイでSQLiteが作り直され、起動時にSupabaseから申請を復元する。
+#   その際 external_id で今の案件IDに解決するが、**案件データ側が一時的に壊れて
+#   いると解決できず、従来はその申請を黙って捨てていた**。
+#   一方 _push_applications() は「今SQLiteにある全件」でSupabaseを丸ごと上書きする。
+#   つまり ①案件取得が壊れる → ②復元できず申請が消える → ③利用者が1件でも編集する
+#   → ④欠けた状態でSupabaseが上書きされ **お客様の入力が永久に失われる**。
+#   実際に2026-08-09〜17に①②が起き、③の寸前だった（上書き前に復旧できたのは幸運）。
+#
+# 対策: 解決できなかった申請をここに保持し、Supabaseへ書き戻すときに必ず混ぜる。
+# 案件データが直れば次の起動で正しく復元される。案件が一時的に見つからないことは
+# 「お客様の入力を消してよい理由」には決してならない。
+_unlinked_apps: list[dict[str, Any]] = []
+
 # 仕様書の取得可否ステータス（取れる/取れない/不明）
 SPEC_AVAILABLE = "available"      # ダウンロード可能
 SPEC_UNAVAILABLE = "unavailable"  # 取得不可（理由は spec_reason）
@@ -1250,10 +1267,42 @@ def _applications_for_supa() -> list[dict[str, Any]]:
     return out
 
 
+# Supabase に入っている申請の件数（起動時の復元で判明した値／push成功のたびに更新）。
+# 「いきなり大幅に減る書き戻し」を検知するための基準。
+_supa_app_count: int | None = None
+
+
 def _push_applications() -> None:
+    """SQLiteの申請をSupabaseへ書き戻す（Supabaseが真の保存先）。
+
+    【データ消失防止】丸ごと上書きなので、ここが痩せた内容で走るとお客様の入力が
+    永久に消える。2026-08-17の事故はまさにその一歩手前だった。二重に守る:
+      1. 復元できなかった申請(_unlinked_apps)を必ず混ぜる ＝ そもそも減らさない
+      2. それでも大幅に減るときは書き戻しを中止して警告 ＝ 最後の砦
+    """
+    global _supa_app_count
     if _restoring:
         return
-    supa.save("applications", _applications_for_supa())
+    rows = _applications_for_supa()
+
+    # 退避してある申請（案件が見つからず復元できなかったぶん）を混ぜ戻す。
+    if _unlinked_apps:
+        have = {r.get("external_id") for r in rows}
+        rows += [it for it in _unlinked_apps
+                 if (it.get("external_id") or "") not in have]
+
+    # 【最後の砦】1件ずつの削除は正常だが、一度に大きく減るのは異常。
+    # 案件データの不具合や復元漏れが原因のことが多く、放置すると永久消失になる。
+    prev = _supa_app_count
+    if prev is not None and prev >= 10 and len(rows) < prev * 0.7:
+        supa.block_save(
+            f"申請の書き戻しを中止しました（{prev}件 → {len(rows)}件へ急減）。"
+            "案件データの不具合で復元しきれていない可能性があります。"
+            "この状態で保存するとお客様の入力が失われるため、あえて保存していません。")
+        return
+
+    if supa.save("applications", rows):
+        _supa_app_count = len(rows)
 
 
 def _push_companies() -> None:
@@ -1288,7 +1337,7 @@ def restore_from_supa() -> dict[str, int]:
 
     すべて失敗しても例外は投げない（アプリは動き続ける）。
     """
-    global _restoring
+    global _restoring, _supa_app_count
     if not supa.enabled():
         return {}
     counts = {"applications": 0, "companies": 0, "profile": 0, "exclusions": 0}
@@ -1297,6 +1346,18 @@ def restore_from_supa() -> dict[str, int]:
         # 申請（external_id → 現在の case_id に解決して投入）
         apps = supa.load("applications")
         if isinstance(apps, list):
+            # 【復旧の保険】読み込めた「正常な状態」を、何かに上書きされる前に
+            # 日付つきで控えておく。起動ごとに1回だけなので負荷は無視できる。
+            # 万一また消えても、ここから戻せる（今回はこれが無くて肝を冷やした）。
+            if apps:
+                _supa_app_count = len(apps)
+                try:
+                    import datetime as _dt
+                    supa.save(f"applications_bak_{_dt.date.today():%Y%m%d}", apps)
+                except Exception:  # noqa: BLE001
+                    # 控えを取れなくても復元は必ず続ける。保険の失敗で
+                    # 本体（お客様データの復元）を止めては本末転倒。
+                    pass
             for it in apps:
                 ext = (it.get("external_id") or "").strip()
                 if not ext:
@@ -1315,8 +1376,12 @@ def restore_from_supa() -> dict[str, int]:
                             "sector": it.get("_case_sector") or "民間",
                         }])
                         cid = get_case_id_by_external(ext)
-                    if cid is None:
-                        continue
+                if cid is None:
+                    # 【データ消失防止】案件が見つからないだけで、お客様の入力を
+                    # 捨ててはいけない。退避しておき、書き戻すときに必ず混ぜる。
+                    # 案件データが直れば次の起動で正しく復元される。
+                    _unlinked_apps.append(it)
+                    continue
                 fields = {k: it.get(k) for k in (
                     "applied_date", "note", "assignee", "apply_deadline", "bid_deadline",
                     "open_date", "submit_method", "work", "materials", "flag",

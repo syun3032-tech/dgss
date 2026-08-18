@@ -224,9 +224,10 @@ def inject_save_health():
     """
     try:
         down = supa.enabled() and not supa.last_save_ok()
+        reason = supa.last_save_error() if down else ""
     except Exception:  # noqa: BLE001
-        down = False
-    return {"save_alert": down}
+        down, reason = False, ""
+    return {"save_alert": down, "save_alert_reason": reason}
 
 
 @app.route("/healthz")

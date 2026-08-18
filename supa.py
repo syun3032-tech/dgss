@@ -98,6 +98,17 @@ def save(key: str, obj: Any) -> bool:
         return False
 
 
+def block_save(reason: str) -> None:
+    """危険な書き戻しを「あえて行わなかった」ことを記録し、画面バナーで知らせる。
+
+    黙って止めると利用者は保存できたと思い込む。保存していないことを必ず伝える。
+    """
+    global _last_save_ok, _last_save_error
+    _last_save_ok = False
+    _last_save_error = reason
+    log.error("supa: save blocked: %s", reason)
+
+
 def diagnose() -> dict:
     """接続診断（一時的なヘルスチェック用）。例外は文字列で返す。"""
     info = {"enabled": enabled(), "url_set": bool(_url()),

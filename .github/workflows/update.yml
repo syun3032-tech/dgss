@@ -29,7 +29,7 @@ jobs:
         run: pip install -r requirements.txt
 
       - name: 回帰テスト（壊れていたら中止）
-        run: python test_procurement.py && python test_kkj.py && python test_applications_sync.py && python test_ng_reports.py && python test_data_expectations.py
+        run: python test_procurement.py && python test_kkj.py && python test_applications_sync.py && python test_ng_reports.py && python test_data_expectations.py && python test_data_loss.py
 
       # 【多層防御・第1層】30分の重い取得を始める前に、外部ソースへ実接続して確かめる。
       # 証明書・DNS・API仕様変更で取れないなら、ここで即座に赤くして中止する。
