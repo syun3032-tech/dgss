@@ -1293,6 +1293,12 @@ _supa_app_count: int | None = None
 # とする。判断に迷ったら書かない（消えるより残るほうが良い）。
 _restore_state: dict[str, str] = {}
 
+# 起動時の復元処理が最後まで走り切ったか。
+# 走り切ったのに記録が無いキー＝**サーバに元々何も無い**ということなので、
+# 書き戻してよい（失うものが無い）。ここを区別しないと、キーを1つ増やした
+# だけで「一度も保存できない」アプリになる（姉妹アプリで実際に作りかけた）。
+_restore_done: bool = False
+
 # 画面に出す日本語名（利用者に「何が保存されなかったか」を伝えるため）
 _KEY_LABELS = {
     "applications": "申請管理",
@@ -1310,6 +1316,9 @@ def _may_push(key: str) -> bool:
         return False
     st = _restore_state.get(key)
     if st in ("loaded", "empty"):
+        return True
+    if st is None and _restore_done:
+        # 復元は正常に終わっていて、このキーの記録が無い＝サーバに何も無い。
         return True
     supa.block_save(
         f"「{_KEY_LABELS.get(key, key)}」の保存を見送りました。"
@@ -1403,7 +1412,7 @@ def restore_from_supa() -> dict[str, int]:
 
     すべて失敗しても例外は投げない（アプリは動き続ける）。
     """
-    global _restoring, _supa_app_count
+    global _restoring, _supa_app_count, _restore_done
     if not supa.enabled():
         return {}
     counts = {"applications": 0, "companies": 0, "profile": 0, "exclusions": 0}
@@ -1557,6 +1566,7 @@ def restore_from_supa() -> dict[str, int]:
             _mark_restored("ai_usage", True)
             return len(usage)
         counts["ai_usage"] = _restore_section("ai_usage", _r_ai_usage)
+        _restore_done = True   # ここまで来たら「サーバを一通り見た」と言える
     except Exception as e:  # noqa: BLE001 — 復元失敗でアプリを落とさない
         import logging
         logging.getLogger(__name__).warning("supa restore failed: %s", e)

@@ -134,6 +134,15 @@ check("復元できていれば協力会社は保存される",
       isinstance(_KV.get("companies"), list) and any(
           (c.get("name") == "テスト協力") for c in _KV["companies"] if isinstance(c, dict)))
 
+print("\n-- 新規導入（サーバに何も無い）でも保存できること --")
+_reset_state()
+db._restore_done = False
+_KV.clear()
+db.restore_from_supa()          # 何も無い状態で復元が一通り走る
+db.upsert_company({"name": "新規導入テスト", "sector": "公共"})
+check("サーバが空でも保存できる（過保護で保存不能にしない）",
+      isinstance(_KV.get("companies"), list) and _KV["companies"])
+
 print("\n-- 1つの失敗が他のキーを巻き添えにしないこと --")
 _reset_state()
 def _boom():
