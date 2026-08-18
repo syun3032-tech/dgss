@@ -918,7 +918,9 @@ def list_ai_usage() -> list[dict[str, Any]]:
 
 
 def _push_ai_usage() -> None:
-    if _restoring:
+    # AI使用量は**請求根拠**。復元できていない状態で書き戻すと、
+    # 過去の利用実績が消えてお客様に請求できなくなる。ここは特に厳格に。
+    if _restoring or not _may_push("ai_usage"):
         return
     supa.save("ai_usage", list_ai_usage())
 
@@ -1271,6 +1273,70 @@ def _applications_for_supa() -> list[dict[str, Any]]:
 # 「いきなり大幅に減る書き戻し」を検知するための基準。
 _supa_app_count: int | None = None
 
+# ============================================================
+# 【不変条件】読み込めていないものを、書き戻さない
+# ============================================================
+# Supabase が真の保存先で、SQLite は毎デプロイで作り直される。
+# 各 _push_*() は「今SQLiteにある全件」で丸ごと上書きするため、
+# **起動時の復元に失敗したキーをそのまま書き戻すと、保存済みの内容が消える。**
+#
+# 実際の危険（2026-08-18の点検で判明）:
+#   復元は1つの try で全キーをまとめて処理していたため、途中で例外が出ると
+#   それ以降（マイ条件・監視機関の除外・NG集計の記録・AI使用量）が**丸ごと未復元**に
+#   なる。その状態で利用者が1操作すると、空のまま上書きされて永久に失われる。
+#   AI使用量は請求根拠なので、消えると請求できなくなる。
+#
+# そこで、キーごとに復元結果を記録し、
+#   loaded … サーバから読めて反映できた      → 書き戻してよい
+#   empty  … サーバに元々何も無かった        → 書き戻してよい（失うものが無い）
+#   failed … 読めなかった／反映に失敗した    → **書き戻さない**
+# とする。判断に迷ったら書かない（消えるより残るほうが良い）。
+_restore_state: dict[str, str] = {}
+
+# 画面に出す日本語名（利用者に「何が保存されなかったか」を伝えるため）
+_KEY_LABELS = {
+    "applications": "申請管理",
+    "companies": "協力会社",
+    "profile": "マイ条件",
+    "agency_exclusions": "監視機関の除外設定",
+    "ng_reports": "NG集計の記録",
+    "ai_usage": "AI使用量（請求根拠）",
+}
+
+
+def _may_push(key: str) -> bool:
+    """このキーを書き戻してよいか。復元できていないものは書かせない。"""
+    if not supa.enabled():
+        return False
+    st = _restore_state.get(key)
+    if st in ("loaded", "empty"):
+        return True
+    supa.block_save(
+        f"「{_KEY_LABELS.get(key, key)}」の保存を見送りました。"
+        "起動時にサーバから読み込めていないため、いま保存すると"
+        "保存済みの内容を消してしまいます。時間をおいて画面を再読み込みしてください。")
+    return False
+
+
+def _mark_restored(key: str, loaded: bool) -> None:
+    _restore_state[key] = "loaded" if loaded else "empty"
+
+
+def _restore_section(key: str, fn) -> int:
+    """復元を1キー分だけ実行する。**1つ失敗しても他を巻き添えにしない。**
+
+    以前は全キーが1つの try に入っていたため、最初の失敗で以降が全部未復元になり、
+    そのまま書き戻すと消える、という連鎖事故の形になっていた。
+    """
+    try:
+        n = fn()
+        return n
+    except Exception as e:  # noqa: BLE001
+        _restore_state[key] = "failed"
+        import logging
+        logging.getLogger(__name__).warning("supa restore %s failed: %s", key, e)
+        return 0
+
 
 def _push_applications() -> None:
     """SQLiteの申請をSupabaseへ書き戻す（Supabaseが真の保存先）。
@@ -1281,7 +1347,7 @@ def _push_applications() -> None:
       2. それでも大幅に減るときは書き戻しを中止して警告 ＝ 最後の砦
     """
     global _supa_app_count
-    if _restoring:
+    if _restoring or not _may_push("applications"):
         return
     rows = _applications_for_supa()
 
@@ -1306,13 +1372,13 @@ def _push_applications() -> None:
 
 
 def _push_companies() -> None:
-    if _restoring:
+    if _restoring or not _may_push("companies"):
         return
     supa.save("companies", list_companies())
 
 
 def _push_profile() -> None:
-    if _restoring:
+    if _restoring or not _may_push("profile"):
         return
     with _connect() as conn:
         row = conn.execute("SELECT * FROM profile WHERE id = 1").fetchone()
@@ -1321,13 +1387,13 @@ def _push_profile() -> None:
 
 
 def _push_exclusions() -> None:
-    if _restoring:
+    if _restoring or not _may_push("agency_exclusions"):
         return
     supa.save("agency_exclusions", sorted(list_agency_exclusions()))
 
 
 def _push_ng_reports() -> None:
-    if _restoring:
+    if _restoring or not _may_push("ng_reports"):
         return
     supa.save("ng_reports", list_ng_reports())
 
@@ -1344,8 +1410,12 @@ def restore_from_supa() -> dict[str, int]:
     _restoring = True
     try:
         # 申請（external_id → 現在の case_id に解決して投入）
-        apps = supa.load("applications")
+        apps = _restore_section("applications", lambda: supa.load("applications"))
+        if not isinstance(apps, list) and _restore_state.get("applications") != "failed":
+            # 読めたが中身が無い＝サーバに元々保存が無い。書き戻して失うものは無い。
+            _mark_restored("applications", False)
         if isinstance(apps, list):
+            _mark_restored("applications", bool(apps))
             # 【復旧の保険】読み込めた「正常な状態」を、何かに上書きされる前に
             # 日付つきで控えておく。起動ごとに1回だけなので負荷は無視できる。
             # 万一また消えても、ここから戻せる（今回はこれが無くて肝を冷やした）。
@@ -1400,18 +1470,28 @@ def restore_from_supa() -> dict[str, int]:
                 except ValueError:
                     pass
         # 協力会社（全消し→投入）。空/欠損のときは消さない（誤って全消しする事故を防ぐ）。
-        comps = supa.load("companies")
-        if isinstance(comps, list) and comps:
+        def _r_companies() -> int:
+            comps = supa.load("companies")
+            if not isinstance(comps, list) or not comps:
+                _mark_restored("companies", False)
+                return 0
             with _connect() as conn:
                 conn.execute("DELETE FROM companies")
                 conn.commit()
+            n = 0
             for c in comps:
                 c.pop("id", None)
                 upsert_company(c)
-                counts["companies"] += 1
+                n += 1
+            _mark_restored("companies", True)
+            return n
+        counts["companies"] += _restore_section("companies", _r_companies)
         # マイ条件
-        prof = supa.load("profile")
-        if isinstance(prof, dict) and (prof.get("company") or prof.get("qualifications")):
+        def _r_profile() -> int:
+            prof = supa.load("profile")
+            if not isinstance(prof, dict) or not (prof.get("company") or prof.get("qualifications")):
+                _mark_restored("profile", False)
+                return 0
             save_profile(
                 prefectures=prof.get("prefectures", ""),
                 categories=prof.get("categories", "電気工事"),
@@ -1420,15 +1500,25 @@ def restore_from_supa() -> dict[str, int]:
                 company=prof.get("company", ""), representative=prof.get("representative", ""),
                 address=prof.get("address", ""), corp_number=prof.get("corp_number", ""),
                 qualifications=prof.get("qualifications", []))
-            counts["profile"] = 1
+            _mark_restored("profile", True)
+            return 1
+        counts["profile"] = _restore_section("profile", _r_profile)
         # 監視機関の除外。空/欠損のときは置換しない（既存を消さない）。
-        exc = supa.load("agency_exclusions")
-        if isinstance(exc, list) and exc:
+        def _r_exclusions() -> int:
+            exc = supa.load("agency_exclusions")
+            if not isinstance(exc, list) or not exc:
+                _mark_restored("agency_exclusions", False)
+                return 0
             replace_agency_exclusions(exc)
-            counts["exclusions"] = len(exc)
+            _mark_restored("agency_exclusions", True)
+            return len(exc)
+        counts["exclusions"] = _restore_section("agency_exclusions", _r_exclusions)
         # NG集計の保存記録。空/欠損のときは消さない（既存を守る）。
-        reps = supa.load("ng_reports")
-        if isinstance(reps, list) and reps:
+        def _r_ng_reports() -> int:
+            reps = supa.load("ng_reports")
+            if not isinstance(reps, list) or not reps:
+                _mark_restored("ng_reports", False)
+                return 0
             with _connect() as conn:
                 conn.execute("DELETE FROM ng_reports")
                 # list_ng_reports は新しい順で保存しているので、古い順に挿入し直す
@@ -1441,10 +1531,16 @@ def restore_from_supa() -> dict[str, int]:
                         (r.get("created_at") or "", r.get("sheet") or "公共",
                          r["payload"]))
                 conn.commit()
-            counts["ng_reports"] = len(reps)
+            _mark_restored("ng_reports", True)
+            return len(reps)
+        counts["ng_reports"] = _restore_section("ng_reports", _r_ng_reports)
+
         # AI使用量の月次集計。空/欠損のときは消さない（請求根拠を守る）。
-        usage = supa.load("ai_usage")
-        if isinstance(usage, list) and usage:
+        def _r_ai_usage() -> int:
+            usage = supa.load("ai_usage")
+            if not isinstance(usage, list) or not usage:
+                _mark_restored("ai_usage", False)
+                return 0
             with _connect() as conn:
                 conn.execute("DELETE FROM ai_usage")
                 for u in usage:
@@ -1458,7 +1554,9 @@ def restore_from_supa() -> dict[str, int]:
                          int(u.get("calls") or 0), int(u.get("prompt_tokens") or 0),
                          int(u.get("output_tokens") or 0), int(u.get("taps") or 0)))
                 conn.commit()
-            counts["ai_usage"] = len(usage)
+            _mark_restored("ai_usage", True)
+            return len(usage)
+        counts["ai_usage"] = _restore_section("ai_usage", _r_ai_usage)
     except Exception as e:  # noqa: BLE001 — 復元失敗でアプリを落とさない
         import logging
         logging.getLogger(__name__).warning("supa restore failed: %s", e)
