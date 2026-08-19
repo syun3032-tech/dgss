@@ -157,6 +157,66 @@ def inject_profile_set():
         return {"profile_set": False}
 
 
+# ------------------------------------------------------------
+# 稼働まわりの見張り（データの中身ではなく「仕組みが生きているか」）
+# ------------------------------------------------------------
+# 直近に起きた画面エラー(500)。握り潰さずに数え、健全性APIと画面に出す。
+# --workers 1 前提のプロセス内共有。再起動で消えてよい（傾向が見たいだけ）。
+_recent_errors: list[dict] = []
+_MAX_KEEP_ERRORS = 20
+
+# 保存先の死活確認は毎回やると重い。短時間だけ結果を使い回す。
+_persist_probe: dict = {"at": 0.0, "ok": None, "error": ""}
+_PERSIST_PROBE_TTL = 300  # 秒
+
+
+def _record_error(where: str, err: Exception) -> None:
+    """画面エラーを記録する。**黙って500を返すだけにしない。**"""
+    import datetime as _dt
+    _recent_errors.append({
+        "at": _dt.datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+        "where": where, "error": f"{type(err).__name__}: {str(err)[:200]}",
+    })
+    del _recent_errors[:-_MAX_KEEP_ERRORS]
+    app.logger.exception("画面エラー: %s", where)
+
+
+def _persist_alive() -> tuple[bool | None, str]:
+    """保存先(Supabase)に本当に繋がるかを確かめる。
+
+    「保存に失敗してから気づく」のでは遅い。**お客様が入力する前に**、
+    外形監視が保存先の死を検知できるようにするための確認。
+    無料プランは放置で一時停止することがあるため、これが効く。
+    """
+    import time
+    if not supa.enabled():
+        return None, ""
+    now = time.time()
+    if _persist_probe["ok"] is not None and now - _persist_probe["at"] < _PERSIST_PROBE_TTL:
+        return _persist_probe["ok"], _persist_probe["error"]
+    try:
+        d = supa.diagnose()
+        ok = bool(d.get("connected") and d.get("rw_ok"))
+        err = "" if ok else (d.get("error") or "読み書きできません")
+    except Exception as e:  # noqa: BLE001
+        ok, err = False, f"{type(e).__name__}: {str(e)[:120]}"
+    _persist_probe.update({"at": now, "ok": ok, "error": err})
+    return ok, err
+
+
+def _last_deploy_stamp() -> str:
+    """最後にデプロイされた時刻（毎日の自動更新が押す .last-deploy）。
+
+    これが古い＝日次更新の仕組み自体が止まっている。
+    監視の仕組みが止まっても、アプリ側から自己申告できるようにする。
+    """
+    try:
+        from pathlib import Path as _P
+        return _P(__file__).with_name(".last-deploy").read_text(encoding="utf-8").strip()
+    except OSError:
+        return ""
+
+
 def _data_health() -> dict:
     """データの鮮度・件数・検品結果を1つの dict にまとめる。
 
@@ -178,6 +238,18 @@ def _data_health() -> dict:
             info["latest"] = dx.latest_announced(conn)
         info["total"] = sum(counts.values())
         info["sources"] = counts
+
+        # データの中身だけでなく、**仕組みが生きているか**も同じ基準で見る。
+        # 保存先が死んでいる／日次更新が止まっている／画面がエラーを吐いている、
+        # のいずれもお客様の仕事が止まるので、同じ経路で警告する。
+        p_ok, p_err = _persist_alive()
+        findings += dx.inspect_runtime(
+            persist_enabled=supa.enabled(), persist_ok=p_ok, persist_error=p_err,
+            last_deploy=_last_deploy_stamp(), recent_errors=len(_recent_errors))
+        info["persist_ok"] = p_ok
+        info["last_deploy"] = _last_deploy_stamp()
+        info["recent_errors"] = len(_recent_errors)
+
         info["critical"] = sum(1 for f in findings if f.critical)
         if findings:
             info["stale"] = True
@@ -208,6 +280,9 @@ def api_data_health():
         "latest_announced": h["latest"],
         "critical": h["critical"],
         "sources": h["sources"],
+        "persist_ok": h.get("persist_ok"),
+        "last_deploy": h.get("last_deploy", ""),
+        "recent_errors": h.get("recent_errors", 0),
         "reason": h["stale_reason"],
         "checked_at": date.today().isoformat(),
     }
@@ -228,6 +303,22 @@ def inject_save_health():
     except Exception:  # noqa: BLE001
         down, reason = False, ""
     return {"save_alert": down, "save_alert_reason": reason}
+
+
+@app.errorhandler(Exception)
+def _handle_unexpected(e):
+    """想定外のエラーを**記録してから**返す。
+
+    これまでは未処理例外がそのまま500になり、白い画面が出るだけで
+    誰にも届かなかった（お客様は「動かない」としか分からず、こちらは気づけない）。
+    ここで必ず記録し、健全性API・外形監視に載せる。
+    エラーを握り潰して200を返すことはしない（壊れているのに正常に見えるほうが悪い）。
+    """
+    from werkzeug.exceptions import HTTPException
+    if isinstance(e, HTTPException):
+        return e  # 404などの正規のHTTPエラーはそのまま
+    _record_error(request.path if request else "?", e)
+    return render_template("error.html", path=(request.path if request else "")), 500
 
 
 @app.route("/healthz")
