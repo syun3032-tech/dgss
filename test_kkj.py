@@ -236,6 +236,52 @@ def test_title_still_wins_over_declared_field():
     assert got == "電気工事-照明", f"案件名優先が崩れている: {got}"
 
 
+# ------------------------------------------------------------
+# 建築（トイレ改修・外壁改修 等）が電気に化けないこと
+# ------------------------------------------------------------
+# 2026-08-29 本番点検で判明: 「◯◯小学校トイレ改修工事」のような建築の案件は
+# 案件名に業種語が1つも無いため、説明文の内訳（電灯設備工 等）を拾って電気に
+# なっていた。本番の募集中案件313件のうち19件がこれだった。
+
+_BODY_ELEC = "工事概要 電灯設備工 一式、電気設備工事 一式。"
+
+
+def test_building_title_is_not_electrical():
+    """建築の案件名は、説明文に電気の内訳があっても電気にしない。"""
+    got = k.classify_category(_BODY_ELEC, title="令和8年度 矢本東小学校トイレ改修工事")
+    assert got == "建築・改修", f"トイレ改修が電気のまま: {got}"
+    assert not k.is_electrical(got)
+
+
+def test_building_rule_does_not_steal_the_electrical_lot():
+    """分離発注の電気ぶんは建築に取られない（電気系ルールを先に評価する）。"""
+    for title in ("望洋台中学校校舎等トイレ改修電気設備工事",
+                  "令和7年度京都御苑公衆トイレ電灯改修工事",
+                  "公園施設バリアフリー化電気設備工事（緑ヶ丘公園）"):
+        got = k.classify_category(_BODY_ELEC, title=title)
+        assert k.is_electrical(got), f"電気の分離発注が建築に取られた: {title} → {got}"
+
+
+def test_building_rule_skipped_when_title_says_setsubi():
+    """案件名に「設備」とあるものは分離発注ぶん。建築と決めつけない。"""
+    got = k.classify_category(_BODY_ELEC,
+                              title="交通センター受付棟増築（設備）工事")
+    assert got != "建築・改修", f"設備ぶんを建築にしている: {got}"
+
+
+def test_building_words_are_not_counted_in_body_majority():
+    """外壁・屋根などは本文では場所を指すだけ。多数決の材料にしない。
+
+    実案件「光ケーブル新設役務」の布設ルート表に「外壁沿い」「外壁～電柱」が
+    並び、電気の役務が建築に化けていた。
+    """
+    text = ("光ケーブル新設役務 布設ルート 空中架線 外壁～電柱 35m、外壁沿い 22m、"
+            "外壁沿い 10m、外壁～電柱 5m、外壁沿い 8m、外壁伝い 3m。"
+            "既設側溝内にジャバラ管で敷設。電気設備の切替を伴う。")
+    got = k.classify_category(text, title="光ケーブル新設役務")
+    assert k.is_electrical(got), f"ケーブル布設の役務が非電気に落ちた: {got}"
+
+
 def _run_all():
     tests = [v for n, v in sorted(globals().items())
              if n.startswith("test_") and callable(v)]
