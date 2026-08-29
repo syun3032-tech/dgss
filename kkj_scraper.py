@@ -387,6 +387,25 @@ _BUILDING_CATEGORY = "建築・改修"
 #   （実例:「交通信号機改良工事（バリアフリー化・戦略的）」＝音響信号機＝電気）。
 _BUILDING_SKIP = "設備"
 
+# 分離発注の電気ぶんの書き方。自治体は建築/機械/電気に分けて発注するとき、案件名の
+# 末尾に「（電気）」だけを付ける。この2文字は _CATEGORY_RULES のどの語にも当たらないため、
+# 「空調設備工事（電気）」→空調、「屋内運動場改築（電気）工事」→その他 のように
+# **本来いちばん欲しい電気の分離発注が非電気に落ちていた**（本番で32件）。
+# 他の業種語に当たっていても、この印があれば電気として拾い直す。
+# 括弧の中が「電気」「電気工事」「電気設備」のときだけ当てる（「電気自動車」等を除くため）。
+_ELEC_LOT_RE = re.compile(r"[（(【]\s*電気(?:工事|設備)?\s*[）)】]")
+
+# 案件名にあれば電気と分かるが、本文に出ると誤爆する語。**案件名だけ**で使う。
+# 本文スキャン(_CATEGORY_RULES)に入れると、建物総合管理の仕様書にある「電気室」や、
+# システム調達の仕様書にある「無停電電源装置」を拾って、清掃・情報の委託が
+# 電気に化ける（実データで確認）。
+_ELEC_TITLE_ONLY = (
+    ("電気室", "電気工事-受変電"),
+    ("無停電電源", "電気工事-電気設備"),
+    ("直流電源装置", "電気工事-電気設備"),
+    ("電気錠", "電気工事-電気設備"),
+)
+
 
 # ------------------------------------------------------------
 # 発注機関が公告に明記する業種欄（種目 / 工種 / 業種 …）
@@ -493,14 +512,24 @@ def classify_category(text: str, title: str = "") -> str:
         return "その他"
     t = title or text.split("\n", 1)[0]
     # 1) タイトル優先（最も信頼できる）
+    hit = ""
     for name, keywords in _CATEGORY_RULES:
         if any(k in t for k in keywords):
-            if name == _BUILDING_CATEGORY:
-                if _BUILDING_SKIP in t:
-                    break   # 分離発注の設備ぶん。業種欄・説明文で判断する
-                # 建築だけは「公告が業種を明記していればそちら」に譲る
-                return _declared_category(text) or name
-            return name
+            hit = name
+            break
+    # 1-a) 案件名が電気を示しているのに非電気に振られたものを拾い直す（救い上げのみ）。
+    if not is_electrical(hit):
+        # 「◯◯工事（電気）」＝分離発注の電気ぶん
+        if _ELEC_LOT_RE.search(t):
+            return "電気工事-電気設備"
+        for word, name in _ELEC_TITLE_ONLY:
+            if word in t:
+                return name
+    if hit and hit != _BUILDING_CATEGORY:
+        return hit
+    if hit == _BUILDING_CATEGORY and _BUILDING_SKIP not in t:
+        # 建築だけは「公告が業種を明記していればそちら」に譲る
+        return _declared_category(text) or hit
     # 2) タイトルが中立なら、公告が明記した業種欄を見る。
     declared = _declared_category(text)
     if declared:

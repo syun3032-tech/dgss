@@ -282,6 +282,48 @@ def test_building_words_are_not_counted_in_body_majority():
     assert k.is_electrical(got), f"ケーブル布設の役務が非電気に落ちた: {got}"
 
 
+# ------------------------------------------------------------
+# 分離発注の電気ぶん（「◯◯工事（電気）」）を落とさない
+# ------------------------------------------------------------
+# 2026-08-29 本番点検で判明: 自治体が建築/機械/電気に分けて発注するとき、案件名の
+# 末尾に「（電気）」だけを付けることがある。この2文字はどの業種語にも当たらないため、
+# 「空調設備工事（電気）」→空調、「外壁等改修工事（電気）」→建築 のように、
+# **いちばん欲しい電気の分離発注が非電気に落ちていた**（本番で132件）。
+
+
+def test_separated_electrical_lot_is_rescued():
+    """「◯◯工事（電気）」は、他の業種語に当たっていても電気として拾う。"""
+    for title in ("熊野川小学校屋内運動場空調設備工事（電気）",
+                  "市営寺西住宅外壁等改修工事（電気）",
+                  "大垣消防組合 北消防署 建設（電気）工事",
+                  "伊達小学校校舎一部解体改修工事（電気設備）",
+                  "アクティブやない空調設備改修（電気設備）工事"):
+        got = k.classify_category("", title=title)
+        assert k.is_electrical(got), f"分離発注の電気ぶんを落とした: {title} → {got}"
+    # 括弧の中身が業種でないものは拾わない（「電気自動車」等の巻き込み防止）
+    assert not k.is_electrical(k.classify_category("", title="市役所（電気自動車）購入"))
+
+
+def test_electrical_lot_marker_does_not_overwrite_subcategory():
+    """既に電気と分かっているものは、印があってもサブ業種を潰さない。"""
+    got = k.classify_category("", title="【電気】◯◯小学校照明設備改修工事")
+    assert got == "電気工事-照明", f"サブ業種が潰れた: {got}"
+
+
+def test_title_only_electrical_words_are_not_scanned_in_body():
+    """「電気室」「無停電電源」は案件名だけで使う（本文だと誤爆するため）。
+
+    建物総合管理の仕様書には必ず「電気室」が、システム調達の仕様書には
+    「無停電電源装置」が出てくる。本文で拾うと清掃・情報の委託が電気に化ける。
+    """
+    body = ("庁舎の総合管理業務委託。日常清掃、定期清掃、床面清掃、ガラス清掃、"
+            "警備、設備の巡回。電気室および無停電電源装置の目視点検を含む。")
+    got = k.classify_category(body, title="生駒セイセイビル建物総合管理業務委託")
+    assert not k.is_electrical(got), f"建物管理の委託が電気になった: {got}"
+    # 案件名に出れば拾う
+    assert k.is_electrical(k.classify_category(body, title="◯◯庁舎電気室改修工事"))
+
+
 def _run_all():
     tests = [v for n, v in sorted(globals().items())
              if n.startswith("test_") and callable(v)]
