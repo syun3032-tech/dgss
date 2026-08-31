@@ -25,5 +25,7 @@ services:
       # Environment で設定する（sync:false＝Blueprintから値を同期しない＝手入力）。
       - key: GEMINI_API_KEY
         sync: false
+      # gemini-2.5-flash は 2026-08 に提供終了（404 "no longer available"）。
+      # 新しいAPIキーでは 3.x 系のみ利用可能なため固定先を更新した。
       - key: GEMINI_MODEL
-        value: "gemini-2.5-flash"
+        value: "gemini-3.5-flash"
