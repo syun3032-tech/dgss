@@ -99,7 +99,9 @@
     if ((c.sector || "公共") === "民間")
       return c.apply_deadline ? { label: "見積提出", date: c.apply_deadline } : null;
     var apply = c.apply_deadline || c.deadline || "";
-    if (c.status === "参加申請準備前") return apply ? { label: "参加申請", date: apply } : null;
+    // 保留（△を貯める欄）も参加申請期限で見る。貯めたまま締切を過ぎるのを防ぐため。
+    if (c.status === "参加申請準備前" || c.status === "保留")
+      return apply ? { label: "参加申請", date: apply } : null;
     if (["入札参加申請済み", "協力会社探し中", "見積取得"].indexOf(c.status) >= 0)
       return c.bid_deadline ? { label: "入札書提出", date: c.bid_deadline } : null;
     if (c.status === "入札書提出済み") return c.open_date ? { label: "開札", date: c.open_date } : null;
@@ -303,7 +305,7 @@
 
     // アラートは種類ごとに別のバー・別の色で表示（要望⑱＋3色化）。
     var ALERT_BARS = [
-      { label: "参加申請",   cls: "wb-apply", title: "入札参加申請期限 1週間前", sub: "参加申請準備前の案件" },
+      { label: "参加申請",   cls: "wb-apply", title: "入札参加申請期限 1週間前", sub: "保留・参加申請準備前の案件" },
       { label: "入札書提出", cls: "wb-bid",   title: "入札書提出期限 1週間前",   sub: "入札参加申請済み・協力会社探し中・見積取得の案件" },
       { label: "開札",       cls: "wb-open",  title: "開札日 1週間前",           sub: "入札書提出済みの案件" },
       { label: "見積提出",   cls: "wb-quote", title: "見積提出期限 1週間前",     sub: "民間の案件" }

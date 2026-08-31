@@ -180,6 +180,13 @@ CREATE TABLE IF NOT EXISTS agency_exclusions (
     name TEXT PRIMARY KEY
 );
 
+-- 機関種別（agency_type: 地方公共団体 / 国の機関 …）の除外。
+-- 発注機関を1つずつ外すのではなく「地方公共団体はまとめて出さない」を1操作で行う。
+-- agency_exclusions（機関名単位）とは AND で効く（どちらかに当たれば非表示）。
+CREATE TABLE IF NOT EXISTS org_type_exclusions (
+    name TEXT PRIMARY KEY
+);
+
 -- 協力会社マスタ（bid-next-eta の X 配列に相当）。
 CREATE TABLE IF NOT EXISTS companies (
     id      INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -197,6 +204,7 @@ CREATE TABLE IF NOT EXISTS companies (
 
 # 入札参加申請の進行ステータス（bid-next-eta＝川野電気システムのカンバン列と完全一致）。
 APP_STATUSES: list[str] = [
+    "保留",             # 判断待ちを貯めておく欄（AI判定△の受け皿・お客様要望 2026-08-20）
     "参加申請準備前",   # これから参加申請する
     "入札参加申請済み", # 参加申請を提出済み
     "協力会社探し中",   # 見積を出してくれる協力会社を探している
@@ -210,6 +218,7 @@ APP_STATUSES: list[str] = [
 
 # カンバン列のアクセント色（bid-next-eta の B マップと一致）。
 STATUS_ACCENT: dict[str, str] = {
+    "保留": "#d97706",
     "参加申請準備前": "#9aa3ad",
     "入札参加申請済み": "#2563eb",
     "協力会社探し中": "#0891b2",
@@ -317,6 +326,9 @@ def init_db() -> None:
         # 列追加後に索引を作成（新設列のため SCHEMA からは外してある）
         conn.execute("CREATE INDEX IF NOT EXISTS idx_cases_proctype ON cases(procurement_type)")
         conn.execute("CREATE INDEX IF NOT EXISTS idx_cases_budgetyen ON cases(budget_yen)")
+        # 監視機関ページ（発注機関ごとの案件数）と機関種別フィルタで使う
+        conn.execute("CREATE INDEX IF NOT EXISTS idx_cases_agency ON cases(agency)")
+        conn.execute("CREATE INDEX IF NOT EXISTS idx_cases_agencytype ON cases(agency_type)")
         # applications の後付け列をマイグレーション（無ければ追加）。
         # bid-next-eta（川野電気システム）の管理機能を移植するために拡張した列。
         app_cols = [r[1] for r in conn.execute("PRAGMA table_info(applications)")]
@@ -677,6 +689,7 @@ def _build_case_filter(
     agency: str = "",
     announced_after: str | None = None,
     exclude_agencies: list[str] | set[str] | None = None,
+    exclude_org_types: list[str] | set[str] | None = None,
 ) -> tuple[str, list[Any]]:
     """絞り込み条件から WHERE句とパラメータを組み立てる（list_cases と件数で共用）。"""
     where: list[str] = []
@@ -687,6 +700,14 @@ def _build_case_filter(
     if exc:
         where.append("agency NOT IN (%s)" % ",".join("?" * len(exc)))
         params.extend(exc)
+
+    # 機関種別（地方公共団体・国の機関 …）でまとめて除外する。
+    # agency_type が空の案件は種別が判らないだけなので消さない（取りこぼし防止）。
+    exc_t = [t for t in (exclude_org_types or []) if t]
+    if exc_t:
+        where.append("(agency_type IS NULL OR agency_type = '' OR agency_type NOT IN (%s))"
+                     % ",".join("?" * len(exc_t)))
+        params.extend(exc_t)
 
     if prefecture:
         where.append("prefecture = ?")
@@ -760,6 +781,7 @@ def list_cases(
     agency: str = "",
     announced_after: str | None = None,
     exclude_agencies: list[str] | set[str] | None = None,
+    exclude_org_types: list[str] | set[str] | None = None,
     sort: str = "deadline",
     limit: int = 200,
     offset: int = 0,
@@ -779,7 +801,7 @@ def list_cases(
         procurement_type=procurement_type, bid_method=bid_method,
         spec_status=spec_status, budget_min=budget_min, open_only=open_only,
         hide_closed=hide_closed, q=q, agency=agency, announced_after=announced_after,
-        exclude_agencies=exclude_agencies,
+        exclude_agencies=exclude_agencies, exclude_org_types=exclude_org_types,
     )
     # 締切が空文字の案件は末尾に回す
     order = {
@@ -1047,6 +1069,79 @@ def replace_agency_exclusions(names: list[str]) -> None:
     _push_exclusions()
 
 
+# --- 機関種別（地方公共団体 / 国の機関 …）のまとめて除外 -------------------
+# 発注機関を1件ずつ外すのは現実的でないため、種別で一括除外できるようにする
+# （お客様要望 2026-08-20「地方公共団体をひとまず表示しない方向で設定したい」）。
+
+def list_org_type_exclusions() -> set[str]:
+    """案件一覧から除外する機関種別の集合。"""
+    with _connect() as conn:
+        return {r[0] for r in conn.execute("SELECT name FROM org_type_exclusions")}
+
+
+def set_org_type_excluded(name: str, excluded: bool) -> None:
+    """機関種別1つの除外ON/OFF（excluded=True で除外＝チェックを外す）。"""
+    name = (name or "").strip()
+    if not name:
+        return
+    with _connect() as conn:
+        if excluded:
+            conn.execute("INSERT OR IGNORE INTO org_type_exclusions (name) VALUES (?)", (name,))
+        else:
+            conn.execute("DELETE FROM org_type_exclusions WHERE name = ?", (name,))
+        conn.commit()
+    _push_org_type_exclusions()
+
+
+def replace_org_type_exclusions(names: list[str]) -> None:
+    """除外する機関種別を丸ごと置き換える（localStorage からの復元用）。"""
+    clean = [str(n).strip() for n in (names or []) if str(n).strip()]
+    with _connect() as conn:
+        conn.execute("DELETE FROM org_type_exclusions")
+        if clean:
+            conn.executemany("INSERT OR IGNORE INTO org_type_exclusions (name) VALUES (?)",
+                             [(n,) for n in clean])
+        conn.commit()
+    _push_org_type_exclusions()
+
+
+def list_org_types() -> list[dict[str, Any]]:
+    """案件に実在する機関種別と件数（多い順）。種別が空の案件は数えない。"""
+    with _connect() as conn:
+        return [{"name": r[0], "count": r[1]} for r in conn.execute(
+            "SELECT agency_type, COUNT(*) FROM cases "
+            "WHERE COALESCE(agency_type, '') <> '' "
+            "GROUP BY agency_type ORDER BY COUNT(*) DESC")]
+
+
+def list_case_agencies(q: str = "", limit: int = 3000) -> list[dict[str, Any]]:
+    """案件一覧に実際に出てくる発注機関（cases 由来・案件数の多い順）。
+
+    監視機関ページが今まで見せていた agencies テーブルは NJSS 独歩の機関名
+    （例「近江八幡市役所」）で、案件側の機関名（例「滋賀県近江八幡市」）とは
+    ほぼ一致しない。チェックを外しても案件が消えなかったのはこのため。
+    実際に効くのは cases.agency の値なので、そちらを一覧に出す。
+    """
+    where, params = "WHERE COALESCE(agency, '') <> ''", []
+    if q:
+        where += " AND agency LIKE ?"
+        params.append(f"%{q}%")
+    params.append(int(limit))
+    with _connect() as conn:
+        return [{"name": r[0], "agency_type": r[1] or "", "count": r[2]}
+                for r in conn.execute(
+                    f"SELECT agency, MAX(agency_type), COUNT(*) FROM cases {where} "
+                    "GROUP BY agency ORDER BY COUNT(*) DESC LIMIT ?", params)]
+
+
+def count_case_agencies() -> int:
+    """案件に出てくる発注機関の種類数。"""
+    with _connect() as conn:
+        return conn.execute(
+            "SELECT COUNT(DISTINCT agency) FROM cases WHERE COALESCE(agency, '') <> ''"
+        ).fetchone()[0]
+
+
 def list_agencies(q: str = "") -> list[dict[str, Any]]:
     """監視対象の発注機関一覧（案件数の多い順）。"""
     where, params = "", []
@@ -1305,6 +1400,7 @@ _KEY_LABELS = {
     "companies": "協力会社",
     "profile": "マイ条件",
     "agency_exclusions": "監視機関の除外設定",
+    "org_type_exclusions": "機関種別の除外設定",
     "ng_reports": "NG集計の記録",
     "ai_usage": "AI使用量（請求根拠）",
 }
@@ -1401,6 +1497,12 @@ def _push_exclusions() -> None:
     supa.save("agency_exclusions", sorted(list_agency_exclusions()))
 
 
+def _push_org_type_exclusions() -> None:
+    if _restoring or not _may_push("org_type_exclusions"):
+        return
+    supa.save("org_type_exclusions", sorted(list_org_type_exclusions()))
+
+
 def _push_ng_reports() -> None:
     if _restoring or not _may_push("ng_reports"):
         return
@@ -1415,7 +1517,8 @@ def restore_from_supa() -> dict[str, int]:
     global _restoring, _supa_app_count, _restore_done
     if not supa.enabled():
         return {}
-    counts = {"applications": 0, "companies": 0, "profile": 0, "exclusions": 0}
+    counts = {"applications": 0, "companies": 0, "profile": 0, "exclusions": 0,
+              "org_types": 0}
     _restoring = True
     try:
         # 申請（external_id → 現在の case_id に解決して投入）
@@ -1522,6 +1625,16 @@ def restore_from_supa() -> dict[str, int]:
             _mark_restored("agency_exclusions", True)
             return len(exc)
         counts["exclusions"] = _restore_section("agency_exclusions", _r_exclusions)
+        # 機関種別の除外。空/欠損のときは置換しない（既存を消さない）。
+        def _r_org_types() -> int:
+            exc = supa.load("org_type_exclusions")
+            if not isinstance(exc, list) or not exc:
+                _mark_restored("org_type_exclusions", False)
+                return 0
+            replace_org_type_exclusions(exc)
+            _mark_restored("org_type_exclusions", True)
+            return len(exc)
+        counts["org_types"] = _restore_section("org_type_exclusions", _r_org_types)
         # NG集計の保存記録。空/欠損のときは消さない（既存を守る）。
         def _r_ng_reports() -> int:
             reps = supa.load("ng_reports")
@@ -1622,6 +1735,42 @@ def set_application(case_id: int, status: str, **fields: Any) -> None:
         )
         conn.commit()
     _push_applications()
+
+
+# AI判定（〇△✕）→ 管理シートの状況。お客様要望 2026-08-20。
+# 〇=応募できる → 参加申請の準備列 / △=要検討 → 保留（貯める欄）/ ✕=不可 → NG。
+VERDICT_STATUS: dict[str, str] = {
+    "〇": "参加申請準備前",
+    "△": "保留",
+    "✕": "NG",
+}
+
+
+def add_applications_bulk(items: list[tuple[int, str]]) -> int:
+    """まだ管理シートに無い案件だけを、指定の状況で一括登録する。
+
+    **既存行には一切触れない**（ON CONFLICT DO NOTHING）。担当者・メモ・見積など
+    人が入れた内容を、AI判定のやり直しで上書きしてしまわないための不変条件。
+    Supabaseへの書き戻しは全件挿入後に1回だけ（1件ずつだと全表送信を件数分繰り返す）。
+    """
+    rows = []
+    for case_id, status in items:
+        st = normalize_status(status)
+        if st not in APP_STATUSES_ALL:
+            raise ValueError(f"不正なステータス: {status}")
+        rows.append((int(case_id), st))
+    if not rows:
+        return 0
+    with _connect() as conn:
+        before = conn.execute("SELECT COUNT(*) FROM applications").fetchone()[0]
+        conn.executemany(
+            "INSERT INTO applications (case_id, status, updated_at) "
+            "VALUES (?, ?, datetime('now')) ON CONFLICT(case_id) DO NOTHING", rows)
+        conn.commit()
+        added = conn.execute("SELECT COUNT(*) FROM applications").fetchone()[0] - before
+    if added:
+        _push_applications()
+    return added
 
 
 def _hydrate_application(row: dict[str, Any]) -> dict[str, Any]:

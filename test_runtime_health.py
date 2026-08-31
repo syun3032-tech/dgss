@@ -79,5 +79,37 @@ check("画面エラーが続いていたら知らせる",
           persist_enabled=False, persist_ok=None,
           recent_errors=dx.MAX_RECENT_ERRORS + 1)))
 
+# ---- 更新停止の判定材料に、開発機の実行を混ぜないこと ----
+# data_baseline.json の "fast" は開発機の毎朝のジョブが書く。本番の更新が
+# 止まっていても新しい日付が入りうるので、これを信じると監視が死ぬ。
+import json  # noqa: E402
+import tempfile  # noqa: E402
+from pathlib import Path  # noqa: E402
+
+_tmp = Path(tempfile.mkdtemp())
+_real_file = Path(appmod.__file__)
+_bak = {}
+for name, body in [
+    (".last-deploy", "2026-01-01T00:00:00Z"),
+    ("data_baseline.json", json.dumps({
+        "full": {"updated": "2026-01-02", "total": 1},
+        "fast": {"updated": datetime.date.today().isoformat(), "total": 1},   # 開発機が今日書いた
+    })),
+]:
+    f = _real_file.with_name(name)
+    _bak[name] = f.read_text(encoding="utf-8") if f.exists() else None
+    f.write_text(body, encoding="utf-8")
+try:
+    got = appmod._last_deploy_stamp()
+    check("開発機が書いた fast の日付を、本番の更新とみなさない",
+          got[:10] == "2026-01-02")
+finally:
+    for name, body in _bak.items():
+        f = _real_file.with_name(name)
+        if body is None:
+            f.unlink(missing_ok=True)
+        else:
+            f.write_text(body, encoding="utf-8")
+
 print(f"\n{_ok}/{_ok + _ng} passed")
 sys.exit(1 if _ng else 0)

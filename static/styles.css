@@ -527,6 +527,8 @@ tr.row-check td { background: #fffaf0; }
 .ai-batch-bar .ai-batch-now { color: var(--text-tertiary); font-size: 11.5px;
   max-width: 420px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .ai-batch-bar .onlyok-label { font-weight: 600; }
+/* display:flex が hidden属性を打ち消して、中身が空の青い帯が常時出ていた。 */
+.ai-batch-bar[hidden] { display: none; }
 .tag.ai-verdict.ok   { background: var(--success-soft); color: var(--success); font-weight: 700; }
 .tag.ai-verdict.warn { background: var(--warning-soft); color: var(--warning); font-weight: 700; }
 .tag.ai-verdict.ng   { background: var(--danger-soft); color: var(--danger); font-weight: 700; }
@@ -796,3 +798,23 @@ tr.agc-off td.center { opacity: 1; }
 /* NG理由集計の内訳（資格名・地域別の件数） */
 .ngr-bd { font-size: 12px; color: #475569; margin-top: 3px; }
 .ngr-bd b { color: #0f172a; font-weight: 600; }
+
+/* 監視機関：機関種別でまとめて外す（お客様要望 2026-08-20） */
+.orgtype-box {
+  margin: 12px 0 6px; padding: 12px 14px;
+  border: 1px solid var(--border); border-radius: 10px; background: var(--bg-hover);
+}
+.orgtype-title { margin: 0; font-size: 14px; font-weight: 700; color: var(--text-primary); }
+.orgtype-lead { margin: 4px 0 10px; font-size: 12px; color: var(--text-secondary); }
+.orgtype-list { display: flex; flex-wrap: wrap; gap: 8px; }
+.orgtype-item {
+  display: inline-flex; align-items: center; gap: 8px; cursor: pointer;
+  padding: 7px 12px; border-radius: 999px;
+  border: 1px solid var(--border); background: var(--bg-canvas); font-size: 13px;
+}
+.orgtype-item.off { opacity: .55; border-style: dashed; }
+.orgtype-item.off .orgtype-name { text-decoration: line-through; }
+.orgtype-name { font-weight: 600; }
+.orgtype-count { font-size: 12px; color: var(--text-tertiary); }
+/* 機関種別で外している行（個別チェックはONでも案件には出ない） */
+.list tr.agc-typeoff { opacity: .5; }

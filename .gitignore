@@ -32,3 +32,6 @@ research/*.xlsx
 
 # NJSSログインセッション（秘密・絶対にコミットしない）
 njss_session.json
+
+# コスト試算などの社内文書（公開リポジトリに載せない）
+*.docx

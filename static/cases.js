@@ -159,6 +159,48 @@
       row.setAttribute("data-verdict", v);
     }
 
+    /* 判定結果を管理シートへ振り分ける（〇→参加申請準備前 / △→保留 / ✕→NG）。
+       状況はサーバがキャッシュ済みの判定から決める（ここでは case_id しか送らない）。
+       既に管理シートにある案件はサーバ側で対象外＝人の入力を書き換えない。 */
+    var ROUTE_KEY = "kawanoAiRoute";
+    function routeOn() { var v = lsGet(ROUTE_KEY); return v === null ? true : !!v; }
+    function routeVerdicts(ids, done) {
+      if (!ids.length) { done && done(null); return; }
+      fetch("/ai/route-verdicts", {
+        method: "POST", headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ case_ids: ids })
+      }).then(function (r) { return r.ok ? r.json() : null; })
+        .then(function (j) {
+          if (j) {
+            // 一覧の「追加済み/NG」表示を即座に反映（隠す設定もそのまま効く）
+            var add = {}, ng = {};
+            (j.added_eids || []).forEach(function (e) { if (e) add[e] = 1; });
+            (j.ng_eids || []).forEach(function (e) { if (e) ng[e] = 1; });
+            rows.forEach(function (r) {
+              var eid = r.getAttribute("data-eid");
+              if (eid && add[eid]) r.classList.add("is-added");
+              if (eid && ng[eid]) r.classList.add("is-ng");
+            });
+          }
+          done && done(j);
+        }).catch(function () { done && done(null); });
+    }
+    // まだ管理シートに入っていない判定済みの行（振り分け対象）
+    function unrouted() {
+      return rows.filter(function (r) {
+        var v = r.getAttribute("data-verdict");
+        if (!v || v === "？") return false;
+        return !r.classList.contains("is-added") && !r.classList.contains("is-ng");
+      }).map(function (r) { return r.getAttribute("data-id"); }).filter(Boolean);
+    }
+
+    // 自動振り分けのON/OFF（既定ON）。一覧ツール行のチェックと連動。
+    var autoBox = $("aiAutoRoute");
+    if (autoBox) {
+      autoBox.checked = routeOn();
+      autoBox.addEventListener("change", function () { lsSet(ROUTE_KEY, autoBox.checked); });
+    }
+
     // 判定済み（キャッシュ）をページ表示時に復元（AI呼び出しなし＝無料）
     var idsAll = rows.map(function (r) { return r.getAttribute("data-id"); }).filter(Boolean);
     if (idsAll.length) {
@@ -166,6 +208,22 @@
         .then(function (r) { return r.ok ? r.json() : {}; })
         .then(function (map) {
           rows.forEach(function (r) { var v = map[r.getAttribute("data-id")]; if (v) verdictBadge(r, v); });
+          // 以前の判定でまだシートに入っていない分は、その場で振り分けられるようにする。
+          // （勝手には入れない。押して初めて入る）
+          var left = unrouted();
+          if (left.length) {
+            setBar("判定済みで管理シートに未登録の案件が <b>" + left.length + "件</b> あります。" +
+              ' <button type="button" class="btn small" id="routeCached">シートへ振り分け</button>');
+            var rc = $("routeCached");
+            if (rc) rc.onclick = function () {
+              rc.disabled = true; rc.textContent = "振り分け中…";
+              routeVerdicts(unrouted(), function (j) {
+                setBar(j && j.added
+                  ? "<b>管理シートへ " + j.added + "件</b>を振り分けました（〇→参加申請準備前 / △→保留 / ✕→NG）。"
+                  : "振り分けできる案件はありませんでした。");
+              });
+            };
+          }
         }).catch(function () {});
     }
 
@@ -190,15 +248,25 @@
         alert("判定対象がありません。\n（表示中の募集中案件は、すべて判定済みか管理シートで判断済みです）");
         return;
       }
+      var routeAuto = routeOn();
       if (!confirm("表示中の募集中案件 " + list.length + " 件をAIで応募可否判定します。\n\n" +
         "・1件ごとにAI利用料がかかります（目安 10〜30円/件。判定済みの案件は無料）\n" +
-        "・時間は1件あたり10〜30秒ほど。途中でいつでも中止できます\n\n実行しますか？")) return;
+        "・時間は1件あたり10〜30秒ほど。途中でいつでも中止できます\n" +
+        (routeAuto
+          ? "・判定後、管理シートへ自動で振り分けます（〇→参加申請準備前 / △→保留 / ✕→NG）\n"
+          : "・自動振り分けはOFFです（判定後にボタンで振り分けられます）\n") +
+        "\n実行しますか？")) return;
       running = true; stopFlag = false; btn.disabled = true;
       var counts = { "〇": 0, "△": 0, "✕": 0, "？": 0 }, done = 0;
 
-      function finish(msg) {
+      function finish(msg, routed) {
         running = false; btn.disabled = false;
-        setBar("<b>" + msg + "</b>" + counterHtml(counts) +
+        var note = routed && routed.added
+          ? ' ・ <b>管理シートへ ' + routed.added + "件</b>振り分け（〇→参加申請準備前 / △→保留 / ✕→NG）"
+          : "";
+        var left = unrouted().length;
+        setBar("<b>" + msg + "</b>" + counterHtml(counts) + note +
+          (left ? ' <button type="button" class="btn small" id="routeNow">判定済み ' + left + "件をシートへ振り分け</button>" : "") +
           (counts["〇"] ? ' <label class="lt-check onlyok-label"><input type="checkbox" id="onlyOk"> 〇の案件だけ表示</label>' : ""));
         var only = $("onlyOk");
         if (only) only.addEventListener("change", function () {
@@ -206,10 +274,20 @@
             r.classList.toggle("not-ok-hidden", only.checked && r.getAttribute("data-verdict") !== "〇");
           });
         });
+        var rn = $("routeNow");
+        if (rn) rn.onclick = function () {
+          rn.disabled = true; rn.textContent = "振り分け中…";
+          routeVerdicts(unrouted(), function (j) { finish(msg, j); });
+        };
+      }
+      function endRun(msg) {
+        if (!routeAuto) { finish(msg); return; }
+        setBar("<b>" + msg + "</b>" + counterHtml(counts) + " ・ 管理シートへ振り分け中…");
+        routeVerdicts(unrouted(), function (j) { finish(msg, j); });
       }
       function step(i) {
-        if (stopFlag) { finish("中止しました（" + done + "/" + list.length + "件）"); return; }
-        if (i >= list.length) { finish("完了（" + done + "件を判定）"); return; }
+        if (stopFlag) { endRun("中止しました（" + done + "/" + list.length + "件）"); return; }
+        if (i >= list.length) { endRun("完了（" + done + "件を判定）"); return; }
         var row = list[i];
         setBar("AI判定中 " + (i + 1) + "/" + list.length + counterHtml(counts) +
           ' <button type="button" class="btn small" id="aiStop">中止</button>' +

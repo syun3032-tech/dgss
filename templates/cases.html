@@ -133,6 +133,9 @@
 <div class="list-tools" id="listTools">
   <label class="lt-check"><input type="checkbox" id="hideAdded"> 管理シート追加済みを隠す <b id="cntAdded"></b></label>
   <label class="lt-check"><input type="checkbox" id="hideNg"> NGにした案件を隠す <b id="cntNg"></b></label>
+  {% if ai_on %}
+  <label class="lt-check" title="〇→参加申請準備前 / △→保留 / ✕→NG。すでに管理シートにある案件は変更しません。"><input type="checkbox" id="aiAutoRoute"> AI判定の結果を管理シートへ自動で振り分ける</label>
+  {% endif %}
   <details class="lt-history" id="histBox">
     <summary>最近見た案件 <b id="cntHist"></b></summary>
     <div class="lt-history-list" id="histList"></div>

@@ -226,5 +226,24 @@
   }).catch(function () { sessionStorage.setItem('kawanoAgcRestored', '1'); });
 })();
 </script>
+<script>
+/* 機関種別の除外（地方公共団体をまとめて外す等）もブラウザ保存→自動復元。 */
+(function () {
+  if (sessionStorage.getItem('kawanoOrgtRestored')) return;
+  var raw = localStorage.getItem('kawanoOrgTypeExclusions');
+  if (!raw) return;
+  var list;
+  try { list = JSON.parse(raw) || []; } catch (e) { return; }
+  if (!list.length) { sessionStorage.setItem('kawanoOrgtRestored', '1'); return; }
+  fetch('/agencies/org-types/restore', {
+    method: 'POST', headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ excluded: list })
+  }).then(function (r) { return r.json(); }).then(function (d) {
+    sessionStorage.setItem('kawanoOrgtRestored', '1');
+    var p = location.pathname;
+    if (d && d.restored > 0 && (p === '/' || p === '/agencies')) location.reload();
+  }).catch(function () { sessionStorage.setItem('kawanoOrgtRestored', '1'); });
+})();
+</script>
 </body>
 </html>

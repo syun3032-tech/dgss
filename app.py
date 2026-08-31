@@ -205,16 +205,37 @@ def _persist_alive() -> tuple[bool | None, str]:
 
 
 def _last_deploy_stamp() -> str:
-    """最後にデプロイされた時刻（毎日の自動更新が押す .last-deploy）。
+    """毎日の自動更新が最後に正常終了した時刻。
 
     これが古い＝日次更新の仕組み自体が止まっている。
     監視の仕組みが止まっても、アプリ側から自己申告できるようにする。
+
+    【注意】判断材料を2つ持つ:
+      - .last-deploy        … デプロイのたびに押される
+      - data_baseline.json  … **検品が正常だった回にだけ**更新される
+    後者のほうが「まともなデータで更新できた」ことを表す強い信号。
+    姉妹アプリのように .last-deploy を使わないデプロイ方式だと前者は
+    古いまま固まるため、**新しいほうを採る**（片方が止まっても誤報にしない）。
     """
+    from pathlib import Path as _P
+    stamps = []
     try:
-        from pathlib import Path as _P
-        return _P(__file__).with_name(".last-deploy").read_text(encoding="utf-8").strip()
+        stamps.append(_P(__file__).with_name(".last-deploy").read_text(encoding="utf-8").strip())
     except OSError:
-        return ""
+        pass
+    try:
+        import json as _json
+        data = _json.loads(_P(__file__).with_name("data_baseline.json").read_text(encoding="utf-8"))
+        # **"full" だけを見る。** "fast" は開発機の毎朝のジョブが書くもので、
+        # 本番の更新が止まっていても新しい日付が入りうる。それを信じると
+        # 「開発機が動いているから本番も元気」と誤判定して、監視が死ぬ。
+        v = data.get("full")
+        if isinstance(v, dict) and v.get("updated"):
+            stamps.append(str(v["updated"]))
+    except (OSError, ValueError):
+        pass
+    # ISO文字列は辞書順＝時系列順なので、日付部分で比べれば最新が採れる
+    return max((x for x in stamps if x), key=lambda x: x[:10], default="")
 
 
 def _data_health() -> dict:
@@ -387,6 +408,8 @@ def cases():
         announced_after=announced_after,
         # 監視機関でチェックを外した発注機関の案件は最初から除外する
         exclude_agencies=db.list_agency_exclusions(),
+        # 機関種別（地方公共団体 等）でまとめて外した分も除外する
+        exclude_org_types=db.list_org_type_exclusions(),
     )
     matched = db.count_list_cases(**filters)          # 該当件数（上限なしの実数）
     total_pages = max(1, (matched + per_page - 1) // per_page)
@@ -817,6 +840,52 @@ def ai_verdicts():
         if v:
             out[str(cid)] = v
     return jsonify(out)
+
+
+@app.route("/ai/route-verdicts", methods=["POST"])
+def ai_route_verdicts():
+    """AI判定（〇△✕）の結果を管理シートへ振り分ける（お客様要望 2026-08-20）。
+
+    〇→参加申請準備前 / △→保留 / ✕→NG。判定は**サーバのキャッシュから読む**ので、
+    クライアントから任意の状況を差し込むことはできない。
+    既に管理シートにある案件は状況を書き換えない（人の入力を守るため）。
+    """
+    import json
+    data = request.get_json(silent=True) or {}
+    ids = [int(x) for x in (data.get("case_ids") or [])
+           if str(x).strip().lstrip("-").isdigit()][:400]
+    existing = {a["case_id"] for a in db.list_applications(None)}
+    items: list[tuple[int, str]] = []
+    counts = {"〇": 0, "△": 0, "✕": 0}
+    skipped = 0
+    for cid in ids:
+        if cid in existing:
+            skipped += 1
+            continue
+        case = db.get_case(cid)
+        ext = (case or {}).get("external_id") or ""
+        if not ext:
+            continue
+        cached = db.get_ai_assist(ext)
+        if not cached:
+            continue
+        try:
+            verdict = (json.loads(cached["payload"]).get("eligibility") or {}).get("verdict") or ""
+        except (ValueError, TypeError):
+            continue
+        status = db.VERDICT_STATUS.get(verdict)
+        if not status:
+            continue          # ？（判定不能）は振り分けない
+        items.append((cid, status))
+        counts[verdict] += 1
+    added = db.add_applications_bulk(items)
+    apps = db.list_applications(None)
+    return jsonify({
+        "added": added, "skipped": skipped, "counts": counts,
+        "added_eids": [a.get("external_id") for a in apps if a.get("external_id")],
+        "ng_eids": [a.get("external_id") for a in apps
+                    if a.get("external_id") and a.get("status") == "NG"],
+    })
 
 
 @app.route("/companies/extract", methods=["POST"])
@@ -1318,22 +1387,80 @@ def export_csv():
 
 @app.route("/agencies")
 def agencies():
-    """監視対象の発注機関（全国）一覧。チェックを外すと案件を探すから除外される。"""
+    """監視対象の発注機関。チェックを外すと「案件を探す」から除外される。
+
+    既定は scope=cases＝**案件に実際に出てくる発注機関**を出す。
+    以前は agencies テーブル（NJSS独歩由来の全国リスト）だけを出していたが、
+    その機関名（例「近江八幡市役所」）は案件側の機関名（例「滋賀県近江八幡市」）と
+    ほぼ一致せず、チェックを外しても案件が消えなかった。効く名前を出すのが正。
+    scope=all で従来の全国リスト（メタ情報つき）も引き続き見られる。
+    """
     import agency_import
     q = request.args.get("q", "").strip()
-    rows = db.list_agencies(q=q)
+    scope = "all" if request.args.get("scope") == "all" else "cases"
     excluded = db.list_agency_exclusions()
+    if scope == "all":
+        rows = db.list_agencies(q=q)
+        for r in rows:
+            r["platform"] = agency_import.platform_of(r.get("domain", ""))
+            r["count"] = r.get("njss_count", 0)
+            r["agency_type"] = ""
+            r["included"] = r["name"] not in excluded  # チェック状態（既定ON）
+        total = db.count_agencies()
+    else:
+        # ここで機関ごとに find_agency_for_case を回すと1,000機関で2秒以上かかる。
+        # この画面の仕事はON/OFFの選択なので、使用システム等のメタ情報は
+        # 「NJSS全国リスト」タブと案件詳細に任せて引かない。
+        rows = db.list_case_agencies(q=q)
+        for r in rows:
+            r["included"] = r["name"] not in excluded
+        total = db.count_case_agencies()
+        # 除外中なのに一覧に出てこない機関（旧・全国リストで外した分）も見せる。
+        # 見えないまま効き続ける設定を作らないため。
+        shown = {r["name"] for r in rows}
+        for name in sorted(excluded - shown):
+            rows.append({"name": name, "agency_type": "", "count": 0,
+                         "included": False, "orphan": True})
+    org_excluded = db.list_org_type_exclusions()
+    # 機関種別で外した機関は、個別チェックがONでも案件に出ない。
+    # 「ONなのに出てこない」と見えるのを防ぐため、行にその旨を印す。
     for r in rows:
-        r["platform"] = agency_import.platform_of(r.get("domain", ""))
-        r["included"] = r["name"] not in excluded  # チェック状態（既定ON）
+        r["type_off"] = bool(r.get("agency_type")) and r["agency_type"] in org_excluded
+    org_types = db.list_org_types()
+    for t in org_types:
+        t["included"] = t["name"] not in org_excluded
     try:
         presets = supa.load("agency_presets") or []
     except Exception:  # noqa: BLE001
         presets = []
-    return render_template("agencies.html", rows=rows, q=q,
-                           total=db.count_agencies(),
+    return render_template("agencies.html", rows=rows, q=q, scope=scope,
+                           total=total,
+                           org_types=org_types,
+                           org_excluded=sorted(org_excluded),
                            excluded_count=len(excluded),
                            presets=presets if isinstance(presets, list) else [])
+
+
+@app.route("/agencies/org-types/toggle", methods=["POST"])
+def org_type_toggle():
+    """機関種別1つのチェックON/OFF（included=False で案件一覧から丸ごと除外）。"""
+    data = request.get_json(silent=True) or {}
+    name = (data.get("name") or "").strip()
+    included = bool(data.get("included"))
+    if not name:
+        return jsonify({"error": "name required"}), 400
+    db.set_org_type_excluded(name, excluded=not included)
+    return jsonify({"name": name, "included": included,
+                    "excluded": sorted(db.list_org_type_exclusions())})
+
+
+@app.route("/agencies/org-types/restore", methods=["POST"])
+def org_type_exclusions_restore():
+    """localStorage に退避した機関種別の除外をサーバへ復元（揮発DB対策）。"""
+    data = request.get_json(silent=True) or {}
+    names = data.get("excluded") or []
+    db.replace_org_type_exclusions(names)
+    return jsonify({"restored": len(names)})
 
 
 @app.route("/agencies/toggle", methods=["POST"])
