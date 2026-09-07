@@ -862,6 +862,96 @@ def set_ai_assist(external_id: str, payload: str, model: str = "") -> None:
                  created_at=excluded.created_at""",
             (external_id, payload, model))
         conn.commit()
+    # 判定（〇△✕と理由）は課金して得た結果。デプロイでDBが作り直されても消えないよう
+    # Supabaseへ書き戻す。バッチ判定で1件ごとに全件送ると重いのでデバウンスする。
+    _push_ai_verdicts()
+
+
+# ---- AI判定（〇△✕）の永続化 --------------------------------------------
+# ai_assist の payload 全部ではなく「判定と理由」だけを保存する。
+# 要点(summary)や必要書類は必要になったら作り直せるが、判定は消えると
+# 案件ごとに再課金になるため、ここだけは必ず残す。
+_ai_verdicts_dirty: int = 0
+_ai_verdicts_pushed_at: float = 0.0
+_AI_VERDICT_PUSH_EVERY = 15        # この件数たまったら書き戻す
+_AI_VERDICT_PUSH_SECONDS = 45.0    # または前回からこの秒数が経ったら
+
+
+def list_ai_verdicts() -> dict[str, Any]:
+    """external_id → 判定（verdict/理由/不足情報）。保存・復元に使う軽量形。"""
+    import json
+    out: dict[str, Any] = {}
+    with _connect() as conn:
+        rows = conn.execute(
+            "SELECT external_id, payload, model FROM ai_assist "
+            "WHERE external_id NOT LIKE 'sum:%'").fetchall()
+    for r in rows:
+        try:
+            el = (json.loads(r["payload"]) or {}).get("eligibility") or {}
+        except (ValueError, TypeError):
+            continue
+        if not el.get("verdict"):
+            continue
+        out[r["external_id"]] = {
+            "verdict": el.get("verdict", ""),
+            "reason_code": el.get("reason_code", ""),
+            "region_requirement": el.get("region_requirement", ""),
+            "reasons": (el.get("reasons") or [])[:6],
+            "missing": (el.get("missing") or [])[:4],
+            "model": r["model"] or "",
+        }
+    return out
+
+
+def _push_ai_verdicts(force: bool = False) -> None:
+    """判定結果をSupabaseへ書き戻す（デバウンス）。失敗してもアプリは止めない。"""
+    global _ai_verdicts_dirty, _ai_verdicts_pushed_at
+    if _restoring or not _may_push("ai_verdicts"):
+        return
+    import time
+    _ai_verdicts_dirty += 1
+    if not force and _ai_verdicts_dirty < _AI_VERDICT_PUSH_EVERY \
+            and (time.time() - _ai_verdicts_pushed_at) < _AI_VERDICT_PUSH_SECONDS:
+        return
+    _ai_verdicts_dirty = 0
+    _ai_verdicts_pushed_at = time.time()
+    supa.save("ai_verdicts", list_ai_verdicts())
+
+
+def flush_ai_verdicts() -> None:
+    """デバウンスを待たずに判定結果を書き戻す（バッチ判定の区切りで呼ぶ）。"""
+    _push_ai_verdicts(force=True)
+
+
+def restore_ai_verdicts(data: Any) -> int:
+    """保存しておいた判定を ai_assist へ戻す。**既にある判定は上書きしない**
+    （デプロイ後にその場で出し直した新しい判定を、古い保存で潰さないため）。"""
+    import json
+    if not isinstance(data, dict) or not data:
+        return 0
+    n = 0
+    with _connect() as conn:
+        for ext, el in data.items():
+            if not isinstance(el, dict) or not el.get("verdict"):
+                continue
+            exists = conn.execute(
+                "SELECT 1 FROM ai_assist WHERE external_id = ?", (str(ext),)).fetchone()
+            if exists:
+                continue
+            payload = {
+                "eligibility": {k: el.get(k) for k in
+                                ("verdict", "reason_code", "region_requirement",
+                                 "reasons", "missing")},
+                # 要点・必要書類は保存していない。画面が「作り直せば出る」と案内できるよう印を付ける。
+                "restored": True, "enabled": True, "model": el.get("model", ""),
+            }
+            conn.execute(
+                "INSERT INTO ai_assist (external_id, payload, model, created_at) "
+                "VALUES (?, ?, ?, datetime('now'))",
+                (str(ext), json.dumps(payload, ensure_ascii=False), el.get("model", "")))
+            n += 1
+        conn.commit()
+    return n
 
 
 def list_ng_reports(sheet: str = "") -> list[dict[str, Any]]:
@@ -1408,6 +1498,7 @@ _KEY_LABELS = {
     "org_type_exclusions": "機関種別の除外設定",
     "ng_reports": "NG集計の記録",
     "ai_usage": "AI使用量（請求根拠）",
+    "ai_verdicts": "AI応募可否の判定結果",
 }
 
 
@@ -1523,7 +1614,7 @@ def restore_from_supa() -> dict[str, int]:
     if not supa.enabled():
         return {}
     counts = {"applications": 0, "companies": 0, "profile": 0, "exclusions": 0,
-              "org_types": 0}
+              "org_types": 0, "ai_verdicts": 0}
     _restoring = True
     try:
         # 申請（external_id → 現在の case_id に解決して投入）
@@ -1622,6 +1713,16 @@ def restore_from_supa() -> dict[str, int]:
             _mark_restored("profile", True)
             return 1
         counts["profile"] = _restore_section("profile", _r_profile)
+        # AI判定（〇△✕）。課金して得た結果なので、デプロイ後に必ず戻す。
+        def _r_ai_verdicts() -> int:
+            data = supa.load("ai_verdicts")
+            if not isinstance(data, dict) or not data:
+                _mark_restored("ai_verdicts", False)
+                return 0
+            n = restore_ai_verdicts(data)
+            _mark_restored("ai_verdicts", True)
+            return n
+        counts["ai_verdicts"] = _restore_section("ai_verdicts", _r_ai_verdicts)
         # 監視機関の除外。空/欠損のときは置換しない（既存を消さない）。
         def _r_exclusions() -> int:
             exc = supa.load("agency_exclusions")
@@ -1842,6 +1943,32 @@ def update_ai_routed_applications(items: list[tuple[int, str, str]]) -> int:
     if updated:
         _push_applications()
     return updated
+
+
+def list_ai_rejudge_targets() -> list[dict[str, Any]]:
+    """判定し直す価値がある案件を返す。
+
+    ・保留（△）… 情報が足りず判断が止まっている案件
+    ・NG のうち「AIが付けただけで人が触っていない」案件
+      … 旧ルールで✕になった／理由メモが空のまま落ちたもの。人が理由を書いて
+        落とした案件は対象にしない（人の判断を勝手に覆さない）。
+    締切が過ぎた案件は除く（判定し直しても出せないので課金する意味が無い）。
+    """
+    import datetime
+    today = datetime.date.today().isoformat()
+    out: list[dict[str, Any]] = []
+    for a in list_applications(None):
+        st = a.get("status") or ""
+        if st not in ("保留", "NG"):
+            continue
+        if st == "NG" and not is_ai_owned_application(a):
+            continue
+        dl = (a.get("deadline") or "").strip()
+        if dl and dl < today:
+            continue
+        out.append({"case_id": a.get("case_id"), "status": st,
+                    "title": a.get("title") or "", "note": (a.get("note") or "")[:120]})
+    return out
 
 
 def _hydrate_application(row: dict[str, Any]) -> dict[str, Any]:

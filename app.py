@@ -900,6 +900,22 @@ def ai_verdicts():
     return jsonify(out)
 
 
+@app.route("/ai/rejudge-targets")
+def ai_rejudge_targets():
+    """判定し直す価値がある案件（保留／AIが付けただけのNG）を返す。AIは呼ばない。
+
+    一覧のバッジはデプロイでDBが作り直されると消えるが、管理シートの行は残る。
+    そこで「シート側にある保留・AIのNG」を対象にして再判定できるようにする。
+    """
+    items = db.list_ai_rejudge_targets()
+    return jsonify({
+        "count": len(items),
+        "hold": sum(1 for i in items if i["status"] == "保留"),
+        "ng": sum(1 for i in items if i["status"] == "NG"),
+        "case_ids": [i["case_id"] for i in items],
+    })
+
+
 @app.route("/ai/route-verdicts", methods=["POST"])
 def ai_route_verdicts():
     """AI判定（〇△✕）の結果を管理シートへ振り分ける（お客様要望 2026-08-20）。
@@ -949,6 +965,7 @@ def ai_route_verdicts():
             counts[verdict] += 1
     added = db.add_applications_bulk(items)
     updated = db.update_ai_routed_applications(updates) if updates else 0
+    db.flush_ai_verdicts()      # 判定の書き戻しをここで確定させる（取りこぼし防止）
     skipped += len(updates) - updated      # 人が触っていて動かせなかった分
     apps = db.list_applications(None)
     return jsonify({

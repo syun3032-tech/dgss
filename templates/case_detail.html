@@ -372,7 +372,7 @@
     var elig = d.eligibility || {};
     var verdictClass = ({ '〇': 'ok', '△': 'warn', '✕': 'ng' })[elig.verdict] || 'unk';
     var html = '';
-    html += '<div class="ai-block"><h3>要点</h3>' + ul(d.summary) + '</div>';
+    if ((d.summary || []).length) html += '<div class="ai-block"><h3>要点</h3>' + ul(d.summary) + '</div>';
     html += '<div class="ai-block"><h3>参加資格の適合</h3>'
       + '<p><span class="ai-verdict ' + verdictClass + '">' + esc(elig.verdict || '不明') + '</span>'
       + (elig.reason_code ? ' <span class="muted">' + esc(elig.reason_code) + '</span>' : '') + '</p>'
@@ -394,12 +394,17 @@
         + '<span class="muted small"> 申請管理のNG列へ移動し、足りなかった点をメモに残します</span></div>';
     }
     html += '</div>';
-    html += '<div class="ai-block"><h3>必要書類（この案件向け）</h3>' + ul(d.documents) + '</div>';
-    html += '<div class="ai-block"><h3>やること（応募一歩手前まで）</h3><ol>'
-      + (d.todo || []).map(function (t) {
-          return '<li><strong>' + esc(t.title) + '</strong>'
-            + (t.detail ? '<br><span class="muted">' + esc(t.detail) + '</span>' : '') + '</li>';
-        }).join('') + '</ol></div>';
+    if (d.restored) {
+      html += '<p class="ai-note">判定（〇△✕と理由）だけを保存から復元しています。'
+        + '必要書類・やることは下の「再生成」で作れます。</p>';
+    } else {
+      html += '<div class="ai-block"><h3>必要書類（この案件向け）</h3>' + ul(d.documents) + '</div>';
+      html += '<div class="ai-block"><h3>やること（応募一歩手前まで）</h3><ol>'
+        + (d.todo || []).map(function (t) {
+            return '<li><strong>' + esc(t.title) + '</strong>'
+              + (t.detail ? '<br><span class="muted">' + esc(t.detail) + '</span>' : '') + '</li>';
+          }).join('') + '</ol></div>';
+    }
     if (d.cautions && d.cautions.length) {
       html += '<div class="ai-block"><h3>注意点</h3>' + ul(d.cautions) + '</div>';
     }

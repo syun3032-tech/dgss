@@ -146,6 +146,8 @@
     var btn = $("aiBatch"), bar = $("aiBatchBar");
     if (!btn || !bar) return;
     var running = false, stopFlag = false;
+    var byId = {};
+    rows.forEach(function (r) { var i = r.getAttribute("data-id"); if (i) byId[i] = r; });
 
     function verdictBadge(row, v, why) {
       var meta = row.querySelector(".cr-meta");
@@ -173,18 +175,40 @@
       refreshRejudge();
     }
 
-    // △が画面にあるときだけ「△を再判定」を出す
+    /* 再判定の対象。
+       ① 画面に出ている△の行
+       ② 管理シート側の「保留」と「AIが付けただけのNG」（サーバから取得）
+       ②を入れているのは、一覧のバッジがデプロイで消えても、シートの行は残るため。
+       人が理由を書いて落としたNGは②に含まれない（人の判断を勝手に覆さない）。 */
     var rejudgeBtn = $("aiRejudge");
+    var sheetTargets = { case_ids: [], hold: 0, ng: 0 };
     function sankakuRows() {
       return rows.filter(function (r) {
         return r.getAttribute("data-verdict") === "△" && !r.classList.contains("closed");
       });
     }
+    function rejudgeIds() {
+      var seen = {}, out = [];
+      sankakuRows().forEach(function (r) {
+        var id = r.getAttribute("data-id");
+        if (id && !seen[id]) { seen[id] = 1; out.push(id); }
+      });
+      sheetTargets.case_ids.forEach(function (id) {
+        var k = String(id);
+        if (!seen[k]) { seen[k] = 1; out.push(k); }
+      });
+      return out;
+    }
     function refreshRejudge() {
       if (!rejudgeBtn) return;
-      var n = sankakuRows().length;
+      var n = rejudgeIds().length;
       rejudgeBtn.hidden = n === 0;
-      rejudgeBtn.textContent = "△を再判定（" + n + "件）";
+      rejudgeBtn.textContent = "△・保留を再判定（" + n + "件）";
+    }
+    if (rejudgeBtn) {
+      fetch("/ai/rejudge-targets").then(function (r) { return r.ok ? r.json() : null; })
+        .then(function (j) { if (j) { sheetTargets = j; refreshRejudge(); } })
+        .catch(function () {});
     }
 
     /* 判定結果を管理シートへ振り分ける（〇→参加申請準備前 / △→保留 / ✕→NG）。
@@ -301,6 +325,11 @@
             r.classList.toggle("not-ok-hidden", only.checked && r.getAttribute("data-verdict") !== "〇");
           });
         });
+        if (refresh && rejudgeBtn) {
+          fetch("/ai/rejudge-targets").then(function (r) { return r.ok ? r.json() : null; })
+            .then(function (j) { if (j) { sheetTargets = j; refreshRejudge(); } })
+            .catch(function () {});
+        }
         var rn = $("routeNow");
         if (rn) rn.onclick = function () {
           rn.disabled = true; rn.textContent = "振り分け中…";
@@ -312,20 +341,24 @@
         setBar("<b>" + msg + "</b>" + counterHtml(counts) + " ・ 管理シートへ振り分け中…");
         // 再判定のときは、いま判定し直した案件そのものを対象にする（すでに保留に入っている
         // 行の状況を、新しい判定へ合わせるため）。人が編集した行はサーバ側で除外される。
-        var ids = refresh
-          ? list.map(function (r) { return r.getAttribute("data-id"); }).filter(Boolean)
-          : unrouted();
+        var ids = refresh ? list.map(idOf).filter(Boolean) : unrouted();
         routeVerdicts(ids, function (j) { finish(msg, j); }, refresh);
+      }
+      // list は行の配列でも case_id の配列でもよい（シート側の対象は行がDOMに無い）
+      function rowOf(x) { return (typeof x === "string" || typeof x === "number") ? byId[String(x)] : x; }
+      function idOf(x) {
+        if (typeof x === "string" || typeof x === "number") return String(x);
+        return x.getAttribute("data-id");
       }
       function step(i) {
         if (stopFlag) { endRun("中止しました（" + done + "/" + list.length + "件）"); return; }
         if (i >= list.length) { endRun("完了（" + done + "件を判定）"); return; }
-        var row = list[i];
+        var row = rowOf(list[i]);
         setBar("AI判定中 " + (i + 1) + "/" + list.length + counterHtml(counts) +
           ' <button type="button" class="btn small" id="aiStop">中止</button>' +
-          '<span class="ai-batch-now">' + (row.getAttribute("data-title") || "") + "</span>");
+          '<span class="ai-batch-now">' + ((row && row.getAttribute("data-title")) || "") + "</span>");
         var st = $("aiStop"); if (st) st.onclick = function () { stopFlag = true; st.disabled = true; st.textContent = "中止します…"; };
-        fetch("/case/" + row.getAttribute("data-id") + "/ai-assist" + (refresh ? "?refresh=1" : ""),
+        fetch("/case/" + idOf(list[i]) + "/ai-assist" + (refresh ? "?refresh=1" : ""),
           { method: "POST", headers: { "X-Requested-With": "XMLHttpRequest" } })
           .then(function (r) { return r.json(); })
           .then(function (j) {
@@ -338,9 +371,9 @@
             var why = (v === "△" && miss.length)
               ? "要確認: " + miss.slice(0, 2).join(" / ")
               : (el.reasons || []).slice(0, 2).join(" / ");
-            verdictBadge(row, v, why);
+            if (row) verdictBadge(row, v, why); else refreshRejudge();
           })
-          .catch(function () { counts["？"]++; done++; verdictBadge(row, "？"); })
+          .catch(function () { counts["？"]++; done++; if (row) verdictBadge(row, "？"); })
           .then(function () { step(i + 1); });
       }
       step(0);
@@ -364,19 +397,26 @@
       runOver(list, false);
     });
 
-    /* △だけ再判定。入札参加説明書・仕様書が紐付いていればそれも読み込ませ、〇/✕に寄せる。 */
+    /* 再判定。入札参加説明書・仕様書が紐付いていればそれも読み込ませ、〇/✕に寄せる。 */
     if (rejudgeBtn) {
       refreshRejudge();
       rejudgeBtn.addEventListener("click", function () {
         if (running) return;
-        var list = sankakuRows();
-        if (!list.length) { alert("△の案件がありません。"); return; }
-        if (!confirm("△（保留）の " + list.length + " 件を判定し直します。\n\n" +
+        var ids = rejudgeIds();
+        if (!ids.length) { alert("再判定する案件がありません。"); return; }
+        var yen = ids.length * 20;
+        if (!confirm(ids.length + " 件を判定し直します。\n\n" +
+          "対象（重なりを除いて " + ids.length + "件）: 画面の△ " + sankakuRows().length + "件 ／ " +
+          "管理シートの保留 " + (sheetTargets.hold || 0) + "件 ／ " +
+          "AIがNGにした案件 " + (sheetTargets.ng || 0) + "件\n" +
+          "（人が理由を書いてNGにした案件は対象外です）\n\n" +
           "・案件に紐付いた入札参加説明書・仕様書があれば、それも読み込ませます\n" +
-          "・判定済みでも作り直すため、1件ごとにAI利用料がかかります（目安 10〜30円/件）\n" +
+          "・作り直すので1件ごとにAI利用料がかかります（目安 10〜30円/件・合計 " +
+          yen.toLocaleString() + "円前後）\n" +
+          "・1件10〜30秒。途中でいつでも中止できます\n" +
           "・AIへの指示を変えた直後は、ここで反映されます\n" +
           "\n実行しますか？")) return;
-        runOver(list, true);
+        runOver(ids, true);
       });
     }
 

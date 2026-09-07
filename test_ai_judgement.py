@@ -253,5 +253,62 @@ check("ブラウザ保存の復元が新項目も送るようになっている"
       "b.append('office_prefectures', v)" in
       io.open("templates/base.html", encoding="utf-8").read())
 
+# ============================================================
+print("[G] 判定結果が消えない／再判定の対象が拾える")
+# ============================================================
+
+# 判定→軽量形で取り出せる（Supabaseに保存する形）
+v = db.list_ai_verdicts()
+check("判定を保存用の軽量形で取り出せる", "aj-san" in v and v["aj-san"]["verdict"] in "〇△✕")
+check("軽量形に理由コードが入る", bool(v["aj-batsu"]["reason_code"]))
+check("軽量形に不足情報が入る（△の理由）",
+      isinstance(v.get("aj-maru", {}).get("missing"), list))
+check("案件AI概要のキャッシュ(sum:)は判定に混ぜない",
+      all(not k.startswith("sum:") for k in v))
+
+# デプロイでDBが作り直された状況＝ai_assist が空 → 保存から戻す
+with db._connect() as _c:
+    _c.execute("DELETE FROM ai_assist")
+    _c.commit()
+check("消えた状態では判定が引けない", db.get_ai_assist("aj-batsu") is None)
+n = db.restore_ai_verdicts(v)
+check("保存から判定を戻せる", n >= 3)
+back = json.loads(db.get_ai_assist("aj-batsu")["payload"])
+check("戻した判定の〇△✕が一致する", (back["eligibility"] or {}).get("verdict") == "✕")
+check("戻した判定の理由も残る", "地域要件" in (back["eligibility"] or {}).get("reason_code", ""))
+check("戻した判定には『復元』の印が付く", back.get("restored") is True)
+
+# その場で出し直した新しい判定を、古い保存で潰さない
+set_judge("aj-batsu", {"eligibility": {"verdict": "〇", "reason_code": "条件を満たす",
+                                       "region_requirement": "地域要件なし",
+                                       "reasons": ["新しい判定"], "missing": []}})
+db.restore_ai_verdicts(v)
+now = json.loads(db.get_ai_assist("aj-batsu")["payload"])
+check("既にある新しい判定は復元で上書きしない",
+      (now["eligibility"] or {}).get("verdict") == "〇")
+
+# 再判定の対象＝保留 ＋ AIが置いただけのNG。人が理由を書いたNGは対象外。
+cid_hold = make_case("aj-hold")
+cid_ai_ng = make_case("aj-aing")
+cid_human_ng = make_case("aj-humanng")
+db.set_application(cid_hold, "保留", note="【AI判定: △／情報不足・その他】…")
+db.set_application(cid_ai_ng, "NG", note="【AI判定: ✕／地域要件】…")
+db.set_application(cid_human_ng, "NG", note="＃230落札のため技術者が申請出来ない為")
+tg = {t["case_id"] for t in db.list_ai_rejudge_targets()}
+check("保留は再判定の対象", cid_hold in tg)
+check("AIが付けただけのNGも再判定の対象", cid_ai_ng in tg)
+check("人が理由を書いたNGは対象にしない", cid_human_ng not in tg)
+r5 = client.get("/ai/rejudge-targets").get_json()
+check("再判定の対象APIが件数を返す", r5["count"] == len(tg) and r5["hold"] >= 1 and r5["ng"] >= 1)
+check("対象APIが case_id を返す", cid_ai_ng in r5["case_ids"])
+
+# 締切が過ぎた案件は再判定しない（課金する意味が無い）
+db.upsert_cases([{"source": "kkj", "external_id": "aj-old", "title": "期限切れ",
+                  "agency": "大阪府", "deadline": "2020-01-01"}])
+cid_old = db.get_case_id_by_external("aj-old")
+db.set_application(cid_old, "保留", note="【AI判定: △】")
+check("締切が過ぎた案件は再判定の対象にしない",
+      cid_old not in {t["case_id"] for t in db.list_ai_rejudge_targets()})
+
 print(f"\n{_ok}/{_ok + _ng} passed")
 raise SystemExit(1 if _ng else 0)

@@ -884,6 +884,7 @@
       var missing = (e.missing || []).filter(Boolean);
       var extra = "";
       if (e.region_requirement) extra += '<div class="dim">地域要件: ' + esc(e.region_requirement) + "</div>";
+      if (aiResult.restored) extra += '<div class="dim">判定と理由だけを保存から復元しています（「再判定」で最新の材料で作り直せます）。</div>';
       if (v === "△" && missing.length)
         extra += '<div class="m-ai-miss"><b>確定に必要な情報</b><ul>' +
           missing.map(function (m) { return "<li>" + esc(m) + "</li>"; }).join("") +
