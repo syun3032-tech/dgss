@@ -97,7 +97,8 @@ CREATE INDEX IF NOT EXISTS idx_cases_deadline ON cases(deadline);
 CREATE TABLE IF NOT EXISTS profile (
     id            INTEGER PRIMARY KEY CHECK (id = 1),  -- 単一行
     company       TEXT DEFAULT '',   -- 自社名（競合一覧から自社を除外する）
-    prefectures   TEXT DEFAULT '',   -- 対応エリア（都道府県, カンマ区切り）
+    prefectures   TEXT DEFAULT '',   -- 対応エリア（施工に行ける／出したい都道府県, カンマ区切り）
+    office_prefectures TEXT DEFAULT '',  -- 本店・支店・営業所が実在する都道府県（地域要件の判定に使う）
     categories    TEXT DEFAULT '電気工事',  -- 対応業種（カンマ区切り）
     budget_max    TEXT DEFAULT '',   -- 予算上限（予定価格がこれ以下）。空=制限なし
     grade         TEXT DEFAULT '',   -- 経審等級（A〜E, 参考）
@@ -106,6 +107,7 @@ CREATE TABLE IF NOT EXISTS profile (
     address       TEXT DEFAULT '',   -- 本社所在地
     corp_number   TEXT DEFAULT '',   -- 法人番号
     qualifications TEXT DEFAULT '[]',-- 入札参加資格・等級（機関別, JSON配列）
+    ai_instructions TEXT DEFAULT '',  -- AI判定への追加指示（利用者が自由記述。プロンプトへ差し込む）
     updated_at    TEXT DEFAULT (datetime('now'))
 );
 
@@ -310,6 +312,9 @@ def init_db() -> None:
             ("address",        "TEXT DEFAULT ''"),
             ("corp_number",    "TEXT DEFAULT ''"),
             ("qualifications", "TEXT DEFAULT '[]'"),
+            # 対応エリアと「本支店の所在地（地域要件）」は別物なので列を分ける（2026-09-07 要望）
+            ("office_prefectures", "TEXT DEFAULT ''"),
+            ("ai_instructions",    "TEXT DEFAULT ''"),
         ):
             if col not in cols:
                 conn.execute(f"ALTER TABLE profile ADD COLUMN {col} {ddl}")
@@ -1611,7 +1616,9 @@ def restore_from_supa() -> dict[str, int]:
                 grade=prof.get("grade", ""), quals=prof.get("quals", ""),
                 company=prof.get("company", ""), representative=prof.get("representative", ""),
                 address=prof.get("address", ""), corp_number=prof.get("corp_number", ""),
-                qualifications=prof.get("qualifications", []))
+                qualifications=prof.get("qualifications", []),
+                office_prefectures=prof.get("office_prefectures", ""),
+                ai_instructions=prof.get("ai_instructions", ""))
             _mark_restored("profile", True)
             return 1
         counts["profile"] = _restore_section("profile", _r_profile)
@@ -1746,31 +1753,95 @@ VERDICT_STATUS: dict[str, str] = {
 }
 
 
-def add_applications_bulk(items: list[tuple[int, str]]) -> int:
-    """まだ管理シートに無い案件だけを、指定の状況で一括登録する。
+def add_applications_bulk(items: list[tuple[int, str]] | list[tuple[int, str, str]]) -> int:
+    """まだ管理シートに無い案件だけを、指定の状況（＋メモ）で一括登録する。
+
+    items は (case_id, status) または (case_id, status, note)。note を渡すと
+    「なぜその状況になったのか」を最初から残せる（AI判定の理由を書き込む用途）。
 
     **既存行には一切触れない**（ON CONFLICT DO NOTHING）。担当者・メモ・見積など
     人が入れた内容を、AI判定のやり直しで上書きしてしまわないための不変条件。
     Supabaseへの書き戻しは全件挿入後に1回だけ（1件ずつだと全表送信を件数分繰り返す）。
     """
     rows = []
-    for case_id, status in items:
+    for item in items:
+        case_id, status = item[0], item[1]
+        note = str(item[2]) if len(item) > 2 and item[2] else ""
         st = normalize_status(status)
         if st not in APP_STATUSES_ALL:
             raise ValueError(f"不正なステータス: {status}")
-        rows.append((int(case_id), st))
+        rows.append((int(case_id), st, note))
     if not rows:
         return 0
     with _connect() as conn:
         before = conn.execute("SELECT COUNT(*) FROM applications").fetchone()[0]
         conn.executemany(
-            "INSERT INTO applications (case_id, status, updated_at) "
-            "VALUES (?, ?, datetime('now')) ON CONFLICT(case_id) DO NOTHING", rows)
+            "INSERT INTO applications (case_id, status, note, updated_at) "
+            "VALUES (?, ?, ?, datetime('now')) ON CONFLICT(case_id) DO NOTHING", rows)
         conn.commit()
         added = conn.execute("SELECT COUNT(*) FROM applications").fetchone()[0] - before
     if added:
         _push_applications()
     return added
+
+
+# 「まだAIが置いただけで、人が一度も触っていない行」の条件。
+# 再判定で状況を動かしてよいのはこの行だけ（人の入力は絶対に上書きしない）。
+_AI_OWNED_STATUSES = ("参加申請準備前", "保留", "NG")
+
+
+def is_ai_owned_application(row: dict[str, Any]) -> bool:
+    """AI判定が置いたまま誰も編集していない行か。1つでも人の痕跡があれば False。"""
+    if (row.get("status") or "") not in _AI_OWNED_STATUSES:
+        return False
+    note = (row.get("note") or "").strip()
+    if note and not note.startswith("【AI判定"):
+        return False
+    for f in _APP_TEXT_FIELDS:
+        if f == "note":
+            continue
+        if (row.get(f) or "").strip():
+            return False
+    for f in _APP_INT_FIELDS:
+        if int(row.get(f) or 0):
+            return False
+    for f in ("partners", "cost_items"):
+        v = row.get(f)
+        if isinstance(v, str):
+            v = v.strip()
+            if v and v not in ("[]", "null"):
+                return False
+        elif v:
+            return False
+    return True
+
+
+def update_ai_routed_applications(items: list[tuple[int, str, str]]) -> int:
+    """再判定の結果で「AIが置いただけの行」の状況とメモだけを更新する。
+
+    人が担当者・メモ・見積などを入れた行、状況を進めた行は対象外（1件も触らない）。
+    戻り値は実際に更新した件数。
+    """
+    updated = 0
+    with _connect() as conn:
+        for case_id, status, note in items:
+            st = normalize_status(status)
+            if st not in APP_STATUSES_ALL:
+                raise ValueError(f"不正なステータス: {status}")
+            row = conn.execute("SELECT * FROM applications WHERE case_id = ?",
+                               (int(case_id),)).fetchone()
+            if not row or not is_ai_owned_application(dict(row)):
+                continue
+            if (row["status"] or "") == st and (row["note"] or "") == note:
+                continue                      # 変化なし＝書かない
+            conn.execute(
+                "UPDATE applications SET status = ?, note = ?, updated_at = datetime('now') "
+                "WHERE case_id = ?", (st, note, int(case_id)))
+            updated += 1
+        conn.commit()
+    if updated:
+        _push_applications()
+    return updated
 
 
 def _hydrate_application(row: dict[str, Any]) -> dict[str, Any]:
@@ -2057,7 +2128,8 @@ def _hydrate_profile(row: dict[str, Any]) -> dict[str, Any]:
         row["qualifications"] = json.loads(row.get("qualifications") or "[]")
     except (ValueError, TypeError):
         row["qualifications"] = []
-    for k in ("representative", "address", "corp_number"):
+    for k in ("representative", "address", "corp_number",
+              "office_prefectures", "ai_instructions"):
         row.setdefault(k, "")
     return row
 
@@ -2118,8 +2190,11 @@ def default_profile() -> dict[str, Any]:
     return {
         "id": 1, "company": "川野電気（株）", "representative": "川野 善輝",
         "address": "〒581-0039 大阪府八尾市太田新町8-29", "corp_number": "7122001031468",
-        "prefectures": "大阪府,兵庫県,京都府,奈良県,和歌山県,滋賀県",
-        "categories": "電気工事", "budget_max": "",
+        # 対応エリア＝施工に行ける範囲。全国で入札したいので全都道府県（空=全国扱い）。
+        "prefectures": "",
+        # 本店・支店・営業所の実在地。地域要件（本店/支店が県内にあること）はこれで判定する。
+        "office_prefectures": "大阪府",
+        "categories": "電気工事", "budget_max": "", "ai_instructions": "",
         "grade": "経審 電気621/管559（全国基準。等級は機関で異なる）",
         "quals": "建設業許可（電気工事業）,第一種電気工事士,経営事項審査（経審）,入札参加資格登録",
         "qualifications": default_qualifications(),
@@ -2140,6 +2215,10 @@ def get_profile() -> dict[str, Any]:
         for k in ("company", "representative", "address", "corp_number", "grade"):
             if not p.get(k):
                 p[k] = d[k]
+    # 本支店の所在地が未設定なら初期値（大阪府）を使う。空のまま地域要件を判定させると
+    # 「拠点が分からない＝△」が量産されるため、既定を必ず入れる。
+    if not (p.get("office_prefectures") or "").strip():
+        p["office_prefectures"] = default_profile()["office_prefectures"]
     return p
 
 
@@ -2170,24 +2249,29 @@ def _normalize_qualifications(quals: Any) -> str:
 def save_profile(prefectures: str, categories: str, budget_max: str,
                  grade: str = "", quals: str = "", company: str = "",
                  representative: str = "", address: str = "",
-                 corp_number: str = "", qualifications: Any = None) -> None:
+                 corp_number: str = "", qualifications: Any = None,
+                 office_prefectures: str = "", ai_instructions: str = "") -> None:
     """マイ条件を保存（単一行 upsert）。"""
     quals_json = _normalize_qualifications(qualifications if qualifications is not None else [])
     with _connect() as conn:
         conn.execute(
             """INSERT INTO profile
                  (id, company, prefectures, categories, budget_max, grade, quals,
-                  representative, address, corp_number, qualifications, updated_at)
-               VALUES (1, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, datetime('now'))
+                  representative, address, corp_number, qualifications,
+                  office_prefectures, ai_instructions, updated_at)
+               VALUES (1, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, datetime('now'))
                ON CONFLICT(id) DO UPDATE SET
                  company=excluded.company, prefectures=excluded.prefectures,
                  categories=excluded.categories, budget_max=excluded.budget_max,
                  grade=excluded.grade, quals=excluded.quals,
                  representative=excluded.representative, address=excluded.address,
                  corp_number=excluded.corp_number, qualifications=excluded.qualifications,
+                 office_prefectures=excluded.office_prefectures,
+                 ai_instructions=excluded.ai_instructions,
                  updated_at=datetime('now')""",
             (company, prefectures, categories, budget_max, grade, quals,
-             representative, address, corp_number, quals_json),
+             representative, address, corp_number, quals_json,
+             office_prefectures, ai_instructions),
         )
         conn.commit()
     _push_profile()
@@ -2204,6 +2288,7 @@ def match_cases(profile: dict[str, Any], limit: int = 300) -> list[dict[str, Any
     prefs = [p.strip() for p in (profile.get("prefectures") or "").split(",") if p.strip()]
     cats = [c.strip() for c in (profile.get("categories") or "").split(",") if c.strip()]
     budget_max = yen_to_int(profile.get("budget_max") or "")
+    # 対応エリアが空 ＝「全国」。都道府県での絞り込みをしないだけで、0件にはしない。
     if not prefs and not cats:
         return []
 
@@ -2227,7 +2312,9 @@ def match_cases(profile: dict[str, Any], limit: int = 300) -> list[dict[str, Any
         if budget_max and price and price > budget_max:
             continue
         reasons = []
-        if r.get("prefecture") in prefs:
+        if not prefs:
+            reasons.append("対応エリア（全国）")
+        elif r.get("prefecture") in prefs:
             reasons.append(f"対応エリア（{r['prefecture']}）")
         if any(c in (r.get("category") or "") for c in cats):
             reasons.append(f"業種一致（{r['category']}）")

@@ -152,7 +152,11 @@ def inject_profile_set():
     """無料ホストはディスク揮発のためマイ条件が消える。ブラウザ保存→自動復元の判定用に、
     サーバにマイ条件があるかを全テンプレへ渡す。"""
     try:
-        return {"profile_set": bool(db.get_profile().get("prefectures"))}
+        p = db.get_profile()
+        # 対応エリアは「全国＝空」が正しい設定値なので、これだけで判定してはいけない。
+        # 何か1つでも入っていればサーバ側に条件がある＝ブラウザからの復元は不要。
+        return {"profile_set": bool(p.get("prefectures") or p.get("office_prefectures")
+                                    or p.get("company") or p.get("qualifications"))}
     except Exception:  # noqa: BLE001
         return {"profile_set": False}
 
@@ -468,6 +472,8 @@ def cases():
         ng_eids=ng_eids,
         # 一覧バッチ判定「AIで応募できる案件を探す」ボタンの表示可否
         ai_on=bool(auth.can_use_ai() and ai_assist.is_enabled()),
+        # AI判定への追加指示（一覧からその場で直せるようにする）
+        ai_instructions=db.get_profile().get("ai_instructions", "") or "",
         regions=REGIONS,
         # 選択中の地方に応じた都道府県候補（未選択なら全国）
         pref_options=prefectures_in(region) if region else [],
@@ -540,6 +546,59 @@ def _autoattach_spec(case: dict) -> list:
     files.append({"name": "公告の仕様書（自動添付）", "kind": "url", "url": url, "auto": True})
     db.set_spec_files(cid, files)
     return files
+
+
+def _collect_spec_text(case_id: int) -> str:
+    """案件に紐付いた入札参加説明書・仕様書のテキストを1本に連結して返す。
+
+    参加資格（地域要件・等級・実績）は公告の1枚目ではなく説明書側にしか
+    書かれていないことが多い。△の再判定はこのテキストを足して行う。
+    """
+    texts = []
+    for f in db.get_spec_files(case_id):
+        try:
+            if f.get("kind") == "url":
+                t = ai_assist._fetch_pdf_text(f.get("url", ""))
+            else:
+                blob = db.get_spec_blob(f.get("key", ""))
+                t = ai_assist.pdf_text_from_bytes(blob[2]) if blob else ""
+            if t:
+                texts.append("《" + str(f.get("name", "")) + "》\n" + t)
+        except Exception:  # noqa: BLE001 — 1本読めなくても他は使う
+            pass
+    return "\n\n".join(texts)
+
+
+# AI判定の結果を「管理シートのメモ1行」にする。△でも理由が必ず残るようにするのが目的
+# （2026-09-07 要望: △判定の理由が残っていない）。
+def _verdict_note(payload: dict) -> str:
+    """判定JSONから、状況の根拠として残すメモ文字列を組み立てる。"""
+    el = (payload or {}).get("eligibility") or {}
+    verdict = el.get("verdict") or "？"
+    code = (el.get("reason_code") or "").strip()
+    head = f"【AI判定: {verdict}／{code}】" if code else f"【AI判定: {verdict}】"
+    parts = [head]
+    reasons = [str(r).strip() for r in (el.get("reasons") or []) if str(r).strip()]
+    if reasons:
+        parts.append(" / ".join(reasons[:4]))
+    region = (el.get("region_requirement") or "").strip()
+    if region:
+        parts.append(f"［地域要件］{region}")
+    missing = [str(m).strip() for m in (el.get("missing") or []) if str(m).strip()]
+    if missing:
+        parts.append("［不足情報］" + " / ".join(missing[:3]))
+    return " ".join(parts)[:900]
+
+
+def _verdict_why(el: dict) -> str:
+    """一覧のバッジに添える一言。△は「足りない情報」を先に見せる。"""
+    missing = [str(m).strip() for m in (el.get("missing") or []) if str(m).strip()]
+    if (el.get("verdict") or "") == "△" and missing:
+        return ("要確認: " + " / ".join(missing[:2]))[:160]
+    reasons = [str(r).strip() for r in (el.get("reasons") or []) if str(r).strip()]
+    if reasons:
+        return (" / ".join(reasons[:2]))[:160]
+    return (el.get("reason_code") or "")[:160]
 
 
 # Gemini の従量単価（USD / 100万トークン）。モデル改定時はここを更新するか環境変数で上書き。
@@ -712,7 +771,10 @@ def case_ai_assist(case_id: int):
 
     try:
         requirements = procurement.application_requirements(case)
-        result = ai_assist.assist(case, db.get_profile(), requirements)
+        # 参加資格は入札参加説明書にしか書かれていないことが多い。添付があれば必ず読ませる
+        # （?refresh=1 の再判定で△→〇/✕ を確定させるための材料）。
+        spec_text = _collect_spec_text(case_id)
+        result = ai_assist.assist(case, db.get_profile(), requirements, spec_text=spec_text)
     except Exception as e:  # noqa: BLE001 — AI失敗で500にせず画面で案内
         logging.getLogger(__name__).warning("ai assist failed", exc_info=True)
         return jsonify({"enabled": True, "error": str(e)[:200]}), 200
@@ -744,19 +806,7 @@ def case_summary(case_id: int):
     _autoattach_spec(case)
     # 紐付けた仕様書のテキストを収集（URLのPDF＋添付ファイルPDF）。要望⑦STEP1×STEP2。
     spec_files = db.get_spec_files(case_id)
-    spec_texts = []
-    for f in spec_files:
-        try:
-            if f.get("kind") == "url":
-                t = ai_assist._fetch_pdf_text(f.get("url", ""))
-            else:
-                blob = db.get_spec_blob(f.get("key", ""))
-                t = ai_assist.pdf_text_from_bytes(blob[2]) if blob else ""
-            if t:
-                spec_texts.append("《" + str(f.get("name", "")) + "》\n" + t)
-        except Exception:  # noqa: BLE001
-            pass
-    spec_text = "\n\n".join(spec_texts)
+    spec_text = _collect_spec_text(case_id)
     # 仕様書の有無・件数をキャッシュキーに含め、添付が変わったら作り直す。
     cache_key = ("sum:%d:%s" % (len(spec_files), ext)) if ext else ""
     refresh = request.args.get("refresh") == "1"
@@ -824,7 +874,7 @@ def ai_verdicts():
     import json
     ids = [int(s) for s in (request.args.get("ids") or "").split(",")
            if s.strip().isdigit()][:400]
-    out: dict[str, str] = {}
+    out: dict[str, dict] = {}
     for cid in ids:
         case = db.get_case(cid)
         ext = (case or {}).get("external_id") or ""
@@ -834,11 +884,19 @@ def ai_verdicts():
         if not cached:
             continue
         try:
-            v = (json.loads(cached["payload"]).get("eligibility") or {}).get("verdict") or ""
+            payload = json.loads(cached["payload"])
         except (ValueError, TypeError):
             continue
-        if v:
-            out[str(cid)] = v
+        el = payload.get("eligibility") or {}
+        v = el.get("verdict") or ""
+        if not v:
+            continue
+        out[str(cid)] = {
+            "verdict": v,
+            "code": el.get("reason_code") or "",
+            # 一覧のバッジに出す一言。△なら「何が足りないか」を優先して見せる。
+            "why": _verdict_why(el),
+        }
     return jsonify(out)
 
 
@@ -855,11 +913,15 @@ def ai_route_verdicts():
     ids = [int(x) for x in (data.get("case_ids") or [])
            if str(x).strip().lstrip("-").isdigit()][:400]
     existing = {a["case_id"] for a in db.list_applications(None)}
-    items: list[tuple[int, str]] = []
+    # 再判定（△の解消）の後だけ true。「AIが置いただけの行」の状況を新しい判定に合わせる。
+    # 人が触った行は db 側で弾くので、ここで true が来ても人の入力は消えない。
+    update_routed = bool(data.get("update_ai_routed"))
+    items: list[tuple[int, str, str]] = []
+    updates: list[tuple[int, str, str]] = []
     counts = {"〇": 0, "△": 0, "✕": 0}
     skipped = 0
     for cid in ids:
-        if cid in existing:
+        if cid in existing and not update_routed:
             skipped += 1
             continue
         case = db.get_case(cid)
@@ -870,22 +932,56 @@ def ai_route_verdicts():
         if not cached:
             continue
         try:
-            verdict = (json.loads(cached["payload"]).get("eligibility") or {}).get("verdict") or ""
+            payload = json.loads(cached["payload"])
         except (ValueError, TypeError):
             continue
+        verdict = (payload.get("eligibility") or {}).get("verdict") or ""
         status = db.VERDICT_STATUS.get(verdict)
         if not status:
             continue          # ？（判定不能）は振り分けない
-        items.append((cid, status))
-        counts[verdict] += 1
+        # 「なぜこの状況になったのか」をメモに残す。とくに△（保留）は理由が無いと
+        # 後から人が判断できず、そのまま✕に流れてしまう（2026-09-07 要望）。
+        note = _verdict_note(payload)
+        if cid in existing:
+            updates.append((cid, status, note))
+        else:
+            items.append((cid, status, note))
+            counts[verdict] += 1
     added = db.add_applications_bulk(items)
+    updated = db.update_ai_routed_applications(updates) if updates else 0
+    skipped += len(updates) - updated      # 人が触っていて動かせなかった分
     apps = db.list_applications(None)
     return jsonify({
-        "added": added, "skipped": skipped, "counts": counts,
+        "added": added, "updated": updated, "skipped": skipped, "counts": counts,
         "added_eids": [a.get("external_id") for a in apps if a.get("external_id")],
         "ng_eids": [a.get("external_id") for a in apps
                     if a.get("external_id") and a.get("status") == "NG"],
     })
+
+
+@app.route("/ai/instructions", methods=["GET", "POST"])
+def ai_instructions():
+    """AI判定への追加指示の読み書き（お客様要望 2026-09-07）。
+
+    マイ条件の1項目だが、案件一覧からその場で直せないと使われないので、
+    一覧のツール行からも保存できるようにしている。保存しても既存の判定キャッシュは
+    消さない（消すと再判定で全件課金される）。効かせたい案件は「再判定」を押す。
+    """
+    prof = db.get_profile()
+    if request.method == "GET":
+        return jsonify({"instructions": prof.get("ai_instructions", "") or "",
+                        "office_prefectures": prof.get("office_prefectures", "") or "",
+                        "prefectures": prof.get("prefectures", "") or ""})
+    data = request.get_json(silent=True) or {}
+    text = str(data.get("instructions", ""))[:2000]
+    db.save_profile(
+        prefectures=prof.get("prefectures", ""), categories=prof.get("categories", "電気工事"),
+        budget_max=prof.get("budget_max", ""), grade=prof.get("grade", ""),
+        quals=prof.get("quals", ""), company=prof.get("company", ""),
+        representative=prof.get("representative", ""), address=prof.get("address", ""),
+        corp_number=prof.get("corp_number", ""), qualifications=prof.get("qualifications", []),
+        office_prefectures=prof.get("office_prefectures", ""), ai_instructions=text)
+    return jsonify({"ok": True, "instructions": text})
 
 
 @app.route("/companies/extract", methods=["POST"])
@@ -1269,7 +1365,14 @@ def companies_restore():
 def profile():
     """マイ条件（対応エリア・業種・予算上限・保有資格）の設定。"""
     if request.method == "POST":
+        current = db.get_profile()
+        # マイ条件フォームからの送信にだけ入っている印。これが無いPOST（ブラウザ保存からの
+        # 自動復元など）は「送られてこなかった項目を空で書き戻さない」。
+        # 読み込めていないものを書き戻さない、が このプロジェクトの不変条件。
+        full_form = request.form.get("full_form") == "1"
         prefectures = ",".join(request.form.getlist("prefectures"))
+        if not full_form and not prefectures:
+            prefectures = current.get("prefectures", "")
         # 業種・保有資格は複数選択。チェックに加え自由記入も結合する。
         categories = request.form.getlist("categories")
         cat_other = request.form.get("categories_other", "").strip()
@@ -1287,12 +1390,21 @@ def profile():
             qualifications = json.loads(request.form.get("qualifications", "[]") or "[]")
         except (ValueError, TypeError):
             qualifications = []
+        # 本支店の所在地は「地域要件」の判定材料。対応エリア（施工に行ける範囲）とは別物。
+        office_prefectures = ",".join(request.form.getlist("office_prefectures"))
+        ai_instr = request.form.get("ai_instructions", "").strip()
+        if not full_form:
+            # 古いミラー（新項目を知らない）で消さない
+            office_prefectures = office_prefectures or current.get("office_prefectures", "")
+            ai_instr = ai_instr or current.get("ai_instructions", "")
         db.save_profile(prefectures, ",".join(categories) or "電気工事",
                         budget_max, grade, ",".join(quals), company=company,
                         representative=request.form.get("representative", "").strip(),
                         address=request.form.get("address", "").strip(),
                         corp_number=request.form.get("corp_number", "").strip(),
-                        qualifications=qualifications)
+                        qualifications=qualifications,
+                        office_prefectures=office_prefectures,
+                        ai_instructions=ai_instr)
         flash("マイ条件を保存しました。マッチ案件・AI判定の等級照合に反映されます。", "ok")
         # 等級を編集して保存した時は、そのままマイ条件に留まる（連続編集しやすく）
         if request.form.get("stay"):
@@ -1304,6 +1416,7 @@ def profile():
         "profile.html",
         prof=prof,
         selected_prefs=[p for p in prof["prefectures"].split(",") if p],
+        selected_offices=[p for p in (prof.get("office_prefectures") or "").split(",") if p],
         selected_cats=[c for c in prof["categories"].split(",") if c],
         selected_quals=[q for q in prof["quals"].split(",") if q],
         biz_types=BIZ_TYPES,

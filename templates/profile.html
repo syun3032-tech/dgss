@@ -6,6 +6,8 @@
 <p class="lead">あなたの会社の対応エリア・業種・規模を登録すると、「マッチ案件」で条件に合う案件だけをリサーチして表示します。</p>
 
 <form class="profile-form" method="post" action="{{ url_for('profile') }}">
+  {# このPOSTはフォーム全体＝チェックを外した項目は「空にする意図」だと server に伝える印 #}
+  <input type="hidden" name="full_form" value="1">
   <section class="pf-block">
     <h2>会社情報</h2>
     <p class="pf-hint">自社名は競合一覧からの自社除外に使います。代表者・本社・法人番号は各種資格通知の控えとして保持します。</p>
@@ -22,8 +24,14 @@
   </section>
 
   <section class="pf-block">
-    <h2>対応エリア（都道府県）</h2>
-    <p class="pf-hint">入札参加できる／したい都道府県をすべて選択。</p>
+    <h2>対応エリア（施工に行ける範囲）</h2>
+    <p class="pf-hint">工事を受けに行ける都道府県。<strong>すべて外す＝全国</strong>（絞り込みなし）。
+      ここは<strong>地域要件（本店・支店が県内にあること）の判定には使いません</strong>。
+      地域要件は下の「本店・支店・営業所の所在地」だけで判定します。</p>
+    <div class="pf-bulk">
+      <button type="button" class="btn ghost small" data-bulk="prefectures" data-act="all">全国（すべて選択）</button>
+      <button type="button" class="btn ghost small" data-bulk="prefectures" data-act="none">すべて外す（＝全国扱い）</button>
+    </div>
     {% for region, prefs in regions.items() %}
       <div class="pref-group">
         <div class="pref-group-name">{{ region }}</div>
@@ -32,6 +40,30 @@
             <label class="check">
               <input type="checkbox" name="prefectures" value="{{ pref }}"
                      {{ 'checked' if pref in selected_prefs }}>
+              <span>{{ pref }}</span>
+            </label>
+          {% endfor %}
+        </div>
+      </div>
+    {% endfor %}
+  </section>
+
+  <section class="pf-block">
+    <h2>本店・支店・営業所の所在地（地域要件の判定に使う）</h2>
+    <p class="pf-hint">実際に拠点がある都道府県<strong>だけ</strong>を選んでください（例: 大阪府のみ）。
+      公告に「本店・支店・営業所が◯◯県内にあること」と書かれている案件は、ここに無い県なら
+      <strong>✕（地域要件）</strong>と判定します。逆に<strong>地域要件が書かれていない案件は、所在地を理由に△・✕にしません</strong>。</p>
+    <div class="pf-bulk">
+      <button type="button" class="btn ghost small" data-bulk="office_prefectures" data-act="none">すべて外す</button>
+    </div>
+    {% for region, prefs in regions.items() %}
+      <div class="pref-group">
+        <div class="pref-group-name">{{ region }}</div>
+        <div class="pref-checks">
+          {% for pref in prefs %}
+            <label class="check">
+              <input type="checkbox" name="office_prefectures" value="{{ pref }}"
+                     {{ 'checked' if pref in selected_offices }}>
               <span>{{ pref }}</span>
             </label>
           {% endfor %}
@@ -98,6 +130,14 @@
     </div>
   </section>
 
+  <section class="pf-block">
+    <h2>AI判定への追加指示（任意）</h2>
+    <p class="pf-hint">「AIで応募できる案件を探す」の判定に、そのまま渡す指示です。書いた内容が最優先されます
+      （ただし公告に書かれた事実は曲げません）。案件一覧の「AIへの指示」からも同じものを直せます。</p>
+    <textarea name="ai_instructions" rows="5"
+      placeholder="例）&#10;・対応エリアは全国。地域要件が無い案件は所在地を理由に△・✕にしない&#10;・本店支店の地域要件は大阪府のみで判定する&#10;・官公庁の維持修繕案件は金額が小さくても〇でよい">{{ prof.ai_instructions }}</textarea>
+  </section>
+
   <input type="hidden" name="qualifications" id="qualInput" value="[]">
 
   <div class="pf-actions">
@@ -111,6 +151,16 @@
 
 {% block scripts %}
 <script>
+/* 都道府県チェックの一括操作（全国／すべて外す）。 */
+(function () {
+  document.querySelectorAll('[data-bulk]').forEach(function (b) {
+    b.addEventListener('click', function () {
+      var on = b.getAttribute('data-act') === 'all';
+      document.querySelectorAll('input[name="' + b.getAttribute('data-bulk') + '"]')
+        .forEach(function (c) { c.checked = on; });
+    });
+  });
+})();
 /* 発注機関別の等級エディタ。行を追加/削除し、送信時に #qualInput へJSON化して詰める。 */
 (function () {
   var tbody = document.getElementById('qualRows');
@@ -170,13 +220,17 @@
     address: {{ prof.address | tojson }},
     corp_number: {{ prof.corp_number | tojson }},
     prefectures: {{ selected_prefs | tojson }},
+    office_prefectures: {{ selected_offices | tojson }},
+    ai_instructions: {{ prof.ai_instructions | tojson }},
     categories: {{ selected_cats | tojson }},
     quals: {{ selected_quals | tojson }},
     budget_max: {{ prof.budget_max | tojson }},
     grade: {{ prof.grade | tojson }},
     qualifications: qd
   };
-  if ((server.prefectures && server.prefectures.length) || qd.length) {
+  // 対応エリアは「全国＝空」が正しい値なので、空でもミラーは残す（他に中身があれば保存）。
+  if ((server.prefectures && server.prefectures.length) || qd.length
+      || (server.office_prefectures && server.office_prefectures.length)) {
     localStorage.setItem(KEY, JSON.stringify(server));
   }
   // 送信時にもブラウザへ保存＋等級をhiddenへ
@@ -191,12 +245,15 @@
       company: val('company'), representative: val('representative'),
       address: val('address'), corp_number: val('corp_number'),
       prefectures: checked('prefectures'),
+      office_prefectures: checked('office_prefectures'),
+      ai_instructions: val('ai_instructions'),
       categories: checked('categories').concat(split(val('categories_other'))),
       quals: checked('quals').concat(split(val('quals_other'))),
       budget_max: val('budget_max'), grade: val('grade'),
       qualifications: quals
     };
-    if (data.prefectures.length || quals.length) localStorage.setItem(KEY, JSON.stringify(data));
+    if (data.prefectures.length || quals.length || data.office_prefectures.length)
+      localStorage.setItem(KEY, JSON.stringify(data));
   });
 })();
 </script>

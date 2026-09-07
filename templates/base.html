@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>{% block title %}Kawanoさん NJSSモドキ{% endblock %}</title>
-  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}?v=20">
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}?v=23">
 </head>
 <body>
 <div class="app">
@@ -166,6 +166,8 @@
     b.append('address', p.address || '');
     b.append('corp_number', p.corp_number || '');
     (p.prefectures || []).forEach(function (v) { b.append('prefectures', v); });
+    (p.office_prefectures || []).forEach(function (v) { b.append('office_prefectures', v); });
+    if (p.ai_instructions) b.append('ai_instructions', p.ai_instructions);
     (p.categories || []).forEach(function (v) { b.append('categories', v); });
     b.append('categories_other', '');
     (p.quals || []).forEach(function (v) { b.append('quals', v); });

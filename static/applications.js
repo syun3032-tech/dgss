@@ -880,10 +880,19 @@
       var e = aiResult.eligibility || {}, v = e.verdict || "不明";
       var cls = ({ "〇": "ok", "△": "warn", "✕": "ng" })[v] || "unk";
       var reasons = (e.reasons || []).map(function (r) { return "<li>" + esc(r) + "</li>"; }).join("");
+      // △の理由（何が足りないか）と、公告に書かれていた地域要件をそのまま見せる
+      var missing = (e.missing || []).filter(Boolean);
+      var extra = "";
+      if (e.region_requirement) extra += '<div class="dim">地域要件: ' + esc(e.region_requirement) + "</div>";
+      if (v === "△" && missing.length)
+        extra += '<div class="m-ai-miss"><b>確定に必要な情報</b><ul>' +
+          missing.map(function (m) { return "<li>" + esc(m) + "</li>"; }).join("") +
+          "</ul><span class=\"dim\">仕様書・入札参加説明書を紐付けてから「再判定」を押すと、その中身も読みます。</span></div>";
       return '<div class="m-ai res ' + cls + '"><div class="m-ai-top"><b>AI応募可否</b> <span class="ai-v ' + cls + '">' + esc(v) + "</span>" +
+        (e.reason_code ? '<span class="dim" style="font-weight:400;font-size:11px">' + esc(e.reason_code) + "</span>" : "") +
         (aiResult.saved ? '<span class="dim" style="font-weight:400;font-size:11px">保存済み</span>' : "") +
         '<button type="button" class="btn ghost small" id="aiRedo">再判定</button></div>' +
-        '<ul class="m-ai-rs">' + reasons + "</ul>" +
+        '<ul class="m-ai-rs">' + reasons + "</ul>" + extra +
         (v === "〇" ? '<span class="dim">応募できそうです</span>'
           : '<button type="button" class="btn small ngbtn" id="aiNG">理由を添えてNGに入れる</button>') + "</div>";
     }
@@ -1172,8 +1181,11 @@
       var ng = root.querySelector("#aiNG"); if (ng) ng.onclick = function () {
         var e = (aiResult && aiResult.eligibility) || {};
         var reasons = (e.reasons || []);
-        var first = reasons[0] || "AIが参加資格を満たさないと判定";
-        var memo = "【AI判定: 参加不可】" + (reasons.length ? reasons.join(" / ") : first);
+        var first = reasons[0] || e.reason_code || "AIが参加資格を満たさないと判定";
+        var memo = "【AI判定: " + (e.verdict || "✕") + (e.reason_code ? "／" + e.reason_code : "") + "】" +
+          (reasons.length ? reasons.join(" / ") : first) +
+          (e.region_requirement ? " ［地域要件］" + e.region_requirement : "") +
+          ((e.missing || []).length ? " ［不足情報］" + e.missing.join(" / ") : "");
         if (mtab === "情報") pullInfo(root); else pullMoney(root);  // フォーム現在値を取り込む
         // 何が足りなかったかを理由メモ(note)に残し、NG列へ振り分ける
         var prev = { status: c.status, flag: c.flag, note: c.note };

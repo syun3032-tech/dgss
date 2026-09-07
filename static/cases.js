@@ -147,7 +147,7 @@
     if (!btn || !bar) return;
     var running = false, stopFlag = false;
 
-    function verdictBadge(row, v) {
+    function verdictBadge(row, v, why) {
       var meta = row.querySelector(".cr-meta");
       if (!meta) return;
       var old = meta.querySelector(".ai-verdict"); if (old) old.remove();
@@ -155,8 +155,36 @@
       var s = document.createElement("span");
       s.className = "tag ai-verdict " + cls;
       s.textContent = "AI " + v;
+      // なぜその判定なのかを必ず持たせる（△の理由が分からない、という要望への対応）
+      if (why) s.title = why;
       meta.insertBefore(s, meta.firstChild);
       row.setAttribute("data-verdict", v);
+      if (why) row.setAttribute("data-why", why);
+      // 一覧上でも△の理由が読めるように1行だけ出す（クリックせず分かるように）
+      var line = row.querySelector(".cr-why");
+      if (line) line.remove();
+      if (v === "△" && why) {
+        var main = row.querySelector(".cr-main") || row;
+        var d = document.createElement("div");
+        d.className = "cr-why";
+        d.textContent = why;
+        main.appendChild(d);
+      }
+      refreshRejudge();
+    }
+
+    // △が画面にあるときだけ「△を再判定」を出す
+    var rejudgeBtn = $("aiRejudge");
+    function sankakuRows() {
+      return rows.filter(function (r) {
+        return r.getAttribute("data-verdict") === "△" && !r.classList.contains("closed");
+      });
+    }
+    function refreshRejudge() {
+      if (!rejudgeBtn) return;
+      var n = sankakuRows().length;
+      rejudgeBtn.hidden = n === 0;
+      rejudgeBtn.textContent = "△を再判定（" + n + "件）";
     }
 
     /* 判定結果を管理シートへ振り分ける（〇→参加申請準備前 / △→保留 / ✕→NG）。
@@ -164,11 +192,11 @@
        既に管理シートにある案件はサーバ側で対象外＝人の入力を書き換えない。 */
     var ROUTE_KEY = "kawanoAiRoute";
     function routeOn() { var v = lsGet(ROUTE_KEY); return v === null ? true : !!v; }
-    function routeVerdicts(ids, done) {
+    function routeVerdicts(ids, done, updateRouted) {
       if (!ids.length) { done && done(null); return; }
       fetch("/ai/route-verdicts", {
         method: "POST", headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ case_ids: ids })
+        body: JSON.stringify({ case_ids: ids, update_ai_routed: !!updateRouted })
       }).then(function (r) { return r.ok ? r.json() : null; })
         .then(function (j) {
           if (j) {
@@ -207,7 +235,13 @@
       fetch("/ai/verdicts?ids=" + idsAll.join(","))
         .then(function (r) { return r.ok ? r.json() : {}; })
         .then(function (map) {
-          rows.forEach(function (r) { var v = map[r.getAttribute("data-id")]; if (v) verdictBadge(r, v); });
+          rows.forEach(function (r) {
+            var d = map[r.getAttribute("data-id")];
+            if (!d) return;
+            // 旧形式（文字列）でも動くようにしておく
+            if (typeof d === "string") verdictBadge(r, d);
+            else verdictBadge(r, d.verdict, d.why || d.code || "");
+          });
           // 以前の判定でまだシートに入っていない分は、その場で振り分けられるようにする。
           // （勝手には入れない。押して初めて入る）
           var left = unrouted();
@@ -241,29 +275,22 @@
         (counts["？"] ? " ？" + counts["？"] : "");
     }
 
-    btn.addEventListener("click", function () {
-      if (running) return;
-      var list = targets();
-      if (!list.length) {
-        alert("判定対象がありません。\n（表示中の募集中案件は、すべて判定済みか管理シートで判断済みです）");
-        return;
-      }
+    /* 判定ループ本体。refresh=true なら判定し直す（△に説明書を読ませる再判定）。 */
+    function runOver(list, refresh) {
       var routeAuto = routeOn();
-      if (!confirm("表示中の募集中案件 " + list.length + " 件をAIで応募可否判定します。\n\n" +
-        "・1件ごとにAI利用料がかかります（目安 10〜30円/件。判定済みの案件は無料）\n" +
-        "・時間は1件あたり10〜30秒ほど。途中でいつでも中止できます\n" +
-        (routeAuto
-          ? "・判定後、管理シートへ自動で振り分けます（〇→参加申請準備前 / △→保留 / ✕→NG）\n"
-          : "・自動振り分けはOFFです（判定後にボタンで振り分けられます）\n") +
-        "\n実行しますか？")) return;
       running = true; stopFlag = false; btn.disabled = true;
+      if (rejudgeBtn) rejudgeBtn.disabled = true;
       var counts = { "〇": 0, "△": 0, "✕": 0, "？": 0 }, done = 0;
 
       function finish(msg, routed) {
         running = false; btn.disabled = false;
-        var note = routed && routed.added
-          ? ' ・ <b>管理シートへ ' + routed.added + "件</b>振り分け（〇→参加申請準備前 / △→保留 / ✕→NG）"
-          : "";
+        if (rejudgeBtn) rejudgeBtn.disabled = false;
+        refreshRejudge();
+        var note = "";
+        if (routed && routed.added)
+          note += ' ・ <b>管理シートへ ' + routed.added + "件</b>振り分け（〇→参加申請準備前 / △→保留 / ✕→NG）";
+        if (routed && routed.updated)
+          note += ' ・ <b>' + routed.updated + "件</b>の状況を再判定に合わせて更新（人が編集済みの行は変更していません）";
         var left = unrouted().length;
         setBar("<b>" + msg + "</b>" + counterHtml(counts) + note +
           (left ? ' <button type="button" class="btn small" id="routeNow">判定済み ' + left + "件をシートへ振り分け</button>" : "") +
@@ -283,7 +310,12 @@
       function endRun(msg) {
         if (!routeAuto) { finish(msg); return; }
         setBar("<b>" + msg + "</b>" + counterHtml(counts) + " ・ 管理シートへ振り分け中…");
-        routeVerdicts(unrouted(), function (j) { finish(msg, j); });
+        // 再判定のときは、いま判定し直した案件そのものを対象にする（すでに保留に入っている
+        // 行の状況を、新しい判定へ合わせるため）。人が編集した行はサーバ側で除外される。
+        var ids = refresh
+          ? list.map(function (r) { return r.getAttribute("data-id"); }).filter(Boolean)
+          : unrouted();
+        routeVerdicts(ids, function (j) { finish(msg, j); }, refresh);
       }
       function step(i) {
         if (stopFlag) { endRun("中止しました（" + done + "/" + list.length + "件）"); return; }
@@ -293,20 +325,85 @@
           ' <button type="button" class="btn small" id="aiStop">中止</button>' +
           '<span class="ai-batch-now">' + (row.getAttribute("data-title") || "") + "</span>");
         var st = $("aiStop"); if (st) st.onclick = function () { stopFlag = true; st.disabled = true; st.textContent = "中止します…"; };
-        fetch("/case/" + row.getAttribute("data-id") + "/ai-assist",
+        fetch("/case/" + row.getAttribute("data-id") + "/ai-assist" + (refresh ? "?refresh=1" : ""),
           { method: "POST", headers: { "X-Requested-With": "XMLHttpRequest" } })
           .then(function (r) { return r.json(); })
           .then(function (j) {
             if (j && j.enabled === false) { stopFlag = true; alert("AIモードが使えない状態です（キー未設定またはアカウント未許可）。"); return; }
-            var v = (j && j.eligibility && j.eligibility.verdict) || "？";
+            var el = (j && j.eligibility) || {};
+            var v = el.verdict || "？";
             if (!(v in counts)) v = "？";
             counts[v]++; done++;
-            verdictBadge(row, v);
+            var miss = (el.missing || []).filter(Boolean);
+            var why = (v === "△" && miss.length)
+              ? "要確認: " + miss.slice(0, 2).join(" / ")
+              : (el.reasons || []).slice(0, 2).join(" / ");
+            verdictBadge(row, v, why);
           })
           .catch(function () { counts["？"]++; done++; verdictBadge(row, "？"); })
           .then(function () { step(i + 1); });
       }
       step(0);
+    }
+
+    btn.addEventListener("click", function () {
+      if (running) return;
+      var list = targets();
+      if (!list.length) {
+        alert("判定対象がありません。\n（表示中の募集中案件は、すべて判定済みか管理シートで判断済みです）");
+        return;
+      }
+      var routeAuto = routeOn();
+      if (!confirm("表示中の募集中案件 " + list.length + " 件をAIで応募可否判定します。\n\n" +
+        "・1件ごとにAI利用料がかかります（目安 10〜30円/件。判定済みの案件は無料）\n" +
+        "・時間は1件あたり10〜30秒ほど。途中でいつでも中止できます\n" +
+        (routeAuto
+          ? "・判定後、管理シートへ自動で振り分けます（〇→参加申請準備前 / △→保留 / ✕→NG）\n"
+          : "・自動振り分けはOFFです（判定後にボタンで振り分けられます）\n") +
+        "\n実行しますか？")) return;
+      runOver(list, false);
     });
+
+    /* △だけ再判定。入札参加説明書・仕様書が紐付いていればそれも読み込ませ、〇/✕に寄せる。 */
+    if (rejudgeBtn) {
+      refreshRejudge();
+      rejudgeBtn.addEventListener("click", function () {
+        if (running) return;
+        var list = sankakuRows();
+        if (!list.length) { alert("△の案件がありません。"); return; }
+        if (!confirm("△（保留）の " + list.length + " 件を判定し直します。\n\n" +
+          "・案件に紐付いた入札参加説明書・仕様書があれば、それも読み込ませます\n" +
+          "・判定済みでも作り直すため、1件ごとにAI利用料がかかります（目安 10〜30円/件）\n" +
+          "・AIへの指示を変えた直後は、ここで反映されます\n" +
+          "\n実行しますか？")) return;
+        runOver(list, true);
+      });
+    }
+
+    /* AIへの指示（要望 2026-09-07: 簡易に指示を足したい）をその場で保存する。 */
+    (function () {
+      var save = $("aiInstrSave"), ta = $("aiInstrText"), msg = $("aiInstrMsg"), state = $("aiInstrState");
+      if (!save || !ta) return;
+      function mark() { if (state) state.textContent = ta.value.trim() ? "（設定あり）" : "（未設定）"; }
+      mark();
+      save.addEventListener("click", function () {
+        save.disabled = true;
+        if (msg) msg.textContent = "保存中…";
+        fetch("/ai/instructions", {
+          method: "POST", headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ instructions: ta.value })
+        }).then(function (r) { return r.ok ? r.json() : null; })
+          .then(function (j) {
+            save.disabled = false;
+            mark();
+            if (msg) msg.textContent = j && j.ok
+              ? "保存しました。次のAI判定から反映されます（既存の判定は「△を再判定」で更新）。"
+              : "保存できませんでした。";
+          }).catch(function () {
+            save.disabled = false;
+            if (msg) msg.textContent = "保存できませんでした。";
+          });
+      });
+    })();
   })();
 })();

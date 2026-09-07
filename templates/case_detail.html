@@ -374,8 +374,17 @@
     var html = '';
     html += '<div class="ai-block"><h3>要点</h3>' + ul(d.summary) + '</div>';
     html += '<div class="ai-block"><h3>参加資格の適合</h3>'
-      + '<p><span class="ai-verdict ' + verdictClass + '">' + esc(elig.verdict || '不明') + '</span></p>'
+      + '<p><span class="ai-verdict ' + verdictClass + '">' + esc(elig.verdict || '不明') + '</span>'
+      + (elig.reason_code ? ' <span class="muted">' + esc(elig.reason_code) + '</span>' : '') + '</p>'
+      + (elig.region_requirement
+          ? '<p class="muted small">地域要件: ' + esc(elig.region_requirement) + '</p>' : '')
       + ul(elig.reasons);
+    // △のときは「何が分かれば決まるか」を必ず見せる（理由の残らない△をなくす）
+    if (elig.verdict === '△' && (elig.missing || []).length) {
+      html += '<div class="ai-missing"><b>この判定を確定させるために必要な情報</b>' + ul(elig.missing)
+        + '<span class="muted small">仕様書・入札参加説明書を下で紐付けてから「再生成」すると、'
+        + 'その中身も読んで判定し直します。</span></div>';
+    }
     // ✕（または△/不明）→ ワンタップでNGリストへ。〇 → そのまま申請管理に保存。
     if (elig.verdict === '〇') {
       html += '<div class="ai-ng"><button type="button" class="btn ok-btn" id="aiOkBtn">この案件を申請管理に保存する</button>'

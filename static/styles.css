@@ -818,3 +818,30 @@ tr.agc-off td.center { opacity: 1; }
 .orgtype-count { font-size: 12px; color: var(--text-tertiary); }
 /* 機関種別で外している行（個別チェックはONでも案件には出ない） */
 .list tr.agc-typeoff { opacity: .5; }
+
+/* ---- AI判定の「なぜ△か」を見せる（2026-09-07 要望） ---- */
+/* 一覧の行に出す△の理由。1行に収め、行の高さを崩さない。 */
+.cr-why { margin-top: 4px; font-size: 12px; line-height: 1.5; color: var(--warning, #854d0e);
+          background: var(--warning-soft, #fef9c3); border-radius: 6px; padding: 4px 8px;
+          overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+/* 案件詳細・管理シートモーダルの「確定に必要な情報」 */
+.ai-missing, .m-ai-miss { margin-top: 8px; padding: 8px 10px; border-radius: 8px;
+          background: var(--warning-soft, #fef9c3); font-size: 13px; }
+.ai-missing ul, .m-ai-miss ul { margin: 4px 0; padding-left: 18px; }
+/* 一覧ツール行の「AIへの指示」 */
+.lt-aiinstr summary { cursor: pointer; color: var(--text-secondary); }
+.lt-aiinstr-body { margin-top: 8px; padding: 10px; background: var(--bg-subtle);
+          border: 1px solid var(--border); border-radius: 8px; max-width: 620px; }
+.lt-aiinstr-body textarea { width: 100%; box-sizing: border-box; font-size: 13px;
+          font-family: inherit; padding: 8px; border: 1px solid var(--border); border-radius: 6px; }
+.lt-aiinstr-act { display: flex; align-items: center; gap: 10px; margin-top: 8px; flex-wrap: wrap; }
+/* マイ条件の一括チェック操作 */
+.pf-bulk { display: flex; gap: 8px; margin-bottom: 10px; flex-wrap: wrap; }
+/* hidden 属性がクラスの display に負けないようにする
+   （.btn[hidden] が inline-flex で表示され続けるのを防ぐ） */
+[hidden] { display: none !important; }
+
+/* マイ条件のテキストエリア（AI判定への追加指示）。既定だと極端に細いので幅を持たせる。 */
+.profile-form textarea { width: 100%; max-width: 720px; box-sizing: border-box;
+  font-family: inherit; font-size: 13px; padding: 8px; line-height: 1.6;
+  border: 1px solid var(--border); border-radius: 6px; }

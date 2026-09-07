@@ -130,9 +130,25 @@ _SCHEMA: dict[str, Any] = {
             "type": "object",
             "properties": {
                 "verdict": {"type": "string", "description": "〇/△/✕/不明 のいずれか"},
+                "reason_code": {
+                    "type": "string",
+                    "description": ("判定の主因を次から必ず1つ: 条件を満たす / 地域要件 / 等級・ランク不足 / "
+                                    "保有資格の不足 / 実績不足 / 工期・体制が合わない / 金額が合わない / 情報不足・その他"),
+                },
+                "region_requirement": {
+                    "type": "string",
+                    "description": ("公告本文に書かれている地域要件（本店・支店・営業所の所在地に関する条件）を"
+                                    "そのまま短く引用する。書かれていなければ必ず『地域要件なし』と書く"),
+                },
                 "reasons": {"type": "array", "items": {"type": "string"}},
+                "missing": {
+                    "type": "array", "items": {"type": "string"},
+                    "description": ("verdict が △ のときだけ、〇/✕ を確定するのに足りない情報を書く。"
+                                    "『何が』『どこを見れば分かるか（入札参加説明書・仕様書・公告のどの項目・機関への電話）』"
+                                    "まで具体的に。△以外は空配列"),
+                },
             },
-            "required": ["verdict", "reasons"],
+            "required": ["verdict", "reason_code", "region_requirement", "reasons", "missing"],
         },
         "documents": {
             "type": "array", "items": {"type": "string"},
@@ -158,19 +174,44 @@ _SCHEMA: dict[str, Any] = {
     "required": ["summary", "eligibility", "documents", "todo", "cautions"],
 }
 
+# 応募可否判定のルール。2026-09-07 の要望（△が量産され、しかも理由が残らない）を受けて
+# 「書かれていない要件で保留にしない」「△なら不足情報を必ず書く」を明文化した。
 _SYSTEM = (
     "あなたは日本の公共入札（電気工事系）に精通した入札支援の専門家です。"
     "与えられた案件の公告本文・確定的に算出済みの必要書類・ユーザーの保有資格(マイ条件)を"
     "読み込み、この事業者がこの案件に『応募する一歩手前』まで到達できるよう具体的に支援します。"
     "一般論ではなく、この案件の実態に即して書くこと。"
-    "とくに参加資格の『等級(ランク／格付け：A・B・C等)』を公告本文から読み取り、"
-    "自社の経審等級と照合すること。案件の要求等級が自社等級より上位で応募できない"
-    "（例: 要求A、自社C＝等級不足）と本文から明確に判断できる場合は、verdict を ✕ とし、"
-    "reasons の先頭に『等級不足: 要求◯◯・自社◯◯』の形で具体的な根拠を必ず記載すること。"
-    "等級が要件を満たす場合は 〇、本文に等級の記載が無い・判断材料が不足する場合は △ または不明とすること。"
-    "なお verdict に関わらず、reasons の中に必ず1項目『等級: 要求◯◯／自社◯◯』を入れること"
-    "（公告に等級の記載が無ければ『等級: 公告に記載なし』、自社等級が未設定なら『自社未設定』と書く）。"
-    "参加資格適合の判定(verdict)は、等級不足のように本文から明確な場合を除き、確証が無ければ△または不明とし、断定しすぎないこと。"
+    "\n\n"
+    "## 応募可否(eligibility)の判定ルール（厳守）\n"
+    "【原則】公告本文に要件として書かれていない事項を理由に、△や✕にしてはならない。"
+    "書かれていない条件は『その要件は課されていない』として扱い、reasons に"
+    "『◯◯の記載なし＝要件なしとして扱う』と明記する。"
+    "『念のため』『確認が必要』という理由での△は禁止。\n"
+    "【地域要件】自社の『対応エリア』と『本店・支店・営業所の所在地』は別物であり、混同してはならない。"
+    "地域要件（例: 本店・支店・営業所が◯◯県内にあること／◯◯市内に本店を有すること／"
+    "◯◯県の入札参加資格者名簿の県内業者区分であること）の判定に使ってよいのは"
+    "『本店・支店・営業所の所在地』だけである。『対応エリア』は施工に行ける範囲を表すだけなので、"
+    "エリアの広さを理由に✕や△にしてはならない。\n"
+    "  ・公告に地域要件が書かれており、自社の拠点所在地がそれを満たさない → verdict は ✕、"
+    "reason_code は『地域要件』、reasons の先頭に『地域要件: 要求◯◯・自社拠点◯◯』と書く。\n"
+    "  ・公告に地域要件が書かれており、自社の拠点所在地が満たす → 地域要件はクリアとして扱う。\n"
+    "  ・公告に地域要件が書かれていない → 所在地・エリアを理由に減点しない。他の要件が満たせるなら 〇 にする。"
+    "この場合 region_requirement には『地域要件なし』と書く。\n"
+    "【等級】参加資格の『等級(ランク／格付け：A・B・C等)』を公告本文から読み取り、"
+    "『発注機関別の入札参加資格・等級』のうち この案件の発注機関に一致する行と照合する。"
+    "要求等級が自社等級より上位で応募できない（例: 要求A、自社C）と本文から明確に判断できる場合は"
+    "verdict を ✕、reason_code を『等級・ランク不足』とし、reasons の先頭に"
+    "『等級不足: 要求◯◯・自社◯◯』と書く。公告に等級の記載が無い場合は等級要件なしとして扱い、"
+    "等級を理由に△にしてはならない。verdict に関わらず reasons に必ず1項目"
+    "『等級: 要求◯◯／自社◯◯』を入れる（記載が無ければ『等級: 公告に記載なし』）。\n"
+    "【△を付けてよい場合】△は『必須要件が課されていることは分かるが、その内容が読み取れない』"
+    "ときに限る（例: 公告本文が取得できていない／要件が「別紙のとおり」とだけ書かれ本文に無い／"
+    "参加資格が入札参加説明書にしか書かれていない）。△にしたときは missing に"
+    "『何が分からないのか』と『どこを見れば分かるのか（入札参加説明書・仕様書・公告のどの項目・機関へ電話）』"
+    "を必ず1つ以上、具体的に書く。missing が空の△を出してはならない。\n"
+    "【reason_code】〇なら『条件を満たす』。✕・△なら主因を1つだけ選ぶ。"
+    "分からないから△にした場合のみ『情報不足・その他』を使う。\n"
+    "\n"
     "必要書類は発注機関により異なるため、最終確認は公告に当たるよう注意書きを添えること。"
     "出力は必ず指定のJSONスキーマに従い、日本語で記述すること。"
 )
@@ -181,8 +222,14 @@ def _profile_lines(profile: dict | None) -> str:
     parts = []
     if p.get("company"):
         parts.append(f"自社名: {p['company']}")
-    if p.get("prefectures"):
-        parts.append(f"対応エリア(都道府県): {p['prefectures']}")
+    # 対応エリア（施工に行ける範囲）と 拠点所在地（地域要件の判定材料）は必ず別物として渡す。
+    # 空＝全国。ここを「地域要件」と取り違えると、地域要件のない案件まで△になる（2026-09-07 要望）。
+    parts.append("対応エリア(施工に行ける範囲): "
+                 + (p.get("prefectures") or "全国（都道府県の限定なし）")
+                 + " ※これは地域要件の判定に使わない")
+    parts.append("本店・支店・営業所の所在地: "
+                 + (p.get("office_prefectures") or "（未設定）")
+                 + " ※地域要件（本店/支店/営業所が県内・市内にあること）はこの所在地だけで判定する")
     if p.get("categories"):
         parts.append(f"対応業種: {p['categories']}")
     if p.get("grade"):
@@ -226,10 +273,21 @@ def _requirements_lines(req: dict | None) -> str:
 
 
 def _build_user_text(case: dict, profile: dict | None, req: dict | None,
-                     notice_text: str = "") -> str:
+                     notice_text: str = "", spec_text: str = "",
+                     instructions: str = "") -> str:
     # 公告本文は「全文PDF（取得できた場合）」を優先。無ければ保存済み説明文(2000字)。
     desc = (notice_text or case.get("description") or "").strip()
     src_label = "公告全文（PDFから取得）" if notice_text else "公告本文（抜粋・2000字まで）"
+    # 入札参加説明書・仕様書を添付して再判定するときの材料（△の解消用）。
+    spec_block = ""
+    if spec_text:
+        spec_block = ("\n# 入札参加説明書・仕様書（添付を読み込んだもの。参加資格はここに書かれていることが多い）\n"
+                      + spec_text[:_PDF_MAX_CHARS] + "\n")
+    # 利用者が画面から足した指示。案件ごとの機微はここで補正する（最優先で従う）。
+    instr_block = ""
+    if (instructions or "").strip():
+        instr_block = ("\n# 利用者からの追加指示（この案件の判定で最優先。ただし公告に書かれた事実は曲げない）\n"
+                       + instructions.strip()[:2000] + "\n")
     return (
         "# 案件\n"
         f"案件名: {case.get('title', '')}\n"
@@ -241,13 +299,15 @@ def _build_user_text(case: dict, profile: dict | None, req: dict | None,
         f"予定価格: {case.get('budget', '') or '非公表/不明'}\n\n"
         f"# {src_label}\n"
         f"{desc or '（本文なし。公告ページで要確認）'}\n\n"
-        "# 確定的に算出済みの必要書類（土台。AIはこれを案件に即して具体化・補強する）\n"
+        f"{spec_block}"
+        "\n# 確定的に算出済みの必要書類（土台。AIはこれを案件に即して具体化・補強する）\n"
         f"{_requirements_lines(req)}\n\n"
         "# 自社（マイ条件）\n"
-        f"{_profile_lines(profile)}\n\n"
-        "注意: 上記の公告本文に書かれている事実のみを根拠にし、書かれていない具体値"
-        "（等級・面積・金額・日付等）は創作しないこと。本文で確認できない要件は"
-        "『公告で確認』と述べること。"
+        f"{_profile_lines(profile)}\n"
+        f"{instr_block}"
+        "\n注意: 上記の公告本文に書かれている事実のみを根拠にし、書かれていない具体値"
+        "（等級・面積・金額・日付等）は創作しないこと。ただし『書かれていない要件』は"
+        "課されていないものとして扱い、それを理由に△・✕にしないこと。"
     )
 
 
@@ -295,7 +355,7 @@ def _call_gemini(user_text: str, kind: str = "応募アシスト") -> dict[str, 
 
 
 def assist(case: dict, profile: dict | None = None,
-           requirements: dict | None = None) -> dict[str, Any]:
+           requirements: dict | None = None, spec_text: str = "") -> dict[str, Any]:
     """案件1件に対しオンデマンドで AI 応募アシストを生成して返す。
 
     返り値: {"enabled": bool, "model": str, ...スキーマの各キー}。
@@ -312,10 +372,18 @@ def assist(case: dict, profile: dict | None = None,
 
     # タップ時に公告PDFの全文を取得してAIに読ませる（取れなければ説明文にフォールバック）。
     notice_text = _fetch_pdf_text(case.get("detail_url", ""))
-    data = _call_gemini(_build_user_text(case, profile, requirements, notice_text))
+    instructions = (profile or {}).get("ai_instructions", "") or ""
+    data = _call_gemini(_build_user_text(case, profile, requirements, notice_text,
+                                         spec_text=spec_text, instructions=instructions))
     data["enabled"] = True
     data["model"] = _model()
     data["source"] = "pdf_full" if notice_text else "description"
+    # 何を読んで判定したか（△の再判定で「材料が増えたか」を画面に出すため）
+    data["judged_with"] = {
+        "notice_pdf": bool(notice_text),
+        "spec_chars": len(spec_text or ""),
+        "instructions": bool(instructions.strip()),
+    }
     return data
 
 

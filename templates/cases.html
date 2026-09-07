@@ -122,6 +122,8 @@
   {% if not show_closed %}<span class="muted">（終了は非表示）</span>{% endif %}
   {% if ai_on %}
     <button type="button" class="btn primary" style="margin-left:auto" id="aiBatch">AIで応募できる案件を探す</button>
+    <button type="button" class="btn" id="aiRejudge" hidden
+            title="△（保留）の案件だけ、入札参加説明書・仕様書を読み込ませて判定し直します。">△を再判定</button>
     <a class="btn" href="{{ url_for('export_csv') }}">CSVダウンロード ↓</a>
   {% else %}
     <a class="btn" style="margin-left:auto" href="{{ url_for('export_csv') }}">CSVダウンロード ↓</a>
@@ -135,6 +137,19 @@
   <label class="lt-check"><input type="checkbox" id="hideNg"> NGにした案件を隠す <b id="cntNg"></b></label>
   {% if ai_on %}
   <label class="lt-check" title="〇→参加申請準備前 / △→保留 / ✕→NG。すでに管理シートにある案件は変更しません。"><input type="checkbox" id="aiAutoRoute"> AI判定の結果を管理シートへ自動で振り分ける</label>
+  {# AI判定へその場で指示を足す（要望 2026-09-07）。マイ条件の同じ項目を書き換える。 #}
+  <details class="lt-aiinstr" id="aiInstrBox">
+    <summary>AIへの指示 <b id="aiInstrState"></b></summary>
+    <div class="lt-aiinstr-body">
+      <p class="dim">ここに書いた内容が、これから行うAI判定にそのまま渡されます（保存済みの判定は変わりません。効かせたい案件は「△を再判定」を押してください）。</p>
+      <textarea id="aiInstrText" rows="4" placeholder="例）対応エリアは全国。地域要件が書かれていない案件は所在地を理由に△・✕にしない／本店支店の地域要件は大阪府のみで判定する">{{ ai_instructions }}</textarea>
+      <div class="lt-aiinstr-act">
+        <button type="button" class="btn primary small" id="aiInstrSave">指示を保存</button>
+        <span class="dim" id="aiInstrMsg"></span>
+        <a class="dim" href="{{ url_for('profile') }}">マイ条件で詳しく設定 →</a>
+      </div>
+    </div>
+  </details>
   {% endif %}
   <details class="lt-history" id="histBox">
     <summary>最近見た案件 <b id="cntHist"></b></summary>
@@ -201,7 +216,7 @@
 {% block scripts %}
 <script id="addedEids" type="application/json">{{ added_eids | tojson }}</script>
 <script id="ngEids" type="application/json">{{ ng_eids | tojson }}</script>
-<script src="{{ url_for('static', filename='cases.js') }}?v=4"></script>
+<script src="{{ url_for('static', filename='cases.js') }}?v=5"></script>
 <script>
   const regionSel = document.getElementById('region');
   const prefSel = document.getElementById('prefecture');
